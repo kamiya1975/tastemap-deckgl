@@ -16,21 +16,28 @@ function App() {
       .then((res) => res.json())
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
-        console.log("サンプル:", d[0]);
         setData(d);
       });
   }, []);
+
+  const typeColorMap = {
+    White: [0, 120, 255],   // 青
+    Red: [255, 0, 0],       // 赤
+    Rose: [255, 102, 204],  // ピンク
+    Sparkling: [255, 255, 0], // 黄色
+    Other: [150, 150, 150], // 灰色
+  };
 
   const layers = [
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: d => [d.umap_x, d.umap_y],
-      getFillColor: [255, 140, 0],
-      getRadius: 10,
+      getPosition: (d) => [d.UMAP1, d.UMAP2],
+      getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
+      getRadius: 5,   // 小さくする（例：5）
       pickable: true,
       radiusMinPixels: 2,
-      radiusMaxPixels: 20,
+      radiusMaxPixels: 10,
     }),
   ];
 
