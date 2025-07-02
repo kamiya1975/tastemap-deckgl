@@ -33,27 +33,27 @@ function App() {
   };
 
   const scatterLayer = new ScatterplotLayer({
-    id: "scatter",
-    data,
-    getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.5], // ★甘味で高さ
-    getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-    getRadius: 0.1,
-    pickable: true,
-  });
+  id: "scatter",
+  data,
+  getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.05], // Zを小さく
+  getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+  getRadius: 0.1,
+  pickable: true,
+});
 
-  const gridLayer = new GridCellLayer({
-    id: "grid",
-    data,
-    getPosition: d => [d.umap_x, d.umap_y],
-    cellSize: 0.5,
-    elevationScale: 0.5, // スケール調整
-    getElevationWeight: d => d.甘味 ?? 0,
-    elevationAggregation: "MEAN",
-    getColorWeight: d => d.甘味 ?? 0,
-    colorAggregation: "MEAN",
-    extruded: true,
-    pickable: false,
-  });
+const gridLayer = new GridCellLayer({
+  id: "grid",
+  data,
+  getPosition: d => [d.umap_x, d.umap_y],
+  cellSize: 0.5,
+  elevationScale: 0.05, // ←高さを抑える
+  getElevationWeight: d => d.甘味 ?? 0,
+  elevationAggregation: "MEAN",
+  getColorWeight: d => d.甘味 ?? 0,
+  colorAggregation: "MEAN",
+  extruded: true,
+  pickable: false,
+});
 
   return (
     <DeckGL
