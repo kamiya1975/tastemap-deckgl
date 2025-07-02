@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { StaticMap } from "react-map-gl";
+import { Map } from "react-map-gl";   // ← StaticMap ではなく Map
 import { ScatterplotLayer } from "@deck.gl/layers";
 
-// Mapboxトークン（地図背景なしでも動くので空でOK）
 const MAPBOX_TOKEN = "";
 
-// 初期表示
 const INITIAL_VIEW_STATE = {
   longitude: 0,
   latitude: 0,
@@ -33,7 +31,7 @@ function App() {
       data,
       getPosition: d => [d.lng, d.lat],
       getFillColor: [255, 140, 0],
-      getRadius: 500000,      // 大きすぎる場合は調整
+      getRadius: 500000,
       pickable: true,
       radiusMinPixels: 2,
       radiusMaxPixels: 20,
@@ -46,8 +44,8 @@ function App() {
       controller={true}
       layers={layers}
     >
-      <StaticMap
-        mapboxApiAccessToken={MAPBOX_TOKEN}
+      <Map
+        mapboxAccessToken={MAPBOX_TOKEN}
         mapStyle="mapbox://styles/mapbox/light-v9"
       />
     </DeckGL>
