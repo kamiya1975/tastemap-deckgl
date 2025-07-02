@@ -32,7 +32,7 @@ function App() {
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: (d) => [d.UMAP1, d.UMAP2],
+      getPosition: (d) => [d.umap_x, d.umap_y],
       getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
       getRadius: 5,   // 小さくする（例：5）
       pickable: true,
