@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { StaticMap } from "react-map-gl"; // v5はOK
 import { ScatterplotLayer } from "@deck.gl/layers";
 
-const MAPBOX_TOKEN = "";
-
 const INITIAL_VIEW_STATE = {
-  longitude: 0,
-  latitude: 0,
-  zoom: 1.5,
-  pitch: 0,
-  bearing: 0,
+  target: [0, 0, 0],
+  zoom: 0,
 };
 
 function App() {
@@ -18,8 +12,8 @@ function App() {
 
   useEffect(() => {
     fetch("umap_data.json")
-      .then((res) => res.json())
-      .then((d) => {
+      .then(res => res.json())
+      .then(d => {
         console.log("データ読み込み完了:", d.length, "件");
         setData(d);
       });
@@ -29,9 +23,9 @@ function App() {
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: d => [d.lng, d.lat],
+      getPosition: d => [d.x, d.y], // x,y座標を指定
       getFillColor: [255, 140, 0],
-      getRadius: 500000,
+      getRadius: 10,
       pickable: true,
       radiusMinPixels: 2,
       radiusMaxPixels: 20,
@@ -43,12 +37,7 @@ function App() {
       initialViewState={INITIAL_VIEW_STATE}
       controller={true}
       layers={layers}
-    >
-      <StaticMap
-        mapboxApiAccessToken={MAPBOX_TOKEN}
-        mapStyle="mapbox://styles/mapbox/light-v9"
-      />
-    </DeckGL>
+    />
   );
 }
 
