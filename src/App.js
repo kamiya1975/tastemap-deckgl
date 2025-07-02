@@ -35,7 +35,7 @@ function App() {
   const scatterLayer = new ScatterplotLayer({
     id: "scatter",
     data,
-    getPosition: d => [d.umap_x, d.umap_y, 0],
+    getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.5], // ★甘味で高さ
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
     getRadius: 0.1,
     pickable: true,
@@ -46,10 +46,12 @@ function App() {
     data,
     getPosition: d => [d.umap_x, d.umap_y],
     cellSize: 0.5,
-    elevationScale: 0,      // 高さなし
+    elevationScale: 0.5, // スケール調整
+    getElevationWeight: d => d.甘味 ?? 0,
+    elevationAggregation: "MEAN",
     getColorWeight: d => d.甘味 ?? 0,
     colorAggregation: "MEAN",
-    extruded: false,        // 平面
+    extruded: true,
     pickable: false,
   });
 
