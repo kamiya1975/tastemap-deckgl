@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import DeckGL, { OrthographicView } from "@deck.gl/react";
+import DeckGL from "@deck.gl/react";
+import { OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer } from "@deck.gl/layers";
 
 const INITIAL_VIEW_STATE = {
