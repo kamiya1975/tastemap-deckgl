@@ -24,7 +24,7 @@ function App() {
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: d => [d.x, d.y],  // d.lng, d.lat ではなく x, y にする
+      getPosition: d => [d.UMAP1, d.UMAP2],  // d.lng, d.lat ではなく x, y にする
       getFillColor: [255, 140, 0],
       getRadius: 10,
       pickable: true,
