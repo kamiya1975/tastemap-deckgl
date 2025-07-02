@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { OrthographicView } from "@deck.gl/core";
+import { OrbitView } from "@deck.gl/core";
 import { ScatterplotLayer } from "@deck.gl/layers";
 
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
+  rotationX: 0,
+  rotationOrbit: 0,
   zoom: 0,
+  minZoom: -5,
+  maxZoom: 5,
 };
 
 function App() {
@@ -21,29 +25,27 @@ function App() {
   }, []);
 
   const typeColorMap = {
-    White: [0, 120, 255],    // 青
-    Red: [255, 0, 0],        // 赤
-    Rose: [255, 102, 204],   // ピンク
-    Sparkling: [255, 255, 0],// 黄
-    Other: [150, 150, 150],  // 灰
+    White: [0, 120, 255],
+    Red: [255, 0, 0],
+    Rose: [255, 102, 204],
+    Sparkling: [255, 255, 0],
+    Other: [150, 150, 150],
   };
 
   const layers = [
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: d => [d.umap_x, d.umap_y],
+      getPosition: d => [d.umap_x, d.umap_y, 0], // 3D座標に
       getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-      getRadius: 5,            // 小さめ
+      getRadius: 5,
       pickable: true,
-      radiusMinPixels: 2,
-      radiusMaxPixels: 10,
     }),
   ];
 
   return (
     <DeckGL
-      views={new OrthographicView()}
+      views={new OrbitView()}
       initialViewState={INITIAL_VIEW_STATE}
       controller={true}
       layers={layers}
