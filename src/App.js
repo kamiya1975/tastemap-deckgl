@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView } from "@deck.gl/core";
-import { ScatterplotLayer, GridLayer } from "@deck.gl/layers";
+import { ScatterplotLayer } from "@deck.gl/layers";
+import { GridCellLayer } from "@deck.gl/aggregation-layers";
 
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
@@ -35,23 +36,21 @@ function App() {
   const scatterLayer = new ScatterplotLayer({
     id: "scatter",
     data,
-    getPosition: d => [d.umap_x, d.umap_y, 0], // XY平面に置く
+    getPosition: d => [d.umap_x, d.umap_y, 0],
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
     getRadius: 0.1,
     pickable: true,
   });
 
-  const gridLayer = new GridLayer({
-    id: "grid",
+  const gridCellLayer = new GridCellLayer({
+    id: "gridcell",
     data,
     getPosition: d => [d.umap_x, d.umap_y],
-    cellSize: 0.5,
-    elevationScale: 10, // Z軸の高さ
-    getColorWeight: d => d.甘味 ?? 0, // 「甘味」に相当するカラム
-    colorAggregation: "MEAN",
-    elevationAggregation: "MEAN",
-    extruded: true, // 立体的にする
-    pickable: false,
+    cellSize: 1.0,
+    elevationScale: 50,
+    getElevation: d => d.甘味 ?? 0,
+    getFillColor: d => [255, 140, 0, 150],
+    pickable: true,
   });
 
   return (
@@ -59,7 +58,7 @@ function App() {
       views={new OrbitView()}
       initialViewState={INITIAL_VIEW_STATE}
       controller={true}
-      layers={[gridLayer, scatterLayer]}
+      layers={[gridCellLayer, scatterLayer]}
     />
   );
 }
