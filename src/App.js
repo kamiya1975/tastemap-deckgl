@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView } from "@deck.gl/core";
-import { ScatterplotLayer } from "@deck.gl/layers";
-import { GridCellLayer } from "@deck.gl/aggregation-layers";
+import { ScatterplotLayer, GridCellLayer } from "@deck.gl/layers";
 
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
