@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { ScatterplotLayer } from "@deck.gl/layers";
+import { COORDINATE_SYSTEM } from "@deck.gl/core";
 
-// 初期表示設定（Zoomなどは好みで）
+// 初期ビュー設定
 const INITIAL_VIEW_STATE = {
-  target: [0, 0, 0],   // 中心座標
+  target: [0, 0, 0],
   zoom: 0,
   pitch: 0,
   bearing: 0,
@@ -26,19 +27,20 @@ function App() {
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: d => [d.lng, d.lat],
+      getPosition: d => [d.x, d.y, 0],   // ←ここ
+      coordinateSystem: COORDINATE_SYSTEM.IDENTITY, // ←ここ
       getFillColor: [255, 140, 0],
-      getRadius: 500000,
+      getRadius: 0.1,
       pickable: true,
       radiusMinPixels: 2,
-      radiusMaxPixels: 20,
+      radiusMaxPixels: 10,
     }),
   ];
 
   return (
     <DeckGL
       initialViewState={INITIAL_VIEW_STATE}
-      controller={false}   // ここ重要：地図操作を無効化
+      controller={true}
       layers={layers}
     />
   );
