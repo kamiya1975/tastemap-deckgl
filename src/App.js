@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { Map } from "react-map-gl";   // ← StaticMap ではなく Map
+import { StaticMap } from "react-map-gl"; // v5はOK
 import { ScatterplotLayer } from "@deck.gl/layers";
 
 const MAPBOX_TOKEN = "";
@@ -44,8 +44,8 @@ function App() {
       controller={true}
       layers={layers}
     >
-      <Map
-        mapboxAccessToken={MAPBOX_TOKEN}
+      <StaticMap
+        mapboxApiAccessToken={MAPBOX_TOKEN}
         mapStyle="mapbox://styles/mapbox/light-v9"
       />
     </DeckGL>
