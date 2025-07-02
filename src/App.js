@@ -9,7 +9,7 @@ const INITIAL_VIEW_STATE = {
   rotationOrbit: 30,
   zoom: 0,
   minZoom: 0,
-  maxZoom: 100,
+  maxZoom: 1000,
 };
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
   const scatterLayer = new ScatterplotLayer({
   id: "scatter",
   data,
-  getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.0005], // Zを小さく
+  getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.001], // Zを小さく
   getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
   getRadius: 0.1,
   pickable: true,
@@ -45,8 +45,8 @@ const gridLayer = new GridCellLayer({
   id: "grid",
   data,
   getPosition: d => [d.umap_x, d.umap_y],
-  cellSize: 0.005,
-  elevationScale: 0.00005, // ←高さを抑える
+  cellSize: 0.001,
+  elevationScale: 0.001, // ←高さを抑える
   getElevationWeight: d => d.甘味 ?? 0,
   elevationAggregation: "MEAN",
   getColorWeight: d => d.甘味 ?? 0,
