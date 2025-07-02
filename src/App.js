@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView } from "@deck.gl/core";
-import { ScatterplotLayer } from "@deck.gl/layers";
-import { GridLayer } from "@deck.gl/aggregation-layers";
+import { ScatterplotLayer, GridCellLayer } from "@deck.gl/layers";
 
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
@@ -42,16 +41,15 @@ function App() {
     pickable: true,
   });
 
-  const gridLayer = new GridLayer({
+  const gridLayer = new GridCellLayer({
     id: "grid",
     data,
     getPosition: d => [d.umap_x, d.umap_y],
     cellSize: 0.5,
-    elevationScale: 10,
+    elevationScale: 0,      // 高さなし
     getColorWeight: d => d.甘味 ?? 0,
     colorAggregation: "MEAN",
-    elevationAggregation: "MEAN",
-    extruded: true,
+    extruded: false,        // 平面
     pickable: false,
   });
 
