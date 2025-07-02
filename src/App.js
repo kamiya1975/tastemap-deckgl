@@ -4,8 +4,8 @@ import { OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer } from "@deck.gl/layers";
 
 const INITIAL_VIEW_STATE = {
-  target: [0, 0, 0],
-  zoom: 0,
+  target: [5, 5, 0],   // UMAP範囲中央
+  zoom: -1,            // ズームアウト
 };
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: d => [d.UMAP1, d.UMAP2],  // d.lng, d.lat ではなく x, y にする
+      getPosition: d => [d.UMAP1, d.UMAP2],
       getFillColor: [255, 140, 0],
       getRadius: 10,
       pickable: true,
