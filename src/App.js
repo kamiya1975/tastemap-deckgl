@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { ScatterplotLayer } from "@deck.gl/layers";
-import { COORDINATE_SYSTEM } from "@deck.gl/core";
 
-// 初期ビュー設定
+// UMAP座標系 (x,y) にあわせる
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
-  zoom: 0,
+  zoom: 2,
+  minZoom: 0,
+  maxZoom: 10,
   pitch: 0,
-  bearing: 0,
+  bearing: 0
 };
 
 function App() {
@@ -25,16 +26,16 @@ function App() {
 
   const layers = [
     new ScatterplotLayer({
-      id: "scatter",
+      id: "scatterplot-layer",
       data,
-      getPosition: d => [d.x, d.y, 0],   // ←ここ
-      coordinateSystem: COORDINATE_SYSTEM.IDENTITY, // ←ここ
+      getPosition: d => [d.x, d.y],
       getFillColor: [255, 140, 0],
-      getRadius: 0.1,
+      getRadius: 50,
       pickable: true,
       radiusMinPixels: 2,
       radiusMaxPixels: 10,
-    }),
+      coordinateSystem: 1 // COORDINATE_SYSTEM.IDENTITY
+    })
   ];
 
   return (
