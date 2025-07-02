@@ -41,16 +41,19 @@ function App() {
     pickable: true,
   });
 
-  const gridCellLayer = new GridCellLayer({
-    id: "gridcell",
-    data,
-    getPosition: d => [d.umap_x, d.umap_y],
-    cellSize: 1.0,
-    elevationScale: 50,
-    getElevation: d => d.甘味 ?? 0,
-    getFillColor: d => [255, 140, 0, 150],
-    pickable: true,
-  });
+const gridLayer = new GridCellLayer({
+  id: "grid",
+  data,
+  getPosition: d => [d.umap_x, d.umap_y],
+  cellSize: 0.5,
+  elevationScale: 10, // このスケールを調整
+  getElevationWeight: d => d.甘味 ?? 0, // これが高さになる
+  getColorWeight: d => d.甘味 ?? 0,     // 色にも反映したいなら
+  colorAggregation: "MEAN",
+  elevationAggregation: "MEAN",
+  extruded: true,
+  pickable: false,
+});
 
   return (
     <DeckGL
