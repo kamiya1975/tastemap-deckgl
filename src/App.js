@@ -38,7 +38,7 @@ function App() {
       data,
       getPosition: d => [d.umap_x, d.umap_y, 0], // 3D座標に
       getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-      getRadius: 5,
+      getRadius: 1,
       pickable: true,
     }),
   ];
