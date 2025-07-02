@@ -23,7 +23,7 @@ function App() {
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: d => [d.x, d.y], // x,y座標を指定
+      getPosition: d => [d.x, d.y],
       getFillColor: [255, 140, 0],
       getRadius: 10,
       pickable: true,
@@ -35,7 +35,7 @@ function App() {
   return (
     <DeckGL
       initialViewState={INITIAL_VIEW_STATE}
-      controller={true}
+      controller={false}   {/* これでOK */}
       layers={layers}
     />
   );
