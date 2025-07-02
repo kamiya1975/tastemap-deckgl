@@ -5,7 +5,7 @@ import { ScatterplotLayer } from "@deck.gl/layers";
 
 const INITIAL_VIEW_STATE = {
   target: [5, 5, 0],   // UMAP範囲中央
-  zoom: -1,            // ズームアウト
+  zoom: -3,            // ズームアウト
 };
 
 function App() {
