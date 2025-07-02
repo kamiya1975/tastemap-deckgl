@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
-import DeckGL from "@deck.gl/react";
+import DeckGL, { OrthographicView } from "@deck.gl/react";
 import { ScatterplotLayer } from "@deck.gl/layers";
 
-// UMAP座標系 (x,y) にあわせる
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
-  zoom: 2,
-  minZoom: 0,
-  maxZoom: 10,
-  pitch: 0,
-  bearing: 0
+  zoom: 0,
 };
 
 function App() {
@@ -26,20 +21,20 @@ function App() {
 
   const layers = [
     new ScatterplotLayer({
-      id: "scatterplot-layer",
+      id: "scatter",
       data,
-      getPosition: d => [d.x, d.y],
+      getPosition: d => [d.x, d.y],  // d.lng, d.lat ではなく x, y にする
       getFillColor: [255, 140, 0],
-      getRadius: 50,
+      getRadius: 10,
       pickable: true,
       radiusMinPixels: 2,
-      radiusMaxPixels: 10,
-      coordinateSystem: 1 // COORDINATE_SYSTEM.IDENTITY
-    })
+      radiusMaxPixels: 20,
+    }),
   ];
 
   return (
     <DeckGL
+      views={new OrthographicView()}
       initialViewState={INITIAL_VIEW_STATE}
       controller={true}
       layers={layers}
