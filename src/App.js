@@ -8,7 +8,7 @@ const INITIAL_VIEW_STATE = {
   rotationX: 45,
   rotationOrbit: 30,
   zoom: 0,
-  minZoom: -10,
+  minZoom: -100,
   maxZoom: 5,
 };
 
@@ -38,7 +38,7 @@ function App() {
       data,
       getPosition: d => [d.umap_x, d.umap_y, 0], // 3D座標に
       getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-      getRadius: 0.01,
+      getRadius: 0.1,
       pickable: true,
     }),
   ];
