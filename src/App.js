@@ -21,20 +21,20 @@ function App() {
   }, []);
 
   const typeColorMap = {
-    White: [0, 120, 255],   // 青
-    Red: [255, 0, 0],       // 赤
-    Rose: [255, 102, 204],  // ピンク
-    Sparkling: [255, 255, 0], // 黄色
-    Other: [150, 150, 150], // 灰色
+    White: [0, 120, 255],    // 青
+    Red: [255, 0, 0],        // 赤
+    Rose: [255, 102, 204],   // ピンク
+    Sparkling: [255, 255, 0],// 黄
+    Other: [150, 150, 150],  // 灰
   };
 
   const layers = [
     new ScatterplotLayer({
       id: "scatter",
       data,
-      getPosition: (d) => [d.umap_x, d.umap_y],
-      getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
-      getRadius: 5,   // 小さくする（例：5）
+      getPosition: d => [d.umap_x, d.umap_y],
+      getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+      getRadius: 5,            // 小さめ
       pickable: true,
       radiusMinPixels: 2,
       radiusMaxPixels: 10,
