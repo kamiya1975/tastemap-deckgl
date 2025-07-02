@@ -8,8 +8,8 @@ const INITIAL_VIEW_STATE = {
   rotationX: 45,
   rotationOrbit: 30,
   zoom: 0,
-  minZoom: -100,
-  maxZoom: 5,
+  minZoom: 0,
+  maxZoom: 100,
 };
 
 function App() {
