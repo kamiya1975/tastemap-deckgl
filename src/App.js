@@ -5,10 +5,10 @@ import { ScatterplotLayer } from "@deck.gl/layers";
 
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
-  rotationX: 0,
-  rotationOrbit: 0,
+  rotationX: 45,
+  rotationOrbit: 30,
   zoom: 0,
-  minZoom: -5,
+  minZoom: -10,
   maxZoom: 5,
 };
 
@@ -38,7 +38,7 @@ function App() {
       data,
       getPosition: d => [d.umap_x, d.umap_y, 0], // 3D座標に
       getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-      getRadius: 1,
+      getRadius: 0.01,
       pickable: true,
     }),
   ];
