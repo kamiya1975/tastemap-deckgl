@@ -93,6 +93,15 @@ function App() {
     pickable: true,
   });
 
+  const highlightLayer = new ScatterplotLayer({
+    id: "highlight-pin",
+    data: data.filter(d => d.JAN === "850755000028"),
+    getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.001],
+    getFillColor: [0, 255, 0], // 緑色
+    getRadius: 0.4, // 大きめ
+    pickable: false,
+  });
+
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
       {viewState && (
@@ -101,12 +110,12 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => {
             if (!initialized) {
-              setInitialized(true); // 初回だけ固定
+              setInitialized(true);
             }
             setViewState(vs);
           }}
           controller={true}
-          layers={[gridLineLayer, scatterLayer]}
+          layers={[gridLineLayer, scatterLayer, highlightLayer]}
         />
       )}
 
@@ -115,7 +124,6 @@ function App() {
         onClick={() => {
           const nextIs3D = !is3D;
           setIs3D(nextIs3D);
-          // 切り替え時も同じ中心を維持
           setViewState({
             target: viewState.target,
             rotationX: nextIs3D ? 30 : 0,
