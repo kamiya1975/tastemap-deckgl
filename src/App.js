@@ -18,9 +18,10 @@ function App() {
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
         setData(d);
-        const target = d.find(item => item.JAN === "850755000028");
+        //const target = d.find(item => item.JAN === "850755000028");
+        const target = null;// ←常に見つからない
         if (target) {
-          setPinCoords([target.umap_x, target.umap_y]);
+          //setPinCoords([target.umap_x, target.umap_y]);
           setViewState({
             target: [target.umap_x, target.umap_y, 0],
             rotationX: 14,
