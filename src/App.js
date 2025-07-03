@@ -143,7 +143,7 @@ function App() {
         })),
         getPosition: d => d.position,
         getText: d => d.text,
-        getSize: 1.0,
+        getSize: 0.1,
         sizeUnits: "meters",
         getColor: [0, 0, 0],
         getTextAnchor: "middle",
