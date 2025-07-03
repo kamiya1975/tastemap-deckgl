@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, GridCellLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
 
-// 初期ビュー設定
+// 初期ビュー
 const INITIAL_VIEW_STATE_3D = {
   target: [0, 0, 0],
   rotationX: 45,
@@ -43,38 +43,35 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // 背景の升目罫線レイヤー
-  const gridLineLayer = new GridCellLayer({
+  // グリッド線データを作成
+  const gridSpacing = 0.1; // 線間隔
+  const gridRange = 2; // 線を -2～+2 に張る
+  const lines = [];
+
+  for (let x = -gridRange; x <= gridRange; x += gridSpacing) {
+    lines.push({
+      sourcePosition: [x, -gridRange, 0],
+      targetPosition: [x, gridRange, 0]
+    });
+  }
+
+  for (let y = -gridRange; y <= gridRange; y += gridSpacing) {
+    lines.push({
+      sourcePosition: [-gridRange, y, 0],
+      targetPosition: [gridRange, y, 0]
+    });
+  }
+
+  const gridLineLayer = new LineLayer({
     id: "grid-lines",
-    data,
-    getPosition: d => [d.umap_x, d.umap_y],
-    cellSize: 0.05, // 升目の大きさ
-    elevationScale: 0,
-    getElevationWeight: () => 0,
-    elevationAggregation: "MAX",
-    getColorWeight: () => 1,
-    colorAggregation: "MAX",
-    getFillColor: () => [200, 200, 200, 50], // 薄いグレー
-    extruded: false,
+    data: lines,
+    getSourcePosition: d => d.sourcePosition,
+    getTargetPosition: d => d.targetPosition,
+    getColor: [200, 200, 200, 120], // 薄いグレー
+    getWidth: 1,
     pickable: false,
   });
 
-  // データのヒートマップ
-  const gridLayer = new GridCellLayer({
-    id: "grid",
-    data,
-    getPosition: d => [d.umap_x, d.umap_y],
-    cellSize: 0.001,
-    elevationScale: 0.001,
-    getElevationWeight: d => d.甘味 ?? 0,
-    elevationAggregation: "MEAN",
-    getColorWeight: d => d.甘味 ?? 0,
-    colorAggregation: "MEAN",
-    extruded: true,
-    pickable: false,
-  });
-
-  // ワインの散布図
   const scatterLayer = new ScatterplotLayer({
     id: "scatter",
     data,
@@ -90,7 +87,7 @@ function App() {
         views={is3D ? new OrbitView() : new OrthographicView()}
         initialViewState={is3D ? INITIAL_VIEW_STATE_3D : INITIAL_VIEW_STATE_2D}
         controller={true}
-        layers={[gridLineLayer, gridLayer, scatterLayer]}
+        layers={[gridLineLayer, scatterLayer]}
       />
 
       {/* 切り替えボタン */}
