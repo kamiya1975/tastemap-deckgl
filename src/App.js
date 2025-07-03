@@ -7,14 +7,14 @@ const INITIAL_VIEW_STATE_3D = {
   target: [0, 0, 0],
   rotationX: 45,
   rotationOrbit: 30,
-  zoom: 50,
+  zoom: 5,
   minZoom: 0,
   maxZoom: 1000,
 };
 
 const INITIAL_VIEW_STATE_2D = {
   target: [0, 0, 0],
-  zoom: 50,
+  zoom: 5,
   minZoom: 0,
   maxZoom: 1000,
 };
