@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [zMetric, setZMetric] = useState(""); // ← 初期値を空
+  const [userPinCoords, setUserPinCoords] = useState(null);
+  const [nearestPoints, setNearestPoints] = useState([]);
+  const [zMetric, setZMetric] = useState("");
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -24,17 +26,17 @@ function App() {
             rotationX: 14,
             rotationOrbit: 85,
             zoom: 8,
-            minZoom: 4.0,
-            maxZoom: 10.0,
+            minZoom: 5.0,
+            maxZoom: 100,
           });
         } else {
           setViewState({
             target: [0, 0, 0],
             rotationX: 30,
             rotationOrbit: 30,
-            zoom: 3,
-            minZoom: 4.0,
-            maxZoom: 10.0,
+            zoom: 5,
+            minZoom: 5.0,
+            maxZoom: 100,
           });
         }
       });
@@ -74,7 +76,7 @@ function App() {
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
-        id: `columns-${zMetric}`, // zMetricごとにidを変える
+        id: `columns-${zMetric}`,
         data,
         diskResolution: 12,
         radius: 0.05,
@@ -82,7 +84,7 @@ function App() {
         elevationScale: 2,
         getPosition: d => [d.umap_x, d.umap_y],
         getElevation: d => {
-          if (!zMetric) return 0; // 未選択のとき高さ0
+          if (!zMetric) return 0;
           return Number(d[zMetric]) || 0;
         },
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
@@ -120,12 +122,39 @@ function App() {
     }
   }, [data, is3D, zMetric]);
 
+  const userPinLayer = userPinCoords
+    ? new ScatterplotLayer({
+        id: "user-pin",
+        data: [userPinCoords],
+        getPosition: d => [d[0], d[1], 0.01],
+        getFillColor: [0, 255, 0],
+        getRadius: 0.3,
+        pickable: false,
+      })
+    : null;
+
+  const textLayer = nearestPoints.length
+    ? new TextLayer({
+        id: "nearest-labels",
+        data: nearestPoints.map((d, i) => ({
+          position: [d.umap_x, d.umap_y],
+          text: String(i + 1),
+        })),
+        getPosition: d => d.position,
+        getText: d => d.text,
+        getSize: 16,
+        getColor: [0, 0, 0],
+        getTextAnchor: "middle",
+        getAlignmentBaseline: "center",
+      })
+    : null;
+
   const pinLayer = pinCoords
     ? new ScatterplotLayer({
         id: "pin",
         data: [pinCoords],
-        getPosition: d => [d[0], d[1], -0.01],
-        getFillColor: [0, 255, 0, 200],
+        getPosition: d => [d[0], d[1], 0],
+        getFillColor: [0, 255, 0],
         getRadius: 0.3,
         pickable: false,
       })
@@ -139,6 +168,24 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={true}
+          onClick={info => {
+            if (info && info.coordinate) {
+              const [x, y] = info.coordinate;
+              setUserPinCoords([x, y]);
+
+              const nearest = data
+                .map(d => ({
+                  ...d,
+                  distance: Math.sqrt(
+                    Math.pow(d.umap_x - x, 2) + Math.pow(d.umap_y - y, 2)
+                  )
+                }))
+                .sort((a, b) => a.distance - b.distance)
+                .slice(0, 10);
+
+              setNearestPoints(nearest);
+            }
+          }}
           layers={[
             new LineLayer({
               id: "grid-lines",
@@ -151,6 +198,8 @@ function App() {
             }),
             mainLayer,
             pinLayer,
+            userPinLayer,
+            textLayer,
           ]}
         />
       )}
@@ -164,9 +213,9 @@ function App() {
             target: prev?.target || [0,0,0],
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
-            zoom: prev?.zoom || 3,
-            minZoom: 4.0,
-            maxZoom: 10.0,
+            zoom: prev?.zoom || 5,
+            minZoom: 5.0,
+            maxZoom: 100,
           }));
         }}
         style={{
