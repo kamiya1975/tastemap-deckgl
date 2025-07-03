@@ -8,12 +8,13 @@ function App() {
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [zAxis, setZAxis] = useState("甘味");
+  const [zAxis, setZAxis] = useState("酸味");
 
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
+        console.log("JSONサンプル:", d[0]); // 確認用
         setData(d);
         const target = d.find(item => item.JAN === "850755000028");
         if (target) {
@@ -51,11 +52,13 @@ function App() {
     id: "scatter",
     data,
     getPosition: d => {
-      const zValue = parseFloat(d[zAxis]) || 0;
+      const rawValue = d[zAxis];
+      console.log(`Z軸(${zAxis})の値:`, rawValue);
+      const zValue = parseFloat(rawValue);
       return [
         d.umap_x,
         d.umap_y,
-        is3D ? zValue * 0.3 : 0
+        is3D && !isNaN(zValue) ? zValue * 0.3 : 0
       ];
     },
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
@@ -111,11 +114,9 @@ function App() {
             borderRadius: "6px",
           }}
         >
-          <option value="甘味">甘味</option>
           <option value="酸味">酸味</option>
           <option value="渋味">渋味</option>
-          <option value="果実味">果実味</option>
-          <option value="ボディ">ボディ</option>
+          <option value="ブドウ糖">ブドウ糖</option>
         </select>
       )}
 
