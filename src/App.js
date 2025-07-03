@@ -1,25 +1,25 @@
 import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, LineLayer, IconLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, LineLayer, IconLayer, TextLayer } from "@deck.gl/layers";
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
-  const [initialized, setInitialized] = useState(false);
+  const [blend, setBlend] = useState(null);
 
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
-        console.log("データ読み込み完了:", d.length, "件");
         setData(d);
 
-        const janTarget = d.find(item => item.JAN === "850755000028");
-        if (janTarget) {
+        const found = d.find(item => item.JAN === "850755000028");
+        if (found) {
+          setBlend(found);
           setViewState({
-            target: [janTarget.umap_x, janTarget.umap_y, 0],
+            target: [found.umap_x, found.umap_y, 0],
             rotationX: 14,
             rotationOrbit: 85,
             zoom: 8,
@@ -53,6 +53,7 @@ function App() {
     const startY = -100;
     const endY = +100;
     const spacing = 2;
+
     const lines = [];
     for (let x = startX; x <= endX; x += spacing) {
       lines.push({
@@ -88,45 +89,34 @@ function App() {
     pickable: true,
   });
 
-  // 2D表示の「×」マーカー
-  const crossLayer2D = new ScatterplotLayer({
-    id: "cross-2d",
-    data: data.filter(d => d.JAN === "850755000028"),
-    getPosition: d => [d.umap_x, d.umap_y, 0],
-    getFillColor: [0, 255, 0],
-    getRadius: 0.2,
-    getLineWidth: 4,
-    stroked: true,
-    getLineColor: [0, 255, 0],
-    radiusScale: 1,
-    radiusMinPixels: 10,
-    radiusMaxPixels: 20,
-    pickable: false,
-  });
-
-  // 3D表示のピン
-  const iconLayer3D = new IconLayer({
-    id: "icon-3d",
-    data: data.filter(d => d.JAN === "850755000028"),
-    getPosition: d => [d.umap_x, d.umap_y, 0],
-    getIcon: d => "marker",
-    iconAtlas:
-      "https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg",
-    iconMapping: {
-      marker: { x: 0, y: 0, width: 512, height: 512, mask: false },
-    },
-    sizeScale: 15,
-    getSize: d => 5,
-    getColor: [255, 0, 0],
-    pickable: false,
-  });
-
-  const layers = [gridLineLayer, scatterLayer];
-  if (is3D) {
-    layers.push(iconLayer3D);
-  } else {
-    layers.push(crossLayer2D);
-  }
+  const pinLayer = blend
+    ? (is3D
+        ? new IconLayer({
+            id: "pin-3d",
+            data: [blend],
+            iconAtlas:
+              "https://raw.githubusercontent.com/visgl/deck.gl/master/examples/website/icon/icon-atlas.png",
+            iconMapping: {
+              marker: {x:0, y:0, width:128, height:128, mask:true}
+            },
+            getIcon: () => "marker",
+            sizeScale: 10,
+            getPosition: d => [d.umap_x, d.umap_y],
+            getSize: 8,
+            getColor: [0,255,0],
+            pickable: false
+          })
+        : new TextLayer({
+            id: "pin-2d",
+            data: [blend],
+            getText: () => "×",
+            getPosition: d => [d.umap_x, d.umap_y],
+            getColor: [0,255,0],
+            getSize: 24,
+            pickable: false
+          })
+      )
+    : null;
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
@@ -134,14 +124,9 @@ function App() {
         <DeckGL
           views={is3D ? new OrbitView() : new OrthographicView()}
           viewState={viewState}
-          onViewStateChange={({ viewState: vs }) => {
-            if (!initialized) {
-              setInitialized(true);
-            }
-            setViewState(vs);
-          }}
+          onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={true}
-          layers={layers}
+          layers={[gridLineLayer, scatterLayer, pinLayer].filter(Boolean)}
         />
       )}
 
@@ -196,8 +181,7 @@ function App() {
             </>
           )}
           <div>
-            Center:
-            [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
+            Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
           </div>
         </div>
       )}
