@@ -24,7 +24,7 @@ function App() {
             rotationX: 14,
             rotationOrbit: 85,
             zoom: 8,
-            minZoom: 5.0,
+            minZoom: 10.0,
             maxZoom: 10.0,
           });
         } else {
@@ -33,7 +33,7 @@ function App() {
             rotationX: 30,
             rotationOrbit: 30,
             zoom: 3,
-            minZoom: 5.0,
+            minZoom: 10.0,
             maxZoom: 10.0,
           });
         }
@@ -165,7 +165,7 @@ function App() {
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
             zoom: prev?.zoom || 3,
-            minZoom: 5.0,
+            minZoom: 10.0,
             maxZoom: 10.0,
           }));
         }}
