@@ -96,7 +96,7 @@ function App() {
               ...(prev || {}),
               target: [umap_x, umap_y, 0],
             }));
-            setPinCoords([umap_x, umap_y]);
+            // setPinCoords([umap_x, umap_y]);
           }
         },
       });
