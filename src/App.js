@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer } from "@deck.gl/layers";
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [selectedZ, setSelectedZ] = useState("甘味");
+  const [zMetric, setZMetric] = useState("甘味");
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -16,7 +16,6 @@ function App() {
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
         setData(d);
-
         const target = d.find(item => item.JAN === "850755000028");
         if (target) {
           setPinCoords([target.umap_x, target.umap_y]);
@@ -49,7 +48,7 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  const gridLines = React.useMemo(() => {
+  const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
     const startY = -100;
@@ -72,39 +71,47 @@ function App() {
     return lines;
   }, []);
 
-  // Z軸の正規化範囲計算
-  const zValues = data
-    .map(d => Number(d[selectedZ]))
-    .filter(v => !isNaN(v));
-  const zMin = Math.min(...zValues);
-  const zMax = Math.max(...zValues);
-
-  const scatterLayer = new ScatterplotLayer({
-    id: "scatter",
-    data,
-    getPosition: d => {
-      const zRaw = Number(d[selectedZ]);
-      let normZ = 0;
-      if (!isNaN(zRaw) && zMax !== zMin) {
-        normZ = (zRaw - zMin) / (zMax - zMin);
-      }
-      const zHeight = normZ * (is3D ? 5 : 0); // 0〜1正規化して倍率5
-      return [d.umap_x, d.umap_y, zHeight];
-    },
-    getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-    getRadius: 0.1,
-    pickable: true,
-    onClick: info => {
-      if (info && info.object) {
-        const { umap_x, umap_y } = info.object;
-        setViewState({
-          ...viewState,
-          target: [umap_x, umap_y, 0],
-        });
-        setPinCoords([umap_x, umap_y]);
-      }
-    },
-  });
+  const mainLayer = is3D
+    ? new ColumnLayer({
+        id: "columns",
+        data,
+        diskResolution: 12,
+        radius: 0.3,
+        extruded: true,
+        elevationScale: 2, // ← 高さの倍率(調整可)
+        getPosition: d => [d.umap_x, d.umap_y],
+        getElevation: d => Number(d[zMetric]) || 0,
+        getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+        pickable: true,
+        onClick: info => {
+          if (info && info.object) {
+            const { umap_x, umap_y } = info.object;
+            setViewState({
+              ...viewState,
+              target: [umap_x, umap_y, 0],
+            });
+            setPinCoords([umap_x, umap_y]);
+          }
+        },
+      })
+    : new ScatterplotLayer({
+        id: "scatter",
+        data,
+        getPosition: d => [d.umap_x, d.umap_y, 0],
+        getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+        getRadius: 0.2,
+        pickable: true,
+        onClick: info => {
+          if (info && info.object) {
+            const { umap_x, umap_y } = info.object;
+            setViewState({
+              ...viewState,
+              target: [umap_x, umap_y, 0],
+            });
+            setPinCoords([umap_x, umap_y]);
+          }
+        },
+      });
 
   const pinLayer = pinCoords
     ? new ScatterplotLayer({
@@ -112,7 +119,7 @@ function App() {
         data: [pinCoords],
         getPosition: d => [d[0], d[1], 0],
         getFillColor: [0, 255, 0],
-        getRadius: 0.2,
+        getRadius: 0.3,
         pickable: false,
       })
     : null;
@@ -135,7 +142,7 @@ function App() {
               getWidth: 1,
               pickable: false,
             }),
-            scatterLayer,
+            mainLayer,
             pinLayer,
           ]}
         />
@@ -172,8 +179,8 @@ function App() {
 
       {is3D && (
         <select
-          value={selectedZ}
-          onChange={e => setSelectedZ(e.target.value)}
+          value={zMetric}
+          onChange={e => setZMetric(e.target.value)}
           style={{
             position: "absolute",
             top: "10px",
@@ -187,7 +194,7 @@ function App() {
           <option value="酸味">酸味</option>
           <option value="渋味">渋味</option>
           <option value="果実味">果実味</option>
-          <option value="ブドウ糖">ブドウ糖</option>
+          <option value="ボディ">ボディ</option>
         </select>
       )}
 
