@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer } from "@deck.gl/layers";
@@ -20,8 +20,8 @@ function App() {
           setPinCoords([target.umap_x, target.umap_y]);
           setViewState({
             target: [target.umap_x, target.umap_y, 0],
-            rotationX: 14,
-            rotationOrbit: 85,
+            rotationX: 30,
+            rotationOrbit: 30,
             zoom: 8,
             minZoom: 0,
             maxZoom: 100,
@@ -50,13 +50,16 @@ function App() {
   const scatterLayer = new ScatterplotLayer({
     id: "scatter",
     data,
-    getPosition: d => [
-      d.umap_x,
-      d.umap_y,
-      is3D && d[zAxis] ? d[zAxis] * 0.1 : 0
-    ],
+    getPosition: d => {
+      const zValue = parseFloat(d[zAxis]) || 0;
+      return [
+        d.umap_x,
+        d.umap_y,
+        is3D ? zValue * 0.3 : 0
+      ];
+    },
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-    getRadius: 0.2,
+    getRadius: 0.05,
     pickable: true,
     onClick: info => {
       if (info && info.object) {
@@ -76,7 +79,7 @@ function App() {
         data: [pinCoords],
         getPosition: d => [d[0], d[1], 0],
         getFillColor: [0, 255, 0],
-        getRadius: is3D ? 0.1 : 0.1,
+        getRadius: 0.1,
         pickable: false,
       })
     : null;
