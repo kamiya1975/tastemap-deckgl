@@ -8,8 +8,9 @@ function App() {
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [zAxisKey, setZAxisKey] = useState("甘味");
+  const [selectedZAxis, setSelectedZAxis] = useState("甘味");
 
+  // Z軸候補
   const zAxisOptions = ["甘味", "酸味", "渋味", "ボディ"];
 
   useEffect(() => {
@@ -90,7 +91,7 @@ function App() {
     getPosition: d => [
       d.umap_x,
       d.umap_y,
-      is3D ? ((d[zAxisKey] ?? 0) * 0.01) : 0
+      is3D ? ((d[selectedZAxis] ?? 0) * 0.2) : 0
     ],
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
     getRadius: 0.1,
@@ -130,6 +131,7 @@ function App() {
         />
       )}
 
+      {/* 2D/3D切り替えボタン */}
       <button
         onClick={() => {
           const nextIs3D = !is3D;
@@ -159,10 +161,11 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
+      {/* Z軸選択プルダウン */}
       {is3D && (
         <select
-          value={zAxisKey}
-          onChange={e => setZAxisKey(e.target.value)}
+          value={selectedZAxis}
+          onChange={(e) => setSelectedZAxis(e.target.value)}
           style={{
             position: "absolute",
             top: "50px",
@@ -172,12 +175,13 @@ function App() {
             fontSize: "14px",
           }}
         >
-          {zAxisOptions.map(opt => (
-            <option key={opt} value={opt}>{opt}</option>
+          {zAxisOptions.map((label) => (
+            <option key={label} value={label}>{label}</option>
           ))}
         </select>
       )}
 
+      {/* 表示情報 */}
       {viewState && (
         <div
           style={{
@@ -199,7 +203,9 @@ function App() {
               <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
             </>
           )}
-          <div>Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]</div>
+          <div>
+            Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
+          </div>
         </div>
       )}
     </div>
