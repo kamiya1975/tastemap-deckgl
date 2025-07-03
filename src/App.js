@@ -6,23 +6,26 @@ import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
 // 初期ビュー
 const INITIAL_VIEW_STATE_3D = {
   target: [0, 0, 0],
-  rotationX: 30, // 初期の角度（制限範囲内で好きに）
+  rotationX: 30,
   rotationOrbit: 30,
   zoom: 3,
   minZoom: 0,
-  maxZoom: 1000,
+  maxZoom: 100,
 };
 
 const INITIAL_VIEW_STATE_2D = {
   target: [0, 0, 0],
   zoom: 4,
   minZoom: 0,
-  maxZoom: 1000,
+  maxZoom: 100,
 };
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
+  const [viewState, setViewState] = useState(
+    is3D ? INITIAL_VIEW_STATE_3D : INITIAL_VIEW_STATE_2D
+  );
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -43,11 +46,11 @@ function App() {
 
   // 広域グリッド線
   const gridLines = useMemo(() => {
-    const startX = -1000;
-    const endX = +1000;
-    const startY = -1000;
-    const endY = +1000;
-    const spacing = 10; // グリッドの間隔
+    const startX = -100;
+    const endX = +100;
+    const startY = -100;
+    const endY = +100;
+    const spacing = 5;
 
     const lines = [];
 
@@ -90,12 +93,13 @@ function App() {
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
       <DeckGL
         views={is3D ? new OrbitView() : new OrthographicView()}
-        initialViewState={is3D ? INITIAL_VIEW_STATE_3D : INITIAL_VIEW_STATE_2D}
+        viewState={viewState}
+        onViewStateChange={({ viewState: vs }) => setViewState(vs)}
         controller={
           is3D
             ? {
                 type: OrbitController,
-                rotationX: [20, 45], // rotationX制限
+                rotationX: [20, 45],
               }
             : true
         }
@@ -104,7 +108,11 @@ function App() {
 
       {/* 切り替えボタン */}
       <button
-        onClick={() => setIs3D(!is3D)}
+        onClick={() => {
+          const nextIs3D = !is3D;
+          setIs3D(nextIs3D);
+          setViewState(nextIs3D ? INITIAL_VIEW_STATE_3D : INITIAL_VIEW_STATE_2D);
+        }}
         style={{
           position: "absolute",
           top: "10px",
@@ -120,6 +128,29 @@ function App() {
       >
         {is3D ? "2D表示" : "3D表示"}
       </button>
+
+      {/* 表示情報 */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50px",
+          right: "10px",
+          zIndex: 1,
+          background: "rgba(255,255,255,0.9)",
+          padding: "6px 10px",
+          fontSize: "12px",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+        }}
+      >
+        <div>Zoom: {viewState.zoom.toFixed(2)}</div>
+        {is3D && (
+          <>
+            <div>RotationX: {viewState.rotationX?.toFixed(1)}°</div>
+            <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
