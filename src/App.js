@@ -82,13 +82,25 @@ function App() {
   });
 
   const scatterLayer = new ScatterplotLayer({
-    id: "scatter",
-    data,
-    getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.001],
-    getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-    getRadius: 0.1,
-    pickable: true,
-  });
+  id: "scatter",
+  data,
+  getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.001],
+  getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+  getRadius: 0.1,
+  pickable: true,
+  onClick: info => {
+    if (info && info.object) {
+      const { umap_x, umap_y } = info.object;
+      // 中心をクリックした座標に移動
+      setViewState({
+        ...viewState,
+        target: [umap_x, umap_y, 0],
+      });
+      // ピンをクリックした座標に置く
+      setPinCoords([umap_x, umap_y]);
+    }
+  },
+});
 
   // ピンとして仮に緑の大きい丸
   const pinLayer = pinCoords
