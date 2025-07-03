@@ -41,25 +41,14 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // 点群範囲を計算
+  // 広域グリッド線
   const gridLines = useMemo(() => {
-    if (data.length === 0) return [];
+    const startX = -1000;
+    const endX = +1000;
+    const startY = -1000;
+    const endY = +1000;
+    const spacing = 10; // 罫線の間隔
 
-    const xs = data.map(d => d.umap_x);
-    const ys = data.map(d => d.umap_y);
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
-
-    // 余白
-    const padding = 0.1;
-    const startX = minX - padding;
-    const endX = maxX + padding;
-    const startY = minY - padding;
-    const endY = maxY + padding;
-
-    const spacing = 0.1;
     const lines = [];
 
     // 縦線
@@ -79,14 +68,14 @@ function App() {
     }
 
     return lines;
-  }, [data]);
+  }, []);
 
   const gridLineLayer = new LineLayer({
     id: "grid-lines",
     data: gridLines,
     getSourcePosition: d => d.sourcePosition,
     getTargetPosition: d => d.targetPosition,
-    getColor: [200, 200, 200, 120],
+    getColor: [200, 200, 200, 120], // 薄いグレー
     getWidth: 1,
     pickable: false,
   });
