@@ -8,16 +8,17 @@ function App() {
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [selectedZAxis, setSelectedZAxis] = useState("甘味");
+  const [zKey, setZKey] = useState("果実味");
 
-  // Z軸候補
-  const zAxisOptions = ["甘味", "酸味", "渋味", "ボディ"];
+  // Z軸候補（データに入っている項目）
+  const zAxisOptions = ["総糖", "苦味", "渋味", "旨味", "果実味"];
 
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
+        console.log("最初のデータ:", d[0]);
         setData(d);
 
         const target = d.find(item => item.JAN === "850755000028");
@@ -91,7 +92,7 @@ function App() {
     getPosition: d => [
       d.umap_x,
       d.umap_y,
-      is3D ? ((d[selectedZAxis] ?? 0) * 100) : 0
+      is3D ? Math.max(0, (d[zKey] ?? 0) * 10) : 0
     ],
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
     getRadius: 0.1,
@@ -131,7 +132,7 @@ function App() {
         />
       )}
 
-      {/* 2D/3D切り替えボタン */}
+      {/* 2D/3D切り替え */}
       <button
         onClick={() => {
           const nextIs3D = !is3D;
@@ -161,11 +162,11 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
-      {/* Z軸選択プルダウン */}
+      {/* Z軸プルダウン */}
       {is3D && (
         <select
-          value={selectedZAxis}
-          onChange={(e) => setSelectedZAxis(e.target.value)}
+          value={zKey}
+          onChange={(e) => setZKey(e.target.value)}
           style={{
             position: "absolute",
             top: "50px",
