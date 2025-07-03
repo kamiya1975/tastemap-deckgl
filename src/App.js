@@ -91,7 +91,7 @@ function App() {
     getPosition: d => [
       d.umap_x,
       d.umap_y,
-      is3D ? ((d[selectedZAxis] ?? 0) * 10) : 0
+      is3D ? ((d[selectedZAxis] ?? 0) * 100) : 0
     ],
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
     getRadius: 0.1,
