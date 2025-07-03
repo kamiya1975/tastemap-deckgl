@@ -18,10 +18,8 @@ function App() {
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
         setData(d);
-        //const target = d.find(item => item.JAN === "850755000028");
-        const target = null;// ←常に見つからない
+        const target = null; // 常に見つからない
         if (target) {
-          //setPinCoords([target.umap_x, target.umap_y]);
           setViewState({
             target: [target.umap_x, target.umap_y, 0],
             rotationX: 14,
@@ -128,7 +126,7 @@ function App() {
         id: "user-pin",
         data: [userPinCoords],
         getPosition: d => [d[0], d[1], -0.01],
-        getFillColor: [0, 255, 0 ,200],
+        getFillColor: [0, 255, 0, 200],
         getRadius: 0.3,
         pickable: false,
       })
@@ -156,7 +154,7 @@ function App() {
         id: "pin",
         data: [pinCoords],
         getPosition: d => [d[0], d[1], -0.01],
-        getFillColor: [0, 255, 0 ,200],
+        getFillColor: [0, 255, 0, 200],
         getRadius: 0.3,
         pickable: false,
       })
@@ -169,7 +167,12 @@ function App() {
           views={is3D ? new OrbitView() : new OrthographicView()}
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
-          controller={true}
+          controller={{
+            minRotationOrbit: 0,
+            maxRotationOrbit: 180,
+            minZoom: 5.0,
+            maxZoom: 100,
+          }}
           onClick={info => {
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
@@ -180,7 +183,7 @@ function App() {
                   ...d,
                   distance: Math.sqrt(
                     Math.pow(d.umap_x - x, 2) + Math.pow(d.umap_y - y, 2)
-                  )
+                  ),
                 }))
                 .sort((a, b) => a.distance - b.distance)
                 .slice(0, 10);
@@ -212,7 +215,7 @@ function App() {
           setIs3D(nextIs3D);
           setViewState(prev => ({
             ...(prev || {}),
-            target: prev?.target || [0,0,0],
+            target: prev?.target || [0, 0, 0],
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
             zoom: prev?.zoom || 5,
