@@ -95,7 +95,6 @@ function App() {
               ...(prev || {}),
               target: [umap_x, umap_y, 0],
             }));
-            // setPinCoords([umap_x, umap_y]);
           }
         },
       });
@@ -114,7 +113,6 @@ function App() {
               ...(prev || {}),
               target: [umap_x, umap_y, 0],
             }));
-            setPinCoords([umap_x, umap_y]);
           }
         },
       });
@@ -136,27 +134,16 @@ function App() {
     ? new TextLayer({
         id: "nearest-labels",
         data: nearestPoints.map((d, i) => ({
-          position: [d.umap_x, d.umap_y, 0.05],
+          position: [d.umap_x, d.umap_y, is3D ? 0.05 : 0],
           text: String(i + 1),
         })),
         getPosition: d => d.position,
         getText: d => d.text,
-        getSize: 0.1,
-        sizeUnits: "meters",
+        getSize: is3D ? 0.1 : 16,
+        sizeUnits: is3D ? "meters" : "pixels",
         getColor: [0, 0, 0],
         getTextAnchor: "middle",
         getAlignmentBaseline: "center",
-      })
-    : null;
-
-  const pinLayer = pinCoords
-    ? new ScatterplotLayer({
-        id: "pin",
-        data: [pinCoords],
-        getPosition: d => [d[0], d[1], -0.01],
-        getFillColor: [0, 255, 0, 200],
-        getRadius: 0.3,
-        pickable: false,
       })
     : null;
 
@@ -202,7 +189,6 @@ function App() {
               pickable: false,
             }),
             mainLayer,
-            pinLayer,
             userPinLayer,
             textLayer,
           ]}
