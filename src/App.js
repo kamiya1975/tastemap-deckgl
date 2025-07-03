@@ -97,7 +97,7 @@ function App() {
         data: [pinCoords],
         getPosition: d => [d[0], d[1], 0],
         getFillColor: [0, 255, 0],
-        getRadius: is3D ? 0.2 : 0.1, // 3Dでは少し大きめ
+        getRadius: is3D ? 0.1 : 0.1, // 3Dでは少し大きめ
         pickable: false,
       })
     : null;
