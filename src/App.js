@@ -1,22 +1,22 @@
 import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer } from "@deck.gl/layers";
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [zField, setZField] = useState("甘味");
+  const [zMetric, setZMetric] = useState("甘味");
 
-  // データ取得
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
+        console.log("データ読み込み完了:", d.length, "件");
         setData(d);
-        const target = d.find((item) => item.JAN === "850755000028");
+        const target = d.find(item => item.JAN === "850755000028");
         if (target) {
           setPinCoords([target.umap_x, target.umap_y]);
           setViewState({
@@ -40,16 +40,6 @@ function App() {
       });
   }, []);
 
-  // Zスケーリング
-  const zMinMax = useMemo(() => {
-    if (!data.length) return [0, 1];
-    const values = data.map((d) => d[zField] ?? 0);
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    return [min, max];
-  }, [data, zField]);
-
-  // カラー
   const typeColorMap = {
     White: [0, 120, 255],
     Red: [255, 0, 0],
@@ -58,24 +48,29 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // グリッド
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
     const startY = -100;
     const endY = +100;
     const spacing = 2;
+
     const lines = [];
     for (let x = startX; x <= endX; x += spacing) {
-      lines.push({ sourcePosition: [x, startY, 0], targetPosition: [x, endY, 0] });
+      lines.push({
+        sourcePosition: [x, startY, 0],
+        targetPosition: [x, endY, 0],
+      });
     }
     for (let y = startY; y <= endY; y += spacing) {
-      lines.push({ sourcePosition: [startX, y, 0], targetPosition: [endX, y, 0] });
+      lines.push({
+        sourcePosition: [startX, y, 0],
+        targetPosition: [endX, y, 0],
+      });
     }
     return lines;
   }, []);
 
-  // グリッドレイヤー
   const gridLineLayer = new LineLayer({
     id: "grid-lines",
     data: gridLines,
@@ -86,39 +81,56 @@ function App() {
     pickable: false,
   });
 
-  // 散布図
-  const scatterLayer = new ScatterplotLayer({
-    id: "scatter",
-    data,
-    getPosition: d => {
-      const raw = d[zField] ?? 0;
-      const norm = (raw - zMinMax[0]) / (zMinMax[1] - zMinMax[0] || 1);
-      const z = is3D ? norm * 3 : 0;
-      return [d.umap_x, d.umap_y, z];
-    },
-    getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-    getRadius: 0.2,
-    pickable: true,
-    onClick: info => {
-      if (info && info.object) {
-        const { umap_x, umap_y } = info.object;
-        setViewState({
-          ...viewState,
-          target: [umap_x, umap_y, 0],
-        });
-        setPinCoords([umap_x, umap_y]);
-      }
-    },
-  });
+  // 3DはColumnLayer, 2DはScatterplotLayer
+  const mainLayer = is3D
+    ? new ColumnLayer({
+        id: "columns",
+        data,
+        diskResolution: 12,
+        radius: 0.3,
+        extruded: true,
+        elevationScale: 10, // Z軸倍率調整
+        getPosition: d => [d.umap_x, d.umap_y],
+        getElevation: d => d[zMetric] ?? 0,
+        getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+        pickable: true,
+        onClick: info => {
+          if (info && info.object) {
+            const { umap_x, umap_y } = info.object;
+            setViewState({
+              ...viewState,
+              target: [umap_x, umap_y, 0],
+            });
+            setPinCoords([umap_x, umap_y]);
+          }
+        },
+      })
+    : new ScatterplotLayer({
+        id: "scatter",
+        data,
+        getPosition: d => [d.umap_x, d.umap_y, 0],
+        getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+        getRadius: 0.2,
+        pickable: true,
+        onClick: info => {
+          if (info && info.object) {
+            const { umap_x, umap_y } = info.object;
+            setViewState({
+              ...viewState,
+              target: [umap_x, umap_y, 0],
+            });
+            setPinCoords([umap_x, umap_y]);
+          }
+        },
+      });
 
-  // ピン
   const pinLayer = pinCoords
     ? new ScatterplotLayer({
         id: "pin",
         data: [pinCoords],
         getPosition: d => [d[0], d[1], 0],
         getFillColor: [0, 255, 0],
-        getRadius: is3D ? 0.3 : 0.3,
+        getRadius: 0.3,
         pickable: false,
       })
     : null;
@@ -131,18 +143,22 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={true}
-          layers={[gridLineLayer, scatterLayer, pinLayer]}
+          layers={[gridLineLayer, mainLayer, pinLayer]}
         />
       )}
 
+      {/* 2D/3D切替 */}
       <button
         onClick={() => {
           const nextIs3D = !is3D;
           setIs3D(nextIs3D);
           setViewState({
-            ...viewState,
+            target: viewState.target,
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
+            zoom: viewState.zoom,
+            minZoom: 0,
+            maxZoom: 100,
           });
         }}
         style={{
@@ -161,17 +177,18 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
+      {/* Z軸選択 */}
       {is3D && (
         <select
-          value={zField}
-          onChange={e => setZField(e.target.value)}
+          value={zMetric}
+          onChange={(e) => setZMetric(e.target.value)}
           style={{
             position: "absolute",
             top: "10px",
             left: "10px",
             zIndex: 1,
+            padding: "6px",
             fontSize: "14px",
-            padding: "4px",
           }}
         >
           <option value="甘味">甘味</option>
@@ -182,6 +199,7 @@ function App() {
         </select>
       )}
 
+      {/* Info */}
       {viewState && (
         <div
           style={{
@@ -203,7 +221,9 @@ function App() {
               <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
             </>
           )}
-          <div>Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]</div>
+          <div>
+            Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
+          </div>
         </div>
       )}
     </div>
