@@ -16,13 +16,13 @@ function App() {
         console.log("データ読み込み完了:", d.length, "件");
         setData(d);
 
-        // blendFの打点を探す
-        const blend = d.find(item => item.id === "blendF");
-        if (blend) {
-          console.log("blendF:", blend.umap_x, blend.umap_y);
+        // JAN指定のワインを探す
+        const janTarget = d.find(item => item.JAN === "850755000028");
+        if (janTarget) {
+          console.log("対象JANの座標:", janTarget.umap_x, janTarget.umap_y);
 
           setViewState({
-            target: [blend.umap_x, blend.umap_y, 0],
+            target: [janTarget.umap_x, janTarget.umap_y, 0],
             rotationX: 14,
             rotationOrbit: 85,
             zoom: 8,
@@ -30,6 +30,7 @@ function App() {
             maxZoom: 100,
           });
         } else {
+          // 見つからない場合デフォルト
           setViewState({
             target: [0, 0, 0],
             rotationX: 30,
@@ -100,7 +101,7 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => {
             if (!initialized) {
-              setInitialized(true); // 初回だけ「固定値」を有効化
+              setInitialized(true); // 初回だけ固定
             }
             setViewState(vs);
           }}
@@ -114,7 +115,7 @@ function App() {
         onClick={() => {
           const nextIs3D = !is3D;
           setIs3D(nextIs3D);
-          // 切り替え時に再セット
+          // 切り替え時も同じ中心を維持
           setViewState({
             target: viewState.target,
             rotationX: nextIs3D ? 30 : 0,
