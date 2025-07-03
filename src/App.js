@@ -7,6 +7,7 @@ function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -29,7 +30,6 @@ function App() {
             maxZoom: 100,
           });
         } else {
-          // 見つからない場合デフォルト
           setViewState({
             target: [0, 0, 0],
             rotationX: 30,
@@ -98,17 +98,23 @@ function App() {
         <DeckGL
           views={is3D ? new OrbitView() : new OrthographicView()}
           viewState={viewState}
-          onViewStateChange={({ viewState: vs }) => setViewState(vs)}
+          onViewStateChange={({ viewState: vs }) => {
+            if (!initialized) {
+              setInitialized(true); // 初回だけ「固定値」を有効化
+            }
+            setViewState(vs);
+          }}
           controller={true}
           layers={[gridLineLayer, scatterLayer]}
         />
       )}
 
+      {/* 表示切り替えボタン */}
       <button
         onClick={() => {
           const nextIs3D = !is3D;
           setIs3D(nextIs3D);
-          // 切り替え時も同じ中心に
+          // 切り替え時に再セット
           setViewState({
             target: viewState.target,
             rotationX: nextIs3D ? 30 : 0,
@@ -155,6 +161,10 @@ function App() {
               <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
             </>
           )}
+          <div>
+            Center:
+            [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
+          </div>
         </div>
       )}
     </div>
