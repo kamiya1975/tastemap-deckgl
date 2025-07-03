@@ -99,7 +99,7 @@ function App() {
         data,
         getPosition: d => [d.umap_x, d.umap_y, 0],
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-        getRadius: 0.2,
+        getRadius: 0.05,
         pickable: true,
         onClick: info => {
           if (info && info.object) {
