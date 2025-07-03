@@ -10,14 +10,14 @@ const INITIAL_VIEW_STATE_3D = {
   rotationOrbit: 30,
   zoom: 3,
   minZoom: 0,
-  maxZoom: 1000,
+  maxZoom: 100,
 };
 
 const INITIAL_VIEW_STATE_2D = {
   target: [0, 0, 0],
   zoom: 4,
   minZoom: 0,
-  maxZoom: 1000,
+  maxZoom: 100,
 };
 
 function App() {
@@ -43,11 +43,11 @@ function App() {
 
   // 広域グリッド線
   const gridLines = useMemo(() => {
-    const startX = -1000;
-    const endX = +1000;
-    const startY = -1000;
-    const endY = +1000;
-    const spacing = 1; // 罫線の間隔
+    const startX = -100;
+    const endX = +100;
+    const startY = -100;
+    const endY = +100;
+    const spacing = 2; // 罫線の間隔
 
     const lines = [];
 
