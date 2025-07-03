@@ -47,7 +47,7 @@ function App() {
     const endX = +1000;
     const startY = -1000;
     const endY = +1000;
-    const spacing = 2; // 罫線の間隔
+    const spacing = 1; // 罫線の間隔
 
     const lines = [];
 
