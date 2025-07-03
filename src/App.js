@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
@@ -24,7 +24,6 @@ function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
 
-  // データ読み込み
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
@@ -34,7 +33,6 @@ function App() {
       });
   }, []);
 
-  // タイプごとの色
   const typeColorMap = {
     White: [0, 120, 255],
     Red: [255, 0, 0],
@@ -43,31 +41,52 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // グリッド線データを作成
-  const gridSpacing = 0.1; // 線間隔
-  const gridRange = 2; // 線を -2～+2 に張る
-  const lines = [];
+  // 点群範囲を計算
+  const gridLines = useMemo(() => {
+    if (data.length === 0) return [];
 
-  for (let x = -gridRange; x <= gridRange; x += gridSpacing) {
-    lines.push({
-      sourcePosition: [x, -gridRange, 0],
-      targetPosition: [x, gridRange, 0]
-    });
-  }
+    const xs = data.map(d => d.umap_x);
+    const ys = data.map(d => d.umap_y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
 
-  for (let y = -gridRange; y <= gridRange; y += gridSpacing) {
-    lines.push({
-      sourcePosition: [-gridRange, y, 0],
-      targetPosition: [gridRange, y, 0]
-    });
-  }
+    // 余白
+    const padding = 0.1;
+    const startX = minX - padding;
+    const endX = maxX + padding;
+    const startY = minY - padding;
+    const endY = maxY + padding;
+
+    const spacing = 0.1;
+    const lines = [];
+
+    // 縦線
+    for (let x = startX; x <= endX; x += spacing) {
+      lines.push({
+        sourcePosition: [x, startY, 0],
+        targetPosition: [x, endY, 0],
+      });
+    }
+
+    // 横線
+    for (let y = startY; y <= endY; y += spacing) {
+      lines.push({
+        sourcePosition: [startX, y, 0],
+        targetPosition: [endX, y, 0],
+      });
+    }
+
+    return lines;
+  }, [data]);
 
   const gridLineLayer = new LineLayer({
     id: "grid-lines",
-    data: lines,
+    data: gridLines,
     getSourcePosition: d => d.sourcePosition,
     getTargetPosition: d => d.targetPosition,
-    getColor: [200, 200, 200, 120], // 薄いグレー
+    getColor: [200, 200, 200, 120],
     getWidth: 1,
     pickable: false,
   });
