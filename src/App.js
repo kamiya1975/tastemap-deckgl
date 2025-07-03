@@ -8,7 +8,7 @@ function App() {
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [zMetric, setZMetric] = useState("甘味");
+  const [zMetric, setZMetric] = useState("果実味");
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -71,27 +71,25 @@ function App() {
     return lines;
   }, []);
 
-  const gridLineLayer = new LineLayer({
-    id: "grid-lines",
-    data: gridLines,
-    getSourcePosition: d => d.sourcePosition,
-    getTargetPosition: d => d.targetPosition,
-    getColor: [200, 200, 200, 120],
-    getWidth: 1,
-    pickable: false,
-  });
+  // 高さの最大値を計算
+  const maxZ = useMemo(() => {
+    const valid = data.map(d => d[zMetric]).filter(v => typeof v === "number");
+    return valid.length ? Math.max(...valid) : 1;
+  }, [data, zMetric]);
 
-  // 3DはColumnLayer, 2DはScatterplotLayer
   const mainLayer = is3D
     ? new ColumnLayer({
-        id: "columns",
+        id: "columns-" + zMetric, // keyを変えて再描画
         data,
         diskResolution: 12,
         radius: 0.3,
         extruded: true,
-        elevationScale: 10, // Z軸倍率調整
+        elevationScale: 5, // 倍率
         getPosition: d => [d.umap_x, d.umap_y],
-        getElevation: d => d[zMetric] ?? 0,
+        getElevation: d => {
+          const val = d[zMetric];
+          return typeof val === "number" ? val / maxZ : 0;
+        },
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
         onClick: info => {
@@ -147,7 +145,6 @@ function App() {
         />
       )}
 
-      {/* 2D/3D切替 */}
       <button
         onClick={() => {
           const nextIs3D = !is3D;
@@ -177,7 +174,6 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
-      {/* Z軸選択 */}
       {is3D && (
         <select
           value={zMetric}
@@ -199,7 +195,6 @@ function App() {
         </select>
       )}
 
-      {/* Info */}
       {viewState && (
         <div
           style={{
