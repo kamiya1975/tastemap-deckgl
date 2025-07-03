@@ -3,26 +3,28 @@ import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer, GridCellLayer } from "@deck.gl/layers";
 
+// 初期ビュー設定
 const INITIAL_VIEW_STATE_3D = {
   target: [0, 0, 0],
   rotationX: 45,
   rotationOrbit: 30,
-  zoom: 5,
+  zoom: 3,
   minZoom: 0,
   maxZoom: 1000,
 };
 
 const INITIAL_VIEW_STATE_2D = {
   target: [0, 0, 0],
-  zoom: 5,
+  zoom: 4,
   minZoom: 0,
   maxZoom: 1000,
 };
 
 function App() {
   const [data, setData] = useState([]);
-  const [is3D, setIs3D] = useState(true); // 切り替え用
+  const [is3D, setIs3D] = useState(true);
 
+  // データ読み込み
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
@@ -32,6 +34,7 @@ function App() {
       });
   }, []);
 
+  // タイプごとの色
   const typeColorMap = {
     White: [0, 120, 255],
     Red: [255, 0, 0],
@@ -40,15 +43,23 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  const scatterLayer = new ScatterplotLayer({
-    id: "scatter",
+  // 背景の升目罫線レイヤー
+  const gridLineLayer = new GridCellLayer({
+    id: "grid-lines",
     data,
-    getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.001],
-    getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-    getRadius: 0.1,
-    pickable: true,
+    getPosition: d => [d.umap_x, d.umap_y],
+    cellSize: 0.05, // 升目の大きさ
+    elevationScale: 0,
+    getElevationWeight: () => 0,
+    elevationAggregation: "MAX",
+    getColorWeight: () => 1,
+    colorAggregation: "MAX",
+    getFillColor: () => [200, 200, 200, 50], // 薄いグレー
+    extruded: false,
+    pickable: false,
   });
 
+  // データのヒートマップ
   const gridLayer = new GridCellLayer({
     id: "grid",
     data,
@@ -63,13 +74,23 @@ function App() {
     pickable: false,
   });
 
+  // ワインの散布図
+  const scatterLayer = new ScatterplotLayer({
+    id: "scatter",
+    data,
+    getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.001],
+    getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+    getRadius: 0.1,
+    pickable: true,
+  });
+
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
       <DeckGL
         views={is3D ? new OrbitView() : new OrthographicView()}
         initialViewState={is3D ? INITIAL_VIEW_STATE_3D : INITIAL_VIEW_STATE_2D}
         controller={true}
-        layers={[gridLayer, scatterLayer]}
+        layers={[gridLineLayer, gridLayer, scatterLayer]}
       />
 
       {/* 切り替えボタン */}
