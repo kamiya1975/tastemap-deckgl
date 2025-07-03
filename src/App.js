@@ -168,8 +168,8 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={{
-            minRotationOrbit: 0.01,
-            maxRotationOrbit: 180,
+            minRotationX: 0,
+            maxRotationX: 180,
             minZoom: 4.0,
             maxZoom: 10.0,
           }}
