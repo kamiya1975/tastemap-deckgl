@@ -168,10 +168,10 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={{
-            minRotationOrbit: 0,
+            minRotationOrbit: 0.01,
             maxRotationOrbit: 180,
-            minZoom: 5.0,
-            maxZoom: 100,
+            minZoom: 4.0,
+            maxZoom: 10.0,
           }}
           onClick={info => {
             if (info && info.coordinate) {
