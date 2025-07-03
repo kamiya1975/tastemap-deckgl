@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [zAxis, setZAxis] = useState("酸味");
+  const [selectedZ, setSelectedZ] = useState("甘味");
 
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
-        console.log("JSONサンプル:", d[0]); // 確認用
+        console.log("データ読み込み完了:", d.length, "件");
         setData(d);
+
         const target = d.find(item => item.JAN === "850755000028");
         if (target) {
           setPinCoords([target.umap_x, target.umap_y]);
           setViewState({
             target: [target.umap_x, target.umap_y, 0],
-            rotationX: 30,
-            rotationOrbit: 30,
+            rotationX: 14,
+            rotationOrbit: 85,
             zoom: 8,
             minZoom: 0,
             maxZoom: 100,
@@ -48,21 +49,60 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  const scatterLayer = new ScatterplotLayer({
+  // グリッド
+  const gridLines = useMemo(() => {
+    const startX = -100;
+    const endX = +100;
+    const startY = -100;
+    const endY = +100;
+    const spacing = 2;
+
+    const lines = [];
+    for (let x = startX; x <= endX; x += spacing) {
+      lines.push({
+        sourcePosition: [x, startY, 0],
+        targetPosition: [x, endY, 0],
+      });
+    }
+    for (let y = startY; y <= endY; y += spacing) {
+      lines.push({
+        sourcePosition: [startX, y, 0],
+        targetPosition: [endX, y, 0],
+      });
+    }
+    return lines;
+  }, []);
+
+  const gridLineLayer = new LineLayer({
+    id: "grid-lines",
+    data: gridLines,
+    getSourcePosition: d => d.sourcePosition,
+    getTargetPosition: d => d.targetPosition,
+    getColor: [200, 200, 200, 120],
+    getWidth: 1,
+    pickable: false,
+  });
+
+  // Z軸スケーリング
+  const [zMin, zMax] = useMemo(() => {
+    const values = data.map(d => d[selectedZ] ?? 0);
+    return [Math.min(...values), Math.max(...values)];
+  }, [data, selectedZ]);
+
+  const scatterLayer = useMemo(() => new ScatterplotLayer({
     id: "scatter",
     data,
     getPosition: d => {
-      const rawValue = d[zAxis];
-      console.log(`Z軸(${zAxis})の値:`, rawValue);
-      const zValue = parseFloat(rawValue);
+      const rawZ = d[selectedZ] ?? 0;
+      const normZ = (rawZ - zMin) / (zMax - zMin + 1e-6);
       return [
         d.umap_x,
         d.umap_y,
-        is3D && !isNaN(zValue) ? zValue * 0.3 : 0
+        is3D ? normZ * 5 : 0
       ];
     },
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-    getRadius: 0.05,
+    getRadius: 0.1,
     pickable: true,
     onClick: info => {
       if (info && info.object) {
@@ -73,9 +113,10 @@ function App() {
         });
         setPinCoords([umap_x, umap_y]);
       }
-    },
-  });
+    }
+  }), [data, selectedZ, is3D, viewState, zMin, zMax]);
 
+  // ピン
   const pinLayer = pinCoords
     ? new ScatterplotLayer({
         id: "pin",
@@ -95,31 +136,34 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={true}
-          layers={[scatterLayer, pinLayer]}
+          layers={[gridLineLayer, scatterLayer, pinLayer]}
         />
       )}
 
+      {/* Z軸選択 */}
       {is3D && (
         <select
-          value={zAxis}
-          onChange={e => setZAxis(e.target.value)}
+          value={selectedZ}
+          onChange={e => setSelectedZ(e.target.value)}
           style={{
             position: "absolute",
             top: "10px",
             left: "10px",
             zIndex: 1,
-            padding: "6px 10px",
-            fontSize: "14px",
+            fontSize: "16px",
+            padding: "4px 8px",
             border: "1px solid #ccc",
-            borderRadius: "6px",
+            borderRadius: "4px",
           }}
         >
+          <option value="甘味">甘味</option>
           <option value="酸味">酸味</option>
           <option value="渋味">渋味</option>
           <option value="ブドウ糖">ブドウ糖</option>
         </select>
       )}
 
+      {/* 表示切替 */}
       <button
         onClick={() => {
           const nextIs3D = !is3D;
@@ -170,10 +214,7 @@ function App() {
               <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
             </>
           )}
-          <div>
-            Center: [
-            {viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
-          </div>
+          <div>Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]</div>
         </div>
       )}
     </div>
