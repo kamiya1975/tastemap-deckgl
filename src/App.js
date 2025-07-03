@@ -124,7 +124,7 @@ function App() {
     ? new ScatterplotLayer({
         id: "pin",
         data: [pinCoords],
-        getPosition: d => [d[0], d[1], 0],
+        getPosition: d => [d[0], d[1], 0.01],
         getFillColor: [0, 255, 0],
         getRadius: 0.3,
         pickable: false,
