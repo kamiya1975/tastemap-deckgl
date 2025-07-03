@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
-import { OrbitView, OrthographicView, OrbitController } from "@deck.gl/core";
+import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
 
 // 初期ビュー
@@ -10,14 +10,14 @@ const INITIAL_VIEW_STATE_3D = {
   rotationOrbit: 30,
   zoom: 3,
   minZoom: 0,
-  maxZoom: 100,
+  maxZoom: 1000,
 };
 
 const INITIAL_VIEW_STATE_2D = {
   target: [0, 0, 0],
   zoom: 4,
   minZoom: 0,
-  maxZoom: 100,
+  maxZoom: 1000,
 };
 
 function App() {
@@ -46,11 +46,11 @@ function App() {
 
   // 広域グリッド線
   const gridLines = useMemo(() => {
-    const startX = -100;
-    const endX = +100;
-    const startY = -100;
-    const endY = +100;
-    const spacing = 5;
+    const startX = -1000;
+    const endX = +1000;
+    const startY = -1000;
+    const endY = +1000;
+    const spacing = 10;
 
     const lines = [];
 
@@ -95,14 +95,7 @@ function App() {
         views={is3D ? new OrbitView() : new OrthographicView()}
         viewState={viewState}
         onViewStateChange={({ viewState: vs }) => setViewState(vs)}
-        controller={
-          is3D
-            ? {
-                type: OrbitController,
-                rotationX: [20, 45],
-              }
-            : true
-        }
+        controller={true}
         layers={[gridLineLayer, scatterLayer]}
       />
 
@@ -129,7 +122,7 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
-      {/* 表示情報 */}
+      {/* 状態表示 */}
       <div
         style={{
           position: "absolute",
@@ -156,3 +149,4 @@ function App() {
 }
 
 export default App;
+
