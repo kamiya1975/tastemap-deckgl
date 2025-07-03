@@ -76,7 +76,7 @@ function App() {
         id: "columns",
         data,
         diskResolution: 12,
-        radius: 0.001,
+        radius: 0.05,
         extruded: true,
         elevationScale: 2, // ← 高さの倍率(調整可)
         getPosition: d => [d.umap_x, d.umap_y],
@@ -190,7 +190,7 @@ function App() {
             fontSize: "14px",
           }}
         >
-          <option value="ブドウ糖">ドウ糖</option>
+          <option value="ブドウ糖">ブドウ糖</option>
           <option value="リンゴ酸">リンゴ酸</option>
           <option value="総ポリフェノール">総ポリフェノール</option>
           <option value="Vanillin">Vanillin</option>
