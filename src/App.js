@@ -25,7 +25,7 @@ function App() {
             rotationOrbit: 85,
             zoom: 8,
             minZoom: 5.0,
-            maxZoom: 100,
+            maxZoom: 10.0,
           });
         } else {
           setViewState({
@@ -34,7 +34,7 @@ function App() {
             rotationOrbit: 30,
             zoom: 3,
             minZoom: 5.0,
-            maxZoom: 100,
+            maxZoom: 10.0,
           });
         }
       });
@@ -166,7 +166,7 @@ function App() {
             rotationOrbit: nextIs3D ? 30 : 0,
             zoom: prev?.zoom || 3,
             minZoom: 5.0,
-            maxZoom: 100,
+            maxZoom: 10.0,
           }));
         }}
         style={{
