@@ -1,20 +1,19 @@
 import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer } from "@deck.gl/layers";
+import { ScatterplotLayer } from "@deck.gl/layers";
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [zMetric, setZMetric] = useState("果実味");
+  const [zAxis, setZAxis] = useState("甘味");
 
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
-        console.log("データ読み込み完了:", d.length, "件");
         setData(d);
         const target = d.find(item => item.JAN === "850755000028");
         if (target) {
@@ -48,79 +47,28 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  const gridLines = useMemo(() => {
-    const startX = -100;
-    const endX = +100;
-    const startY = -100;
-    const endY = +100;
-    const spacing = 2;
-
-    const lines = [];
-    for (let x = startX; x <= endX; x += spacing) {
-      lines.push({
-        sourcePosition: [x, startY, 0],
-        targetPosition: [x, endY, 0],
-      });
-    }
-    for (let y = startY; y <= endY; y += spacing) {
-      lines.push({
-        sourcePosition: [startX, y, 0],
-        targetPosition: [endX, y, 0],
-      });
-    }
-    return lines;
-  }, []);
-
-  // 高さの最大値を計算
-  const maxZ = useMemo(() => {
-    const valid = data.map(d => d[zMetric]).filter(v => typeof v === "number");
-    return valid.length ? Math.max(...valid) : 1;
-  }, [data, zMetric]);
-
-  const mainLayer = is3D
-    ? new ColumnLayer({
-        id: "columns-" + zMetric, // keyを変えて再描画
-        data,
-        diskResolution: 12,
-        radius: 0.3,
-        extruded: true,
-        elevationScale: 5, // 倍率
-        getPosition: d => [d.umap_x, d.umap_y],
-        getElevation: d => {
-          const val = d[zMetric];
-          return typeof val === "number" ? val / maxZ : 0;
-        },
-        getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-        pickable: true,
-        onClick: info => {
-          if (info && info.object) {
-            const { umap_x, umap_y } = info.object;
-            setViewState({
-              ...viewState,
-              target: [umap_x, umap_y, 0],
-            });
-            setPinCoords([umap_x, umap_y]);
-          }
-        },
-      })
-    : new ScatterplotLayer({
-        id: "scatter",
-        data,
-        getPosition: d => [d.umap_x, d.umap_y, 0],
-        getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-        getRadius: 0.2,
-        pickable: true,
-        onClick: info => {
-          if (info && info.object) {
-            const { umap_x, umap_y } = info.object;
-            setViewState({
-              ...viewState,
-              target: [umap_x, umap_y, 0],
-            });
-            setPinCoords([umap_x, umap_y]);
-          }
-        },
-      });
+  const scatterLayer = new ScatterplotLayer({
+    id: "scatter",
+    data,
+    getPosition: d => [
+      d.umap_x,
+      d.umap_y,
+      is3D && d[zAxis] ? d[zAxis] * 0.1 : 0
+    ],
+    getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+    getRadius: 0.2,
+    pickable: true,
+    onClick: info => {
+      if (info && info.object) {
+        const { umap_x, umap_y } = info.object;
+        setViewState({
+          ...viewState,
+          target: [umap_x, umap_y, 0],
+        });
+        setPinCoords([umap_x, umap_y]);
+      }
+    },
+  });
 
   const pinLayer = pinCoords
     ? new ScatterplotLayer({
@@ -128,7 +76,7 @@ function App() {
         data: [pinCoords],
         getPosition: d => [d[0], d[1], 0],
         getFillColor: [0, 255, 0],
-        getRadius: 0.3,
+        getRadius: is3D ? 0.1 : 0.1,
         pickable: false,
       })
     : null;
@@ -141,8 +89,31 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={true}
-          layers={[gridLineLayer, mainLayer, pinLayer]}
+          layers={[scatterLayer, pinLayer]}
         />
+      )}
+
+      {is3D && (
+        <select
+          value={zAxis}
+          onChange={e => setZAxis(e.target.value)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 1,
+            padding: "6px 10px",
+            fontSize: "14px",
+            border: "1px solid #ccc",
+            borderRadius: "6px",
+          }}
+        >
+          <option value="甘味">甘味</option>
+          <option value="酸味">酸味</option>
+          <option value="渋味">渋味</option>
+          <option value="果実味">果実味</option>
+          <option value="ボディ">ボディ</option>
+        </select>
       )}
 
       <button
@@ -174,27 +145,6 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
-      {is3D && (
-        <select
-          value={zMetric}
-          onChange={(e) => setZMetric(e.target.value)}
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            zIndex: 1,
-            padding: "6px",
-            fontSize: "14px",
-          }}
-        >
-          <option value="甘味">甘味</option>
-          <option value="酸味">酸味</option>
-          <option value="渋味">渋味</option>
-          <option value="果実味">果実味</option>
-          <option value="ボディ">ボディ</option>
-        </select>
-      )}
-
       {viewState && (
         <div
           style={{
@@ -217,7 +167,8 @@ function App() {
             </>
           )}
           <div>
-            Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
+            Center: [
+            {viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
           </div>
         </div>
       )}
