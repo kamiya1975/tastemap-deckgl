@@ -71,14 +71,15 @@ function App() {
     return lines;
   }, []);
 
-  const mainLayer = is3D
-    ? new ColumnLayer({
+  const mainLayer = useMemo(() => {
+    if (is3D) {
+      return new ColumnLayer({
         id: "columns",
         data,
         diskResolution: 12,
         radius: 0.05,
         extruded: true,
-        elevationScale: 2, // ← 高さの倍率(調整可)
+        elevationScale: 2,
         getPosition: d => [d.umap_x, d.umap_y],
         getElevation: d => Number(d[zMetric]) || 0,
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
@@ -86,15 +87,16 @@ function App() {
         onClick: info => {
           if (info && info.object) {
             const { umap_x, umap_y } = info.object;
-            setViewState({
-              ...viewState,
+            setViewState(prev => ({
+              ...(prev || {}),
               target: [umap_x, umap_y, 0],
-            });
+            }));
             setPinCoords([umap_x, umap_y]);
           }
         },
-      })
-    : new ScatterplotLayer({
+      });
+    } else {
+      return new ScatterplotLayer({
         id: "scatter",
         data,
         getPosition: d => [d.umap_x, d.umap_y, 0],
@@ -104,14 +106,16 @@ function App() {
         onClick: info => {
           if (info && info.object) {
             const { umap_x, umap_y } = info.object;
-            setViewState({
-              ...viewState,
+            setViewState(prev => ({
+              ...(prev || {}),
               target: [umap_x, umap_y, 0],
-            });
+            }));
             setPinCoords([umap_x, umap_y]);
           }
         },
       });
+    }
+  }, [data, is3D, zMetric]);
 
   const pinLayer = pinCoords
     ? new ScatterplotLayer({
@@ -152,14 +156,15 @@ function App() {
         onClick={() => {
           const nextIs3D = !is3D;
           setIs3D(nextIs3D);
-          setViewState({
-            target: viewState.target,
+          setViewState(prev => ({
+            ...(prev || {}),
+            target: prev?.target || [0,0,0],
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
-            zoom: viewState.zoom,
+            zoom: prev?.zoom || 3,
             minZoom: 0,
             maxZoom: 100,
-          });
+          }));
         }}
         style={{
           position: "absolute",
