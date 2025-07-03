@@ -11,6 +11,7 @@ function App() {
   const [userPinCoords, setUserPinCoords] = useState(null);
   const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -18,28 +19,23 @@ function App() {
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
         setData(d);
-        const target = null; // 常に見つからない
-        if (target) {
-          setViewState({
-            target: [target.umap_x, target.umap_y, 0],
-            rotationX: 14,
-            rotationOrbit: 85,
-            zoom: 8,
-            minZoom: 4.0,
-            maxZoom: 10.0,
-          });
-        } else {
-          setViewState({
-            target: [0, 0, 0],
-            rotationX: 30,
-            rotationOrbit: 30,
-            zoom: 5,
-            minZoom: 4.0,
-            maxZoom: 10.0,
-          });
-        }
+
+        setViewState({
+          target: [0, 0, 0],
+          rotationX: 30,
+          rotationOrbit: 30,
+          zoom: 5,
+          minZoom: 4.0,
+          maxZoom: 10.0,
+        });
       });
   }, []);
+
+  useEffect(() => {
+    if (nearestPoints.length > 0) {
+      setIsPanelOpen(true);
+    }
+  }, [nearestPoints]);
 
   const typeColorMap = {
     White: [0, 120, 255],
@@ -270,6 +266,19 @@ function App() {
           )}
           <div>
             Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
+          </div>
+        </div>
+      )}
+
+      {nearestPoints.length > 0 && (
+        <div
+          className={`bottom-panel ${isPanelOpen ? "open" : ""}`}
+          onClick={() => setIsPanelOpen(!isPanelOpen)}
+        >
+          <div className="panel-handle"></div>
+          <div className="panel-content">
+            <p>最近傍ワインリスト（仮）</p>
+            <p>タップで開閉します。</p>
           </div>
         </div>
       )}
