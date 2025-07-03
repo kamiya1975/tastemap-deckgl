@@ -3,29 +3,10 @@ import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
 
-// 初期ビュー
-const INITIAL_VIEW_STATE_3D = {
-  target: [0, 0, 0],
-  rotationX: 14,
-  rotationOrbit: 85,
-  zoom: 8,
-  minZoom: 0,
-  maxZoom: 100,
-};
-
-const INITIAL_VIEW_STATE_2D = {
-  target: [0, 0, 0],
-  zoom: 4,
-  minZoom: 0,
-  maxZoom: 100,
-};
-
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
-  const [viewState, setViewState] = useState(
-    is3D ? INITIAL_VIEW_STATE_3D : INITIAL_VIEW_STATE_2D
-  );
+  const [viewState, setViewState] = useState(null);
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -33,6 +14,31 @@ function App() {
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
         setData(d);
+
+        // blendFの打点を探す
+        const blend = d.find(item => item.id === "blendF");
+        if (blend) {
+          console.log("blendF:", blend.umap_x, blend.umap_y);
+
+          setViewState({
+            target: [blend.umap_x, blend.umap_y, 0],
+            rotationX: 14,
+            rotationOrbit: 85,
+            zoom: 8,
+            minZoom: 0,
+            maxZoom: 100,
+          });
+        } else {
+          // 見つからない場合デフォルト
+          setViewState({
+            target: [0, 0, 0],
+            rotationX: 30,
+            rotationOrbit: 30,
+            zoom: 3,
+            minZoom: 0,
+            maxZoom: 100,
+          });
+        }
       });
   }, []);
 
@@ -44,7 +50,6 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // 広域グリッド線
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
@@ -53,7 +58,6 @@ function App() {
     const spacing = 2;
 
     const lines = [];
-
     for (let x = startX; x <= endX; x += spacing) {
       lines.push({
         sourcePosition: [x, startY, 0],
@@ -66,7 +70,6 @@ function App() {
         targetPosition: [endX, y, 0],
       });
     }
-
     return lines;
   }, []);
 
@@ -91,20 +94,29 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      <DeckGL
-        views={is3D ? new OrbitView() : new OrthographicView()}
-        viewState={viewState}
-        onViewStateChange={({ viewState: vs }) => setViewState(vs)}
-        controller={true}
-        layers={[gridLineLayer, scatterLayer]}
-      />
+      {viewState && (
+        <DeckGL
+          views={is3D ? new OrbitView() : new OrthographicView()}
+          viewState={viewState}
+          onViewStateChange={({ viewState: vs }) => setViewState(vs)}
+          controller={true}
+          layers={[gridLineLayer, scatterLayer]}
+        />
+      )}
 
-      {/* 切り替えボタン */}
       <button
         onClick={() => {
           const nextIs3D = !is3D;
           setIs3D(nextIs3D);
-          setViewState(nextIs3D ? INITIAL_VIEW_STATE_3D : INITIAL_VIEW_STATE_2D);
+          // 切り替え時も同じ中心に
+          setViewState({
+            target: viewState.target,
+            rotationX: nextIs3D ? 30 : 0,
+            rotationOrbit: nextIs3D ? 30 : 0,
+            zoom: viewState.zoom,
+            minZoom: 0,
+            maxZoom: 100,
+          });
         }}
         style={{
           position: "absolute",
@@ -122,31 +134,31 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
-      {/* 状態表示 */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50px",
-          right: "10px",
-          zIndex: 1,
-          background: "rgba(255,255,255,0.9)",
-          padding: "6px 10px",
-          fontSize: "12px",
-          borderRadius: "4px",
-          border: "1px solid #ccc",
-        }}
-      >
-        <div>Zoom: {viewState.zoom.toFixed(2)}</div>
-        {is3D && (
-          <>
-            <div>RotationX: {viewState.rotationX?.toFixed(1)}°</div>
-            <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
-          </>
-        )}
-      </div>
+      {viewState && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50px",
+            right: "10px",
+            zIndex: 1,
+            background: "rgba(255,255,255,0.9)",
+            padding: "6px 10px",
+            fontSize: "12px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <div>Zoom: {viewState.zoom.toFixed(2)}</div>
+          {is3D && (
+            <>
+              <div>RotationX: {viewState.rotationX?.toFixed(1)}°</div>
+              <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 export default App;
-
