@@ -8,6 +8,9 @@ function App() {
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
+  const [zAxisKey, setZAxisKey] = useState("甘味");
+
+  const zAxisOptions = ["甘味", "酸味", "渋味", "ボディ"];
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -82,34 +85,35 @@ function App() {
   });
 
   const scatterLayer = new ScatterplotLayer({
-  id: "scatter",
-  data,
-  getPosition: d => [d.umap_x, d.umap_y, (d.甘味 ?? 0) * 0.001],
-  getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
-  getRadius: 0.1,
-  pickable: true,
-  onClick: info => {
-    if (info && info.object) {
-      const { umap_x, umap_y } = info.object;
-      // 中心をクリックした座標に移動
-      setViewState({
-        ...viewState,
-        target: [umap_x, umap_y, 0],
-      });
-      // ピンをクリックした座標に置く
-      setPinCoords([umap_x, umap_y]);
-    }
-  },
-});
+    id: "scatter",
+    data,
+    getPosition: d => [
+      d.umap_x,
+      d.umap_y,
+      is3D ? ((d[zAxisKey] ?? 0) * 0.01) : 0
+    ],
+    getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+    getRadius: 0.1,
+    pickable: true,
+    onClick: info => {
+      if (info && info.object) {
+        const { umap_x, umap_y } = info.object;
+        setViewState({
+          ...viewState,
+          target: [umap_x, umap_y, 0],
+        });
+        setPinCoords([umap_x, umap_y]);
+      }
+    },
+  });
 
-  // ピンとして仮に緑の大きい丸
   const pinLayer = pinCoords
     ? new ScatterplotLayer({
         id: "pin",
         data: [pinCoords],
         getPosition: d => [d[0], d[1], 0],
         getFillColor: [0, 255, 0],
-        getRadius: is3D ? 0.1 : 0.1, // 3Dでは少し大きめ
+        getRadius: is3D ? 0.1 : 0.1,
         pickable: false,
       })
     : null;
@@ -154,6 +158,25 @@ function App() {
       >
         {is3D ? "2D表示" : "3D表示"}
       </button>
+
+      {is3D && (
+        <select
+          value={zAxisKey}
+          onChange={e => setZAxisKey(e.target.value)}
+          style={{
+            position: "absolute",
+            top: "50px",
+            left: "10px",
+            zIndex: 1,
+            padding: "6px",
+            fontSize: "14px",
+          }}
+        >
+          {zAxisOptions.map(opt => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+        </select>
+      )}
 
       {viewState && (
         <div
