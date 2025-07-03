@@ -1,25 +1,26 @@
 import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, LineLayer, IconLayer, TextLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
-  const [blend, setBlend] = useState(null);
+  const [pinCoords, setPinCoords] = useState(null);
 
   useEffect(() => {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
+        console.log("データ読み込み完了:", d.length, "件");
         setData(d);
 
-        const found = d.find(item => item.JAN === "850755000028");
-        if (found) {
-          setBlend(found);
+        const target = d.find(item => item.JAN === "850755000028");
+        if (target) {
+          setPinCoords([target.umap_x, target.umap_y]);
           setViewState({
-            target: [found.umap_x, found.umap_y, 0],
+            target: [target.umap_x, target.umap_y, 0],
             rotationX: 14,
             rotationOrbit: 85,
             zoom: 8,
@@ -89,33 +90,16 @@ function App() {
     pickable: true,
   });
 
-  const pinLayer = blend
-    ? (is3D
-        ? new IconLayer({
-            id: "pin-3d",
-            data: [blend],
-            iconAtlas:
-              "https://raw.githubusercontent.com/visgl/deck.gl/master/examples/website/icon/icon-atlas.png",
-            iconMapping: {
-              marker: {x:0, y:0, width:128, height:128, mask:true}
-            },
-            getIcon: () => "marker",
-            sizeScale: 10,
-            getPosition: d => [d.umap_x, d.umap_y],
-            getSize: 8,
-            getColor: [0,255,0],
-            pickable: false
-          })
-        : new TextLayer({
-            id: "pin-2d",
-            data: [blend],
-            getText: () => "×",
-            getPosition: d => [d.umap_x, d.umap_y],
-            getColor: [0,255,0],
-            getSize: 24,
-            pickable: false
-          })
-      )
+  // ピンとして仮に緑の大きい丸
+  const pinLayer = pinCoords
+    ? new ScatterplotLayer({
+        id: "pin",
+        data: [pinCoords],
+        getPosition: d => [d[0], d[1], 0],
+        getFillColor: [0, 255, 0],
+        getRadius: is3D ? 0.5 : 0.3, // 3Dでは少し大きめ
+        pickable: false,
+      })
     : null;
 
   return (
@@ -126,7 +110,7 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={true}
-          layers={[gridLineLayer, scatterLayer, pinLayer].filter(Boolean)}
+          layers={[gridLineLayer, scatterLayer, pinLayer]}
         />
       )}
 
@@ -153,7 +137,7 @@ function App() {
           background: "#fff",
           border: "1px solid #ccc",
           borderRadius: "4px",
-          cursor: "pointer"
+          cursor: "pointer",
         }}
       >
         {is3D ? "2D表示" : "3D表示"}
@@ -180,9 +164,7 @@ function App() {
               <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
             </>
           )}
-          <div>
-            Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
-          </div>
+          <div>Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]</div>
         </div>
       )}
     </div>
