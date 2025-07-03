@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
@@ -49,8 +49,7 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // グリッド
-  const gridLines = useMemo(() => {
+  const gridLines = React.useMemo(() => {
     const startX = -100;
     const endX = +100;
     const startY = -100;
@@ -73,33 +72,24 @@ function App() {
     return lines;
   }, []);
 
-  const gridLineLayer = new LineLayer({
-    id: "grid-lines",
-    data: gridLines,
-    getSourcePosition: d => d.sourcePosition,
-    getTargetPosition: d => d.targetPosition,
-    getColor: [200, 200, 200, 120],
-    getWidth: 1,
-    pickable: false,
-  });
+  // Z軸の正規化範囲計算
+  const zValues = data
+    .map(d => Number(d[selectedZ]))
+    .filter(v => !isNaN(v));
+  const zMin = Math.min(...zValues);
+  const zMax = Math.max(...zValues);
 
-  // Z軸スケーリング
-  const [zMin, zMax] = useMemo(() => {
-    const values = data.map(d => d[selectedZ] ?? 0);
-    return [Math.min(...values), Math.max(...values)];
-  }, [data, selectedZ]);
-
-  const scatterLayer = useMemo(() => new ScatterplotLayer({
+  const scatterLayer = new ScatterplotLayer({
     id: "scatter",
     data,
     getPosition: d => {
-      const rawZ = d[selectedZ] ?? 0;
-      const normZ = (rawZ - zMin) / (zMax - zMin + 1e-6);
-      return [
-        d.umap_x,
-        d.umap_y,
-        is3D ? normZ * 5 : 0
-      ];
+      const zRaw = Number(d[selectedZ]);
+      let normZ = 0;
+      if (!isNaN(zRaw) && zMax !== zMin) {
+        normZ = (zRaw - zMin) / (zMax - zMin);
+      }
+      const zHeight = normZ * (is3D ? 5 : 0); // 0〜1正規化して倍率5
+      return [d.umap_x, d.umap_y, zHeight];
     },
     getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
     getRadius: 0.1,
@@ -113,17 +103,16 @@ function App() {
         });
         setPinCoords([umap_x, umap_y]);
       }
-    }
-  }), [data, selectedZ, is3D, viewState, zMin, zMax]);
+    },
+  });
 
-  // ピン
   const pinLayer = pinCoords
     ? new ScatterplotLayer({
         id: "pin",
         data: [pinCoords],
         getPosition: d => [d[0], d[1], 0],
         getFillColor: [0, 255, 0],
-        getRadius: 0.1,
+        getRadius: 0.2,
         pickable: false,
       })
     : null;
@@ -136,34 +125,22 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={true}
-          layers={[gridLineLayer, scatterLayer, pinLayer]}
+          layers={[
+            new LineLayer({
+              id: "grid-lines",
+              data: gridLines,
+              getSourcePosition: d => d.sourcePosition,
+              getTargetPosition: d => d.targetPosition,
+              getColor: [200, 200, 200, 120],
+              getWidth: 1,
+              pickable: false,
+            }),
+            scatterLayer,
+            pinLayer,
+          ]}
         />
       )}
 
-      {/* Z軸選択 */}
-      {is3D && (
-        <select
-          value={selectedZ}
-          onChange={e => setSelectedZ(e.target.value)}
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            zIndex: 1,
-            fontSize: "16px",
-            padding: "4px 8px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
-        >
-          <option value="甘味">甘味</option>
-          <option value="酸味">酸味</option>
-          <option value="渋味">渋味</option>
-          <option value="ブドウ糖">ブドウ糖</option>
-        </select>
-      )}
-
-      {/* 表示切替 */}
       <button
         onClick={() => {
           const nextIs3D = !is3D;
@@ -193,6 +170,27 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
+      {is3D && (
+        <select
+          value={selectedZ}
+          onChange={e => setSelectedZ(e.target.value)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 1,
+            padding: "6px",
+            fontSize: "14px",
+          }}
+        >
+          <option value="甘味">甘味</option>
+          <option value="酸味">酸味</option>
+          <option value="渋味">渋味</option>
+          <option value="果実味">果実味</option>
+          <option value="ブドウ糖">ブドウ糖</option>
+        </select>
+      )}
+
       {viewState && (
         <div
           style={{
@@ -214,7 +212,9 @@ function App() {
               <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
             </>
           )}
-          <div>Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]</div>
+          <div>
+            Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
+          </div>
         </div>
       )}
     </div>
