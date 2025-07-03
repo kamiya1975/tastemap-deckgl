@@ -1,23 +1,23 @@
 import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
-import { OrbitView, OrthographicView } from "@deck.gl/core";
+import { OrbitView, OrthographicView, OrbitController } from "@deck.gl/core";
 import { ScatterplotLayer, LineLayer } from "@deck.gl/layers";
 
 // 初期ビュー
 const INITIAL_VIEW_STATE_3D = {
   target: [0, 0, 0],
-  rotationX: 45,
+  rotationX: 30, // 初期の角度（制限範囲内で好きに）
   rotationOrbit: 30,
   zoom: 3,
   minZoom: 0,
-  maxZoom: 100,
+  maxZoom: 1000,
 };
 
 const INITIAL_VIEW_STATE_2D = {
   target: [0, 0, 0],
   zoom: 4,
   minZoom: 0,
-  maxZoom: 100,
+  maxZoom: 1000,
 };
 
 function App() {
@@ -43,23 +43,20 @@ function App() {
 
   // 広域グリッド線
   const gridLines = useMemo(() => {
-    const startX = -100;
-    const endX = +100;
-    const startY = -100;
-    const endY = +100;
-    const spacing = 2; // 罫線の間隔
+    const startX = -1000;
+    const endX = +1000;
+    const startY = -1000;
+    const endY = +1000;
+    const spacing = 10; // グリッドの間隔
 
     const lines = [];
 
-    // 縦線
     for (let x = startX; x <= endX; x += spacing) {
       lines.push({
         sourcePosition: [x, startY, 0],
         targetPosition: [x, endY, 0],
       });
     }
-
-    // 横線
     for (let y = startY; y <= endY; y += spacing) {
       lines.push({
         sourcePosition: [startX, y, 0],
@@ -75,7 +72,7 @@ function App() {
     data: gridLines,
     getSourcePosition: d => d.sourcePosition,
     getTargetPosition: d => d.targetPosition,
-    getColor: [200, 200, 200, 120], // 薄いグレー
+    getColor: [200, 200, 200, 120],
     getWidth: 1,
     pickable: false,
   });
@@ -94,7 +91,14 @@ function App() {
       <DeckGL
         views={is3D ? new OrbitView() : new OrthographicView()}
         initialViewState={is3D ? INITIAL_VIEW_STATE_3D : INITIAL_VIEW_STATE_2D}
-        controller={true}
+        controller={
+          is3D
+            ? {
+                type: OrbitController,
+                rotationX: [20, 45], // rotationX制限
+              }
+            : true
+        }
         layers={[gridLineLayer, scatterLayer]}
       />
 
