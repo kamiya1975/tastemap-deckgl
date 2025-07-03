@@ -137,7 +137,7 @@ function App() {
     ? new TextLayer({
         id: "nearest-labels",
         data: nearestPoints.map((d, i) => ({
-          position: [d.umap_x, d.umap_y, 0.1],
+          position: [d.umap_x, d.umap_y, 0.01],
           text: String(i + 1),
         })),
         getPosition: d => d.position,
