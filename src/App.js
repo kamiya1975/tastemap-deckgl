@@ -8,7 +8,7 @@ function App() {
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
   const [pinCoords, setPinCoords] = useState(null);
-  const [zMetric, setZMetric] = useState("甘味");
+  const [zMetric, setZMetric] = useState(""); // ← 初期値を空
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -74,14 +74,17 @@ function App() {
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
-        id: `columns-${zMetric}`,
+        id: `columns-${zMetric}`, // zMetricごとにidを変える
         data,
         diskResolution: 12,
         radius: 0.05,
         extruded: true,
         elevationScale: 2,
         getPosition: d => [d.umap_x, d.umap_y],
-        getElevation: d => Number(d[zMetric]) || 0,
+        getElevation: d => {
+          if (!zMetric) return 0; // 未選択のとき高さ0
+          return Number(d[zMetric]) || 0;
+        },
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
         onClick: info => {
@@ -195,6 +198,7 @@ function App() {
             fontSize: "14px",
           }}
         >
+          <option value="">ー</option>
           <option value="ブドウ糖">ブドウ糖</option>
           <option value="リンゴ酸">リンゴ酸</option>
           <option value="総ポリフェノール">総ポリフェノール</option>
