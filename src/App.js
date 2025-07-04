@@ -6,7 +6,7 @@ import {
   ColumnLayer,
   LineLayer,
   TextLayer,
-  GridCellLayer
+  GridCellLayer,
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 
@@ -25,6 +25,7 @@ function App() {
   const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [userRatings, setUserRatings] = useState({});
 
   const drawerContentRef = useRef(null);
 
@@ -33,9 +34,27 @@ function App() {
       .then((res) => res.json())
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
-        setData(d);
+        // 商品名をNameにコピー
+        setData(
+          d.map((item) => ({
+            ...item,
+            Name: item["商品名"],
+          }))
+        );
       });
   }, []);
+
+  // 永続化
+  useEffect(() => {
+    const stored = localStorage.getItem("userRatings");
+    if (stored) {
+      setUserRatings(JSON.parse(stored));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("userRatings", JSON.stringify(userRatings));
+  }, [userRatings]);
 
   useEffect(() => {
     setIsDrawerOpen(nearestPoints.length > 0);
@@ -56,6 +75,8 @@ function App() {
   };
 
   const gridInterval = 0.2;
+  const cellSize = 0.2;
+
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
@@ -79,7 +100,6 @@ function App() {
     return lines;
   }, [gridInterval]);
 
-  const cellSize = 0.2;
   const cells = useMemo(() => {
     const map = new Map();
     data.forEach((d) => {
@@ -87,12 +107,16 @@ function App() {
       const y = Math.floor(d.umap_y / cellSize) * cellSize;
       const key = `${x},${y}`;
       if (!map.has(key)) {
-        map.set(key, { position: [x, y], count: 0 });
+        map.set(key, { position: [x, y], count: 0, hasRating: false });
+      }
+      const jan = d.JAN;
+      if (userRatings[jan]) {
+        map.get(key).hasRating = true;
       }
       map.get(key).count += 1;
     });
     return Array.from(map.values());
-  }, [data]);
+  }, [data, userRatings]);
 
   const mainLayer = useMemo(() => {
     if (is3D) {
@@ -155,8 +179,19 @@ function App() {
     data: cells,
     cellSize: cellSize,
     getPosition: (d) => d.position,
-    getFillColor: [200, 200, 200, 80],
+    getFillColor: (d) =>
+      d.hasRating ? [180, 100, 50, 150] : [200, 200, 200, 80],
     getElevation: 0,
+    pickable: false,
+  });
+
+  const ratingLayer = new ScatterplotLayer({
+    id: "rating-bubbles",
+    data: data.filter((d) => userRatings[d.JAN]),
+    getPosition: (d) => [d.umap_x, d.umap_y, 0],
+    getFillColor: [255, 165, 0, 180],
+    getRadius: (d) => userRatings[d.JAN] * 0.1,
+    sizeUnits: "common",
     pickable: false,
   });
 
@@ -219,6 +254,7 @@ function App() {
             mainLayer,
             userPinLayer,
             textLayer,
+            ratingLayer,
           ]}
         />
       )}
@@ -326,6 +362,25 @@ function App() {
                 <small>
                   Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
                 </small>
+                <br />
+                <select
+                  value={userRatings[item.JAN] || ""}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setUserRatings((prev) => ({
+                      ...prev,
+                      [item.JAN]: val,
+                    }));
+                  }}
+                >
+                  <option value="">未評価</option>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                      {"★".repeat(n)}
+                    </option>
+                  ))}
+                </select>
               </li>
             ))}
           </ul>
