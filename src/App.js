@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
-import { ScreenGridLayer } from "@deck.gl/aggregation-layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer, GridCellLayer } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 
 function App() {
@@ -53,6 +52,7 @@ function App() {
     Other: [150, 150, 150],
   };
 
+  // グリッドの線
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
@@ -76,6 +76,23 @@ function App() {
     return lines;
   }, []);
 
+  // グリッドセルデータ
+  const cellSize = 0.5; // UMAP座標単位
+  const cells = useMemo(() => {
+    const map = new Map();
+    data.forEach(d => {
+      const x = Math.floor(d.umap_x / cellSize) * cellSize;
+      const y = Math.floor(d.umap_y / cellSize) * cellSize;
+      const key = `${x},${y}`;
+      if (!map.has(key)) {
+        map.set(key, { position: [x, y], count: 0 });
+      }
+      map.get(key).count += 1;
+    });
+    return Array.from(map.values());
+  }, [data]);
+
+  // 打点
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
@@ -86,10 +103,7 @@ function App() {
         extruded: true,
         elevationScale: 2,
         getPosition: d => [d.umap_x, d.umap_y],
-        getElevation: d => {
-          if (!zMetric) return 0;
-          return Number(d[zMetric]) || 0;
-        },
+        getElevation: d => (zMetric ? Number(d[zMetric]) || 0 : 0),
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
         onClick: info => {
@@ -123,17 +137,18 @@ function App() {
     }
   }, [data, is3D, zMetric]);
 
-  const screenGridLayer = new ScreenGridLayer({
-    id: "screen-grid",
-    data,
-    cellSizePixels: 20, // 画面上の1セルのサイズ(px) 調整可能
-    getPosition: d => [d.umap_x, d.umap_y],
-    minColor: [0, 0, 0, 0],      // 点がないセルは透明
-    maxColor: [160, 160, 160, 180], // 点があるセルはグレー
-    getWeight: d => 1,           // 点のカウント
+  // セル背景
+  const gridCellLayer = new GridCellLayer({
+    id: "grid-cells",
+    data: cells,
+    cellSize: cellSize,
+    getPosition: d => d.position,
+    getFillColor: [200, 200, 200, 100],
+    getElevation: 0,
     pickable: false,
   });
 
+  // ユーザー打点
   const userPinLayer = userPinCoords
     ? new ScatterplotLayer({
         id: "user-pin",
@@ -145,6 +160,7 @@ function App() {
       })
     : null;
 
+  // 最近傍ラベル
   const textLayer = nearestPoints.length
     ? new TextLayer({
         id: "nearest-labels",
@@ -180,7 +196,6 @@ function App() {
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
               setUserPinCoords([x, y]);
-
               const nearest = data
                 .map(d => ({
                   ...d,
@@ -190,12 +205,11 @@ function App() {
                 }))
                 .sort((a, b) => a.distance - b.distance)
                 .slice(0, 10);
-
               setNearestPoints(nearest);
             }
           }}
           layers={[
-            screenGridLayer,
+            gridCellLayer,
             new LineLayer({
               id: "grid-lines",
               data: gridLines,
