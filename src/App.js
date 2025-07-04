@@ -344,7 +344,7 @@ function App() {
           cursor: "pointer",
         }}
       >
-        {is3D ? "→ Map" : "TasteData"}
+        {is3D ? "→ Map" : "→ TasteData"}
       </button>
 
       <Drawer
