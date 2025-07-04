@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
@@ -12,6 +12,8 @@ function App() {
   const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const drawerContentRef = useRef(null);
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -33,6 +35,12 @@ function App() {
   useEffect(() => {
     if (nearestPoints.length > 0) {
       setIsDrawerOpen(true);
+    }
+  }, [nearestPoints]);
+
+  useEffect(() => {
+    if (drawerContentRef.current) {
+      drawerContentRef.current.scrollTop = 0;
     }
   }, [nearestPoints]);
 
@@ -256,7 +264,14 @@ function App() {
           style: { height: "50%" }
         }}
       >
-        <div style={{ padding: "16px" }}>
+        <div
+          ref={drawerContentRef}
+          style={{
+            padding: "16px",
+            overflowY: "auto",
+            height: "100%",
+          }}
+        >
           <button
             onClick={() => setIsDrawerOpen(false)}
             style={{
