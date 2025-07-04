@@ -278,16 +278,17 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
-      <Drawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-        <div ref={drawerContentRef} style={{ width: 300, padding: 16 }}>
-          <h3>近いワイン</h3>
-          {nearestPoints.map((d, i) => (
-            <div key={i} style={{ marginBottom: 8 }}>
-              {i + 1}. {d.Name || d.JAN}
-            </div>
-          ))}
-        </div>
-      </Drawer>
+      <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+  <div ref={drawerContentRef} style={{ width: "100%", padding: 16 }}>
+    <h3>近いワイン</h3>
+    {nearestPoints.map((d, i) => (
+      <div key={i} style={{ marginBottom: 8 }}>
+        {i + 1}. {d.Name || d.JAN}
+      </div>
+    ))}
+  </div>
+</Drawer>
+
     </div>
   );
 }
