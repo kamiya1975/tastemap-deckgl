@@ -198,6 +198,28 @@ function App() {
         />
       )}
 
+      {is3D && (
+        <select
+          value={zMetric}
+          onChange={e => setZMetric(e.target.value)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 1,
+            padding: "6px",
+            fontSize: "14px",
+          }}
+        >
+          <option value="">ー</option>
+          <option value="ブドウ糖">ブドウ糖</option>
+          <option value="リンゴ酸">リンゴ酸</option>
+          <option value="総ポリフェノール">総ポリフェノール</option>
+          <option value="Vanillin">Vanillin</option>
+          <option value="Furfural">Furfural</option>
+        </select>
+      )}
+
       <button
         onClick={() => {
           const nextIs3D = !is3D;
