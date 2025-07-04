@@ -352,28 +352,25 @@ function App() {
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {nearestPoints.map((item, idx) => (
               <li
-                key={idx}
-                onClick={() => {
-                  setViewState((prev) => ({
-                    ...prev,
-                    target: [item.umap_x, item.umap_y, 0],
-                  }));
-                  const newWin = window.open(`/products/${item.JAN}`, "_blank");
-                  setProductWindow(newWin);
-                }}
-                style={{
-                  padding: "8px 0",
-                  borderBottom: "1px solid #eee",
-                  cursor: "pointer",
-                }}
-              >
-                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
-                <br />
-                <small>
-                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
-                </small>
-                <br />
-              </li>
+              key={idx}
+  onClick={() => {
+    const newWin = window.open(`/products/${item.JAN}`, "_blank");
+    setProductWindow(newWin);
+  }}
+  style={{
+    padding: "8px 0",
+    borderBottom: "1px solid #eee",
+    cursor: "pointer",
+  }}
+>
+  <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
+  <br />
+  <small>
+    Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+  </small>
+  <br />
+</li>
+
             ))}
           </ul>
         </div>
