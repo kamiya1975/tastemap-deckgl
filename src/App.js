@@ -19,7 +19,6 @@ function App() {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
-        console.log("データ読み込み完了:", d.length, "件");
         setData(d);
         setViewState({
           target: [0, 0, 0],
@@ -52,22 +51,24 @@ function App() {
     Other: [150, 150, 150],
   };
 
+  // 細かいグリッド間隔
+  const gridInterval = 0.1;
+
   // グリッドの線
   const gridLines = useMemo(() => {
     const startX = -100;
-    const endX = +100;
+    const endX = 100;
     const startY = -100;
-    const endY = +100;
-    const spacing = 0.1;
+    const endY = 100;
 
     const lines = [];
-    for (let x = startX; x <= endX; x += spacing) {
+    for (let x = startX; x <= endX; x += gridInterval) {
       lines.push({
         sourcePosition: [x, startY, 0],
         targetPosition: [x, endY, 0],
       });
     }
-    for (let y = startY; y <= endY; y += spacing) {
+    for (let y = startY; y <= endY; y += gridInterval) {
       lines.push({
         sourcePosition: [startX, y, 0],
         targetPosition: [endX, y, 0],
@@ -76,13 +77,12 @@ function App() {
     return lines;
   }, []);
 
-  // グリッドセルデータ
-  const cellSize = 0.5; // UMAP座標単位
+  // セルデータ
   const cells = useMemo(() => {
     const map = new Map();
     data.forEach(d => {
-      const x = Math.floor(d.umap_x / cellSize) * cellSize;
-      const y = Math.floor(d.umap_y / cellSize) * cellSize;
+      const x = Math.floor(d.umap_x / gridInterval) * gridInterval;
+      const y = Math.floor(d.umap_y / gridInterval) * gridInterval;
       const key = `${x},${y}`;
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0 });
@@ -90,9 +90,9 @@ function App() {
       map.get(key).count += 1;
     });
     return Array.from(map.values());
-  }, [data]);
+  }, [data, gridInterval]);
 
-  // 打点
+  // メインレイヤー
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
@@ -103,18 +103,9 @@ function App() {
         extruded: true,
         elevationScale: 2,
         getPosition: d => [d.umap_x, d.umap_y],
-        getElevation: d => (zMetric ? Number(d[zMetric]) || 0 : 0),
+        getElevation: d => zMetric ? Number(d[zMetric]) || 0 : 0,
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
-        onClick: info => {
-          if (info && info.object) {
-            const { umap_x, umap_y } = info.object;
-            setViewState(prev => ({
-              ...(prev || {}),
-              target: [umap_x, umap_y, 0],
-            }));
-          }
-        },
       });
     } else {
       return new ScatterplotLayer({
@@ -124,31 +115,20 @@ function App() {
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
         getRadius: 0.05,
         pickable: true,
-        onClick: info => {
-          if (info && info.object) {
-            const { umap_x, umap_y } = info.object;
-            setViewState(prev => ({
-              ...(prev || {}),
-              target: [umap_x, umap_y, 0],
-            }));
-          }
-        },
       });
     }
   }, [data, is3D, zMetric]);
 
-  // セル背景
   const gridCellLayer = new GridCellLayer({
     id: "grid-cells",
     data: cells,
-    cellSize: cellSize,
+    cellSize: gridInterval,
     getPosition: d => d.position,
-    getFillColor: [200, 200, 200, 100],
+    getFillColor: [200, 200, 200, 120],
     getElevation: 0,
     pickable: false,
   });
 
-  // ユーザー打点
   const userPinLayer = userPinCoords
     ? new ScatterplotLayer({
         id: "user-pin",
@@ -160,7 +140,6 @@ function App() {
       })
     : null;
 
-  // 最近傍ラベル
   const textLayer = nearestPoints.length
     ? new TextLayer({
         id: "nearest-labels",
@@ -185,12 +164,7 @@ function App() {
           views={is3D ? new OrbitView() : new OrthographicView()}
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
-          controller={{
-            minRotationX: 5,
-            maxRotationX: 90,
-            minZoom: 4.0,
-            maxZoom: 10.0,
-          }}
+          controller={true}
           onClick={info => {
             if (is3D) return;
             if (info && info.coordinate) {
@@ -254,12 +228,8 @@ function App() {
           setIs3D(nextIs3D);
           setViewState(prev => ({
             ...(prev || {}),
-            target: prev?.target || [0, 0, 0],
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
-            zoom: prev?.zoom || 5,
-            minZoom: 4.0,
-            maxZoom: 10.0,
           }));
         }}
         style={{
