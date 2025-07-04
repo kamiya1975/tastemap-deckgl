@@ -254,6 +254,28 @@ function App() {
         ]}
       />
 
+      {is3D && (
+        <select
+          value={zMetric}
+          onChange={(e) => setZMetric(e.target.value)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 1,
+            padding: "6px",
+            fontSize: "14px",
+          }}
+        >
+          <option value="">ー</option>
+          <option value="ブドウ糖">ブドウ糖</option>
+          <option value="リンゴ酸">リンゴ酸</option>
+          <option value="総ポリフェノール">総ポリフェノール</option>
+          <option value="Vanillin">Vanillin</option>
+          <option value="Furfural">Furfural</option>
+        </select>
+      )}
+
       <button
         onClick={() => {
           const nextIs3D = !is3D;
@@ -331,43 +353,26 @@ function App() {
             {nearestPoints.map((item, idx) => (
               <li
                 key={idx}
+                onClick={() => {
+                  setViewState((prev) => ({
+                    ...prev,
+                    target: [item.umap_x, item.umap_y, 0],
+                  }));
+                  const newWin = window.open(`/products/${item.JAN}`, "_blank");
+                  setProductWindow(newWin);
+                }}
                 style={{
                   padding: "8px 0",
                   borderBottom: "1px solid #eee",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  cursor: "pointer",
                 }}
               >
-                <div
-                  onClick={() => {
-                    setViewState((prev) => ({
-                      ...prev,
-                      target: [item.umap_x, item.umap_y, 0],
-                    }));
-                  }}
-                  style={{
-                    cursor: "pointer",
-                    marginRight: "12px",
-                    flexShrink: 0,
-                    fontWeight: "bold",
-                  }}
-                >
-                  {idx + 1}.
-                </div>
-                <div
-                  onClick={() => {
-                    const newWin = window.open(`/products/${item.JAN}`, "_blank");
-                    setProductWindow(newWin);
-                  }}
-                  style={{ cursor: "pointer", flex: 1 }}
-                >
-                  {item.Name || "（名称不明）"}
-                  <br />
-                  <small>
-                    Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
-                  </small>
-                </div>
+                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
+                <br />
+                <small>
+                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+                </small>
+                <br />
               </li>
             ))}
           </ul>
