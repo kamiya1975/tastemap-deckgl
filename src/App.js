@@ -223,6 +223,7 @@ function App() {
           if (info && info.coordinate) {
             const [x, y] = info.coordinate;
             setUserPinCoords([x, y]);
+
             const nearest = data
               .map((d) => ({
                 ...d,
@@ -230,6 +231,7 @@ function App() {
               }))
               .sort((a, b) => a.distance - b.distance)
               .slice(0, 10);
+
             setNearestPoints(nearest);
             setIsDrawerOpen(true);
           }
@@ -260,7 +262,6 @@ function App() {
             ...prev,
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
-            zoom: prev.zoom,
           }));
         }}
         style={{
@@ -330,25 +331,43 @@ function App() {
             {nearestPoints.map((item, idx) => (
               <li
                 key={idx}
-                onClick={() => {
-                  setViewState((prev) => ({
-                    ...prev,
-                    target: [item.umap_x, item.umap_y, 0],
-                  }));
-                  const newWin = window.open(`/products/${item.JAN}`, "_blank");
-                  setProductWindow(newWin);
-                }}
                 style={{
                   padding: "8px 0",
                   borderBottom: "1px solid #eee",
-                  cursor: "pointer",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
-                <br />
-                <small>
-                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
-                </small>
+                <div
+                  onClick={() => {
+                    setViewState((prev) => ({
+                      ...prev,
+                      target: [item.umap_x, item.umap_y, 0],
+                    }));
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    marginRight: "12px",
+                    flexShrink: 0,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {idx + 1}.
+                </div>
+                <div
+                  onClick={() => {
+                    const newWin = window.open(`/products/${item.JAN}`, "_blank");
+                    setProductWindow(newWin);
+                  }}
+                  style={{ cursor: "pointer", flex: 1 }}
+                >
+                  {item.Name || "（名称不明）"}
+                  <br />
+                  <small>
+                    Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+                  </small>
+                </div>
               </li>
             ))}
           </ul>
