@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
+import { BottomSheet } from "react-spring-bottom-sheet";
+import "react-spring-bottom-sheet/dist/style.css";
 
 function App() {
   const [data, setData] = useState([]);
@@ -269,40 +271,41 @@ function App() {
       )}
 
       {nearestPoints.length > 0 && (
-        <div
-          className={`bottom-panel ${isPanelOpen ? "open" : ""}`}
+        <BottomSheet
+          open={isPanelOpen}
+          onDismiss={() => setIsPanelOpen(false)}
+          snapPoints={({ maxHeight }) => [
+            maxHeight * 0.2,
+            maxHeight * 0.5,
+            maxHeight * 0.9
+          ]}
+          defaultSnap={({ maxHeight }) => maxHeight * 0.5}
         >
-          <div
-            className="panel-handle"
-            onClick={() => setIsPanelOpen(!isPanelOpen)}
-          ></div>
-          <div className="panel-content">
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {nearestPoints.map((item, idx) => (
-                <li
-                  key={idx}
-                  onClick={() => {
-                    setViewState(prev => ({
-                      ...(prev || {}),
-                      target: [item.umap_x, item.umap_y, 0],
-                    }));
-                  }}
-                  style={{
-                    padding: "6px 0",
-                    borderBottom: "1px solid #eee",
-                    cursor: "pointer",
-                  }}
-                >
-                  <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
-                  <br />
-                  <small>
-                    Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
-                  </small>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {nearestPoints.map((item, idx) => (
+              <li
+                key={idx}
+                onClick={() => {
+                  setViewState(prev => ({
+                    ...(prev || {}),
+                    target: [item.umap_x, item.umap_y, 0],
+                  }));
+                }}
+                style={{
+                  padding: "8px 0",
+                  borderBottom: "1px solid #eee",
+                  cursor: "pointer",
+                }}
+              >
+                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
+                <br />
+                <small>
+                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+                </small>
+              </li>
+            ))}
+          </ul>
+        </BottomSheet>
       )}
     </div>
   );
