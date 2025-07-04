@@ -7,7 +7,6 @@ function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(true);
   const [viewState, setViewState] = useState(null);
-  const [pinCoords, setPinCoords] = useState(null);
   const [userPinCoords, setUserPinCoords] = useState(null);
   const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
@@ -19,7 +18,6 @@ function App() {
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
         setData(d);
-
         setViewState({
           target: [0, 0, 0],
           rotationX: 30,
@@ -273,12 +271,36 @@ function App() {
       {nearestPoints.length > 0 && (
         <div
           className={`bottom-panel ${isPanelOpen ? "open" : ""}`}
-          onClick={() => setIsPanelOpen(!isPanelOpen)}
         >
-          <div className="panel-handle"></div>
+          <div
+            className="panel-handle"
+            onClick={() => setIsPanelOpen(!isPanelOpen)}
+          ></div>
           <div className="panel-content">
-            <p>最近傍ワインリスト（仮）</p>
-            <p>タップで開閉します。</p>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {nearestPoints.map((item, idx) => (
+                <li
+                  key={idx}
+                  onClick={() => {
+                    setViewState(prev => ({
+                      ...(prev || {}),
+                      target: [item.umap_x, item.umap_y, 0],
+                    }));
+                  }}
+                  style={{
+                    padding: "6px 0",
+                    borderBottom: "1px solid #eee",
+                    cursor: "pointer",
+                  }}
+                >
+                  <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
+                  <br />
+                  <small>
+                    Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+                  </small>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
