@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer, GridCellLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer, ScreenGridLayer } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 
 function App() {
@@ -122,13 +122,14 @@ function App() {
     }
   }, [data, is3D, zMetric]);
 
-  const gridCellLayer = new GridCellLayer({
-    id: "grid-cells",
+  const screenGridLayer = new ScreenGridLayer({
+    id: "screen-grid",
     data,
-    cellSize: 1, // グリッドの大きさ
-    extruded: false, // 平面表示
+    cellSizePixels: 20, // 画面上の1セルのサイズ(px) 調整可能
     getPosition: d => [d.umap_x, d.umap_y],
-    getFillColor: [160, 160, 160, 80], // グレー
+    minColor: [0, 0, 0, 0],      // 点がないセルは透明
+    maxColor: [160, 160, 160, 180], // 点があるセルはグレー
+    getWeight: d => 1,           // 点のカウント
     pickable: false,
   });
 
@@ -193,7 +194,7 @@ function App() {
             }
           }}
           layers={[
-            gridCellLayer,
+            screenGridLayer,
             new LineLayer({
               id: "grid-lines",
               data: gridLines,
