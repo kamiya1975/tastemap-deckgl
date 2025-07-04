@@ -1,17 +1,31 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer, GridCellLayer } from "@deck.gl/layers";
+import {
+  ScatterplotLayer,
+  ColumnLayer,
+  LineLayer,
+  TextLayer,
+  GridCellLayer,
+} from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 
 function App() {
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(false);
-  const [viewState, setViewState] = useState(null);
+  const [viewState, setViewState] = useState({
+    target: [0, 0, 0],
+    rotationX: 0,
+    rotationOrbit: 0,
+    zoom: 5,
+    minZoom: 4.0,
+    maxZoom: 10.0,
+  });
   const [userPinCoords, setUserPinCoords] = useState(null);
   const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [userRatings, setUserRatings] = useState({});
 
   const drawerContentRef = useRef(null);
 
@@ -20,23 +34,25 @@ function App() {
       .then((res) => res.json())
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
-        setData(d);
-        setViewState({
-          target: [0, 0, 0],
-          rotationX: 0,
-          rotationOrbit: 0,
-          zoom: 5,
-          minZoom: 4.0,
-          maxZoom: 10.0,
-        });
+        setData(
+          d.map((item) => ({
+            ...item,
+            Name: item["商品名"],
+          }))
+        );
       });
   }, []);
 
   useEffect(() => {
-    if (nearestPoints.length > 0) {
-      setIsDrawerOpen(true);
+    const stored = localStorage.getItem("userRatings");
+    if (stored) {
+      setUserRatings(JSON.parse(stored));
     }
-  }, [nearestPoints]);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("userRatings", JSON.stringify(userRatings));
+  }, [userRatings]);
 
   useEffect(() => {
     if (drawerContentRef.current) {
@@ -52,8 +68,8 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // 細かいグリッド線の間隔
-  const gridInterval = 0.2; // ←0.2や1.0に変えて罫線の細かさ調整
+  const gridInterval = 0.2;
+  const cellSize = 0.2;
 
   const gridLines = useMemo(() => {
     const startX = -100;
@@ -78,21 +94,22 @@ function App() {
     return lines;
   }, [gridInterval]);
 
-  // 打点が存在するグリッドをグレー塗り
-  const cellSize = 0.2; // グリッドのサイズ（罫線間隔とは別）
   const cells = useMemo(() => {
     const map = new Map();
-    data.forEach(d => {
+    data.forEach((d) => {
       const x = Math.floor(d.umap_x / cellSize) * cellSize;
       const y = Math.floor(d.umap_y / cellSize) * cellSize;
       const key = `${x},${y}`;
       if (!map.has(key)) {
-        map.set(key, { position: [x, y], count: 0 });
+        map.set(key, { position: [x, y], count: 0, hasRating: false });
+      }
+      if (userRatings[d.JAN]) {
+        map.get(key).hasRating = true;
       }
       map.get(key).count += 1;
     });
     return Array.from(map.values());
-  }, [data]);
+  }, [data, userRatings]);
 
   const mainLayer = useMemo(() => {
     if (is3D) {
@@ -103,14 +120,18 @@ function App() {
         radius: 0.05,
         extruded: true,
         elevationScale: 2,
-        getPosition: d => [d.umap_x, d.umap_y],
-        getElevation: d => (zMetric ? Number(d[zMetric]) || 0 : 0),
-        getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+        getPosition: (d) => [d.umap_x, d.umap_y],
+        getElevation: (d) => {
+          if (!zMetric) return 0;
+          const val = Number(d[zMetric]);
+          return isNaN(val) ? 0 : val;
+        },
+        getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
-        onClick: info => {
+        onClick: (info) => {
           if (info && info.object) {
             const { umap_x, umap_y } = info.object;
-            setViewState(prev => ({
+            setViewState((prev) => ({
               ...(prev || {}),
               target: [umap_x, umap_y, 0],
             }));
@@ -121,14 +142,14 @@ function App() {
       return new ScatterplotLayer({
         id: "scatter",
         data,
-        getPosition: d => [d.umap_x, d.umap_y, 0],
-        getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
+        getPosition: (d) => [d.umap_x, d.umap_y, 0],
+        getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         getRadius: 0.05,
         pickable: true,
-        onClick: info => {
+        onClick: (info) => {
           if (info && info.object) {
             const { umap_x, umap_y } = info.object;
-            setViewState(prev => ({
+            setViewState((prev) => ({
               ...(prev || {}),
               target: [umap_x, umap_y, 0],
             }));
@@ -142,9 +163,20 @@ function App() {
     id: "grid-cells",
     data: cells,
     cellSize: cellSize,
-    getPosition: d => d.position,
-    getFillColor: [200, 200, 200, 80],
+    getPosition: (d) => d.position,
+    getFillColor: (d) =>
+      d.hasRating ? [180, 100, 50, 150] : [200, 200, 200, 80],
     getElevation: 0,
+    pickable: false,
+  });
+
+  const ratingLayer = new ScatterplotLayer({
+    id: "rating-bubbles",
+    data: data.filter((d) => userRatings[d.JAN]),
+    getPosition: (d) => [d.umap_x, d.umap_y, 0],
+    getFillColor: [255, 165, 0, 180],
+    getRadius: (d) => userRatings[d.JAN] * 0.1,
+    sizeUnits: "common",
     pickable: false,
   });
 
@@ -152,7 +184,7 @@ function App() {
     ? new ScatterplotLayer({
         id: "user-pin",
         data: [userPinCoords],
-        getPosition: d => [d[0], d[1], -0.01],
+        getPosition: (d) => [d[0], d[1], -0.01],
         getFillColor: [0, 255, 0, 200],
         getRadius: 0.3,
         pickable: false,
@@ -163,11 +195,15 @@ function App() {
     ? new TextLayer({
         id: "nearest-labels",
         data: nearestPoints.map((d, i) => ({
-          position: [d.umap_x, d.umap_y, is3D ? 0.05 : 0],
+          position: [
+            d.umap_x,
+            d.umap_y,
+            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0,
+          ],
           text: String(i + 1),
         })),
-        getPosition: d => d.position,
-        getText: d => d.text,
+        getPosition: (d) => d.position,
+        getText: (d) => d.text,
         getSize: is3D ? 0.1 : 16,
         sizeUnits: is3D ? "meters" : "pixels",
         getColor: [0, 0, 0],
@@ -189,14 +225,14 @@ function App() {
             minZoom: 4.0,
             maxZoom: 10.0,
           }}
-          onClick={info => {
+          onClick={(info) => {
             if (is3D) return;
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
               setUserPinCoords([x, y]);
 
               const nearest = data
-                .map(d => ({
+                .map((d) => ({
                   ...d,
                   distance: Math.hypot(d.umap_x - x, d.umap_y - y),
                 }))
@@ -204,6 +240,7 @@ function App() {
                 .slice(0, 10);
 
               setNearestPoints(nearest);
+              setIsDrawerOpen(true);
             }
           }}
           layers={[
@@ -211,8 +248,8 @@ function App() {
             new LineLayer({
               id: "grid-lines",
               data: gridLines,
-              getSourcePosition: d => d.sourcePosition,
-              getTargetPosition: d => d.targetPosition,
+              getSourcePosition: (d) => d.sourcePosition,
+              getTargetPosition: (d) => d.targetPosition,
               getColor: [200, 200, 200, 120],
               getWidth: 1,
               pickable: false,
@@ -220,59 +257,10 @@ function App() {
             mainLayer,
             userPinLayer,
             textLayer,
+            ratingLayer,
           ]}
         />
       )}
-
-      {is3D && (
-        <select
-          value={zMetric}
-          onChange={e => setZMetric(e.target.value)}
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            zIndex: 1,
-            padding: "6px",
-            fontSize: "14px",
-          }}
-        >
-          <option value="">ー</option>
-          <option value="ブドウ糖">ブドウ糖</option>
-          <option value="リンゴ酸">リンゴ酸</option>
-          <option value="総ポリフェノール">総ポリフェノール</option>
-          <option value="Vanillin">Vanillin</option>
-          <option value="Furfural">Furfural</option>
-        </select>
-      )}
-
-      <button
-        onClick={() => {
-          const nextIs3D = !is3D;
-          setIs3D(nextIs3D);
-          setViewState(prev => ({
-            ...(prev || {}),
-            target: prev?.target || [0, 0, 0],
-            rotationX: nextIs3D ? 30 : 0,
-            rotationOrbit: nextIs3D ? 30 : 0,
-            zoom: prev?.zoom || 5,
-          }));
-        }}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: 1,
-          padding: "8px 12px",
-          fontSize: "14px",
-          background: "#fff",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        {is3D ? "2D表示" : "3D表示"}
-      </button>
 
       <Drawer
         anchor="bottom"
@@ -280,7 +268,7 @@ function App() {
         variant="persistent"
         hideBackdrop
         PaperProps={{
-          style: { height: "50%" }
+          style: { height: "50%" },
         }}
       >
         <div
@@ -311,7 +299,7 @@ function App() {
               <li
                 key={idx}
                 onClick={() => {
-                  setViewState(prev => ({
+                  setViewState((prev) => ({
                     ...(prev || {}),
                     target: [item.umap_x, item.umap_y, 0],
                   }));
@@ -327,6 +315,25 @@ function App() {
                 <small>
                   Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
                 </small>
+                <br />
+                <select
+                  value={userRatings[item.JAN] || ""}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setUserRatings((prev) => ({
+                      ...prev,
+                      [item.JAN]: val,
+                    }));
+                  }}
+                >
+                  <option value="">未評価</option>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                      {"★".repeat(n)}
+                    </option>
+                  ))}
+                </select>
               </li>
             ))}
           </ul>
