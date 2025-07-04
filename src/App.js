@@ -34,7 +34,6 @@ function App() {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
-        console.log("データ読み込み完了:", d.length, "件");
         const mapped = d.map((item) => ({
           ...item,
           Name: item["商品名"],
@@ -60,6 +59,18 @@ function App() {
       drawerContentRef.current.scrollTop = 0;
     }
   }, [nearestPoints]);
+
+  // ⭐️ storageイベントで別ウィンドウの更新を反映
+  useEffect(() => {
+    const handleStorage = (event) => {
+      if (event.key === "userRatings") {
+        const updated = JSON.parse(event.newValue);
+        setUserRatings(updated);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   const typeColorMap = {
     White: [0, 120, 255],
@@ -196,55 +207,53 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      {viewState && (
-        <DeckGL
-          views={is3D ? new OrbitView() : new OrthographicView()}
-          viewState={viewState}
-          onViewStateChange={({ viewState: vs }) => setViewState(vs)}
-          controller={{
-            dragPan: true,
-            dragRotate: true,
-            minRotationX: 5,
-            maxRotationX: 90,
-            minZoom: 4.0,
-            maxZoom: 10.0,
-          }}
-          onClick={(info) => {
-            if (is3D) return;
-            if (info && info.coordinate) {
-              const [x, y] = info.coordinate;
-              setUserPinCoords([x, y]);
+      <DeckGL
+        views={is3D ? new OrbitView() : new OrthographicView()}
+        viewState={viewState}
+        onViewStateChange={({ viewState: vs }) => setViewState(vs)}
+        controller={{
+          dragPan: true,
+          dragRotate: true,
+          minRotationX: 5,
+          maxRotationX: 90,
+          minZoom: 4.0,
+          maxZoom: 10.0,
+        }}
+        onClick={(info) => {
+          if (is3D) return;
+          if (info && info.coordinate) {
+            const [x, y] = info.coordinate;
+            setUserPinCoords([x, y]);
 
-              const nearest = data
-                .map((d) => ({
-                  ...d,
-                  distance: Math.hypot(d.umap_x - x, d.umap_y - y),
-                }))
-                .sort((a, b) => a.distance - b.distance)
-                .slice(0, 10);
+            const nearest = data
+              .map((d) => ({
+                ...d,
+                distance: Math.hypot(d.umap_x - x, d.umap_y - y),
+              }))
+              .sort((a, b) => a.distance - b.distance)
+              .slice(0, 10);
 
-              setNearestPoints(nearest);
-              setIsDrawerOpen(true);
-            }
-          }}
-          layers={[
-            gridCellLayer,
-            new LineLayer({
-              id: "grid-lines",
-              data: gridLines,
-              getSourcePosition: (d) => d.sourcePosition,
-              getTargetPosition: (d) => d.targetPosition,
-              getColor: [200, 200, 200, 120],
-              getWidth: 1,
-              pickable: false,
-            }),
-            mainLayer,
-            userPinLayer,
-            textLayer,
-            ratingLayer,
-          ]}
-        />
-      )}
+            setNearestPoints(nearest);
+            setIsDrawerOpen(true);
+          }
+        }}
+        layers={[
+          gridCellLayer,
+          new LineLayer({
+            id: "grid-lines",
+            data: gridLines,
+            getSourcePosition: (d) => d.sourcePosition,
+            getTargetPosition: (d) => d.targetPosition,
+            getColor: [200, 200, 200, 120],
+            getWidth: 1,
+            pickable: false,
+          }),
+          mainLayer,
+          userPinLayer,
+          textLayer,
+          ratingLayer,
+        ]}
+      />
 
       <button
         onClick={() => {
@@ -252,10 +261,8 @@ function App() {
           setIs3D(nextIs3D);
           setViewState((prev) => ({
             ...prev,
-            target: prev?.target || [0, 0, 0],
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
-            zoom: prev?.zoom || 5,
           }));
         }}
         style={{
@@ -273,28 +280,6 @@ function App() {
       >
         {is3D ? "2D表示" : "3D表示"}
       </button>
-
-      {is3D && (
-        <select
-          value={zMetric}
-          onChange={(e) => setZMetric(e.target.value)}
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            zIndex: 1,
-            padding: "6px",
-            fontSize: "14px",
-          }}
-        >
-          <option value="">ー</option>
-          <option value="ブドウ糖">ブドウ糖</option>
-          <option value="リンゴ酸">リンゴ酸</option>
-          <option value="総ポリフェノール">総ポリフェノール</option>
-          <option value="Vanillin">Vanillin</option>
-          <option value="Furfural">Furfural</option>
-        </select>
-      )}
 
       <Drawer
         anchor="bottom"
@@ -353,7 +338,6 @@ function App() {
                 <small>
                   Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
                 </small>
-                <br />
               </li>
             ))}
           </ul>
