@@ -206,6 +206,9 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+      {/* 2Dのときだけ表示 */}
+      {!is3D && (
+      <>
       {/* 北 */}
       <div style={{
         position: "absolute", top: "10px", left: "50%",
