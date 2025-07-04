@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer, ScreenGridLayer } from "@deck.gl/aggregation-layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
+import { ScreenGridLayer } from "@deck.gl/aggregation-layers";
 import Drawer from "@mui/material/Drawer";
 
 function App() {
