@@ -52,24 +52,22 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // 細かいグリッド間隔
-  const gridInterval = 0.2; // ←ここを0.5や1.0に変えれば線の細かさ調整可能
+  // グリッド線の間隔
+  const gridInterval = 0.2; // ←ここを0.2や1.0に変えれば線の細かさを調整
 
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
     const startY = -100;
     const endY = +100;
-    const spacing = gridInterval;
-
     const lines = [];
-    for (let x = startX; x <= endX; x += spacing) {
+    for (let x = startX; x <= endX; x += gridInterval) {
       lines.push({
         sourcePosition: [x, startY, 0],
         targetPosition: [x, endY, 0],
       });
     }
-    for (let y = startY; y <= endY; y += spacing) {
+    for (let y = startY; y <= endY; y += gridInterval) {
       lines.push({
         sourcePosition: [startX, y, 0],
         targetPosition: [endX, y, 0],
@@ -93,10 +91,9 @@ function App() {
         pickable: true,
         onClick: info => {
           if (info && info.object) {
-            const { umap_x, umap_y } = info.object;
             setViewState(prev => ({
               ...(prev || {}),
-              target: [umap_x, umap_y, 0],
+              target: [info.object.umap_x, info.object.umap_y, 0],
             }));
           }
         },
@@ -111,10 +108,9 @@ function App() {
         pickable: true,
         onClick: info => {
           if (info && info.object) {
-            const { umap_x, umap_y } = info.object;
             setViewState(prev => ({
               ...(prev || {}),
-              target: [umap_x, umap_y, 0],
+              target: [info.object.umap_x, info.object.umap_y, 0],
             }));
           }
         },
@@ -168,7 +164,6 @@ function App() {
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
               setUserPinCoords([x, y]);
-
               const nearest = data
                 .map(d => ({
                   ...d,
@@ -176,7 +171,6 @@ function App() {
                 }))
                 .sort((a, b) => a.distance - b.distance)
                 .slice(0, 10);
-
               setNearestPoints(nearest);
             }
           }}
