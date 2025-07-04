@@ -206,41 +206,38 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      {/* 2Dのときだけ表示 */}
       {!is3D && (
-      <>
-      {/* 北 */}
-      <div style={{
-        position: "absolute", top: "10px", left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 2, background: "rgba(255,255,255,0.85)",
-        padding: "4px 8px", borderRadius: "4px",
-        fontSize: "14px", fontWeight: "bold"
-      }}>↑ Sweet</div>
-      {/* 南 */}
-      <div style={{
-        position: "absolute", bottom: "10px", left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 2, background: "rgba(255,255,255,0.85)",
-        padding: "4px 8px", borderRadius: "4px",
-        fontSize: "14px", fontWeight: "bold"
-      }}>↓ Dry</div>
-      {/* 西 */}
-      <div style={{
-        position: "absolute", top: "50%", left: "10px",
-        transform: "translateY(-50%)",
-        zIndex: 2, background: "rgba(255,255,255,0.85)",
-        padding: "4px 8px", borderRadius: "4px",
-        fontSize: "14px", fontWeight: "bold"
-      }}>← Light</div>
-      {/* 東 */}
-      <div style={{
-        position: "absolute", top: "50%", right: "10px",
-        transform: "translateY(-50%)",
-        zIndex: 2, background: "rgba(255,255,255,0.85)",
-        padding: "4px 8px", borderRadius: "4px",
-        fontSize: "14px", fontWeight: "bold"
-      }}>Heavy →</div>
+        <>
+          <div style={{
+            position: "absolute", top: "10px", left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 2, background: "rgba(255,255,255,0.85)",
+            padding: "4px 8px", borderRadius: "4px",
+            fontSize: "14px", fontWeight: "bold"
+          }}>↑ Sweet</div>
+          <div style={{
+            position: "absolute", bottom: "10px", left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 2, background: "rgba(255,255,255,0.85)",
+            padding: "4px 8px", borderRadius: "4px",
+            fontSize: "14px", fontWeight: "bold"
+          }}>↓ Dry</div>
+          <div style={{
+            position: "absolute", top: "50%", left: "10px",
+            transform: "translateY(-50%)",
+            zIndex: 2, background: "rgba(255,255,255,0.85)",
+            padding: "4px 8px", borderRadius: "4px",
+            fontSize: "14px", fontWeight: "bold"
+          }}>← Light</div>
+          <div style={{
+            position: "absolute", top: "50%", right: "10px",
+            transform: "translateY(-50%)",
+            zIndex: 2, background: "rgba(255,255,255,0.85)",
+            padding: "4px 8px", borderRadius: "4px",
+            fontSize: "14px", fontWeight: "bold"
+          }}>Heavy →</div>
+        </>
+      )}
 
       <DeckGL
         views={is3D ? new OrbitView() : new OrthographicView()}
@@ -311,6 +308,7 @@ function App() {
           <option value="Furfural">Furfural</option>
         </select>
       )}
+
       <button
         onClick={() => {
           const nextIs3D = !is3D;
@@ -403,7 +401,6 @@ function App() {
                 <small>
                   Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
                 </small>
-                <br />
               </li>
             ))}
           </ul>
