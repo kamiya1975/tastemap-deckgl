@@ -52,7 +52,7 @@ function App() {
   };
 
   // 細かいグリッド間隔
-  const gridInterval = 0.1;
+  const gridInterval = 1.0;
 
   // グリッドの線
   const gridLines = useMemo(() => {
