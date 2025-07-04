@@ -40,7 +40,6 @@ function App() {
           Name: item["商品名"],
         }));
         setData(mapped);
-        // 💡 ProductPage用に保存
         localStorage.setItem("umapData", JSON.stringify(mapped));
       });
   }, []);
@@ -340,10 +339,6 @@ function App() {
               <li
                 key={idx}
                 onClick={() => {
-                  setViewState((prev) => ({
-                    ...prev,
-                    target: [item.umap_x, item.umap_y, 0],
-                  }));
                   const newWin = window.open(`/products/${item.JAN}`, "_blank");
                   setProductWindow(newWin);
                 }}
