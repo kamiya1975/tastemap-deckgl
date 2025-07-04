@@ -250,13 +250,27 @@ function App() {
       <Drawer
         anchor="bottom"
         open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        ModalProps={{ keepMounted: true }}
+        variant="persistent"
+        hideBackdrop
         PaperProps={{
           style: { height: "50%" }
         }}
       >
         <div style={{ padding: "16px" }}>
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            style={{
+              display: "block",
+              marginBottom: "8px",
+              background: "#eee",
+              border: "none",
+              padding: "8px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            閉じる
+          </button>
           <h3>最近傍ワインリスト</h3>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {nearestPoints.map((item, idx) => (
