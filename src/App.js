@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer, GridCellLayer } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 
 function App() {
@@ -52,22 +52,24 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // グリッド線の間隔
-  const gridInterval = 0.2; // ←ここを0.2や1.0に変えれば線の細かさを調整
+  // 細かいグリッド線の間隔
+  const gridInterval = 0.2; // ←0.2や1.0に変えて罫線の細かさ調整
 
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
     const startY = -100;
     const endY = +100;
+    const spacing = gridInterval;
+
     const lines = [];
-    for (let x = startX; x <= endX; x += gridInterval) {
+    for (let x = startX; x <= endX; x += spacing) {
       lines.push({
         sourcePosition: [x, startY, 0],
         targetPosition: [x, endY, 0],
       });
     }
-    for (let y = startY; y <= endY; y += gridInterval) {
+    for (let y = startY; y <= endY; y += spacing) {
       lines.push({
         sourcePosition: [startX, y, 0],
         targetPosition: [endX, y, 0],
@@ -75,6 +77,22 @@ function App() {
     }
     return lines;
   }, [gridInterval]);
+
+  // 打点が存在するグリッドをグレー塗り
+  const cellSize = 0.2; // グリッドのサイズ（罫線間隔とは別）
+  const cells = useMemo(() => {
+    const map = new Map();
+    data.forEach(d => {
+      const x = Math.floor(d.umap_x / cellSize) * cellSize;
+      const y = Math.floor(d.umap_y / cellSize) * cellSize;
+      const key = `${x},${y}`;
+      if (!map.has(key)) {
+        map.set(key, { position: [x, y], count: 0 });
+      }
+      map.get(key).count += 1;
+    });
+    return Array.from(map.values());
+  }, [data]);
 
   const mainLayer = useMemo(() => {
     if (is3D) {
@@ -91,9 +109,10 @@ function App() {
         pickable: true,
         onClick: info => {
           if (info && info.object) {
+            const { umap_x, umap_y } = info.object;
             setViewState(prev => ({
               ...(prev || {}),
-              target: [info.object.umap_x, info.object.umap_y, 0],
+              target: [umap_x, umap_y, 0],
             }));
           }
         },
@@ -108,15 +127,26 @@ function App() {
         pickable: true,
         onClick: info => {
           if (info && info.object) {
+            const { umap_x, umap_y } = info.object;
             setViewState(prev => ({
               ...(prev || {}),
-              target: [info.object.umap_x, info.object.umap_y, 0],
+              target: [umap_x, umap_y, 0],
             }));
           }
         },
       });
     }
   }, [data, is3D, zMetric]);
+
+  const gridCellLayer = new GridCellLayer({
+    id: "grid-cells",
+    data: cells,
+    cellSize: cellSize,
+    getPosition: d => d.position,
+    getFillColor: [200, 200, 200, 80],
+    getElevation: 0,
+    pickable: false,
+  });
 
   const userPinLayer = userPinCoords
     ? new ScatterplotLayer({
@@ -164,6 +194,7 @@ function App() {
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
               setUserPinCoords([x, y]);
+
               const nearest = data
                 .map(d => ({
                   ...d,
@@ -171,10 +202,12 @@ function App() {
                 }))
                 .sort((a, b) => a.distance - b.distance)
                 .slice(0, 10);
+
               setNearestPoints(nearest);
             }
           }}
           layers={[
+            gridCellLayer,
             new LineLayer({
               id: "grid-lines",
               data: gridLines,
