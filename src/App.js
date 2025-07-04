@@ -53,7 +53,7 @@ function App() {
   };
 
   // 細かいグリッド線の間隔
-  const gridInterval = 0.3; // ←0.2や1.0に変えて罫線の細かさ調整
+  const gridInterval = 0.2; // ←0.2や1.0に変えて罫線の細かさ調整
 
   const gridLines = useMemo(() => {
     const startX = -100;
@@ -79,7 +79,7 @@ function App() {
   }, [gridInterval]);
 
   // 打点が存在するグリッドをグレー塗り
-  const cellSize = 0.3; // グリッドのサイズ（罫線間隔とは別）
+  const cellSize = 0.2; // グリッドのサイズ（罫線間隔とは別）
   const cells = useMemo(() => {
     const map = new Map();
     data.forEach(d => {
