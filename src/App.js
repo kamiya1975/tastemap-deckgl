@@ -53,7 +53,7 @@ function App() {
   };
 
   // 細かいグリッド間隔
-  const gridInterval = 2; // ←ここを0.5や1.0に変えれば線の細かさ調整可能
+  const gridInterval = 0.2; // ←ここを0.5や1.0に変えれば線の細かさ調整可能
 
   const gridLines = useMemo(() => {
     const startX = -100;
