@@ -52,39 +52,38 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // 細かいグリッド線の間隔
-  const gridInterval = 0.2; // ←0.2や1.0に変えて罫線の細かさ調整
+  // 共通のグリッド・セルのサイズ
+  const gridAndCellSize = 0.3; // ←ここを0.2や1.0に変えるだけで両方調整
 
+  // グリッド線
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
     const startY = -100;
     const endY = +100;
-    const spacing = gridInterval;
 
     const lines = [];
-    for (let x = startX; x <= endX; x += spacing) {
+    for (let x = startX; x <= endX; x += gridAndCellSize) {
       lines.push({
         sourcePosition: [x, startY, 0],
         targetPosition: [x, endY, 0],
       });
     }
-    for (let y = startY; y <= endY; y += spacing) {
+    for (let y = startY; y <= endY; y += gridAndCellSize) {
       lines.push({
         sourcePosition: [startX, y, 0],
         targetPosition: [endX, y, 0],
       });
     }
     return lines;
-  }, [gridInterval]);
+  }, [gridAndCellSize]);
 
-  // 打点が存在するグリッドをグレー塗り
-  const cellSize = 0.2; // グリッドのサイズ（罫線間隔とは別）
+  // セルデータ（打点があるところを塗る）
   const cells = useMemo(() => {
     const map = new Map();
     data.forEach(d => {
-      const x = Math.floor(d.umap_x / cellSize) * cellSize;
-      const y = Math.floor(d.umap_y / cellSize) * cellSize;
+      const x = Math.floor(d.umap_x / gridAndCellSize) * gridAndCellSize;
+      const y = Math.floor(d.umap_y / gridAndCellSize) * gridAndCellSize;
       const key = `${x},${y}`;
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0 });
@@ -92,7 +91,7 @@ function App() {
       map.get(key).count += 1;
     });
     return Array.from(map.values());
-  }, [data]);
+  }, [data, gridAndCellSize]);
 
   const mainLayer = useMemo(() => {
     if (is3D) {
@@ -141,9 +140,9 @@ function App() {
   const gridCellLayer = new GridCellLayer({
     id: "grid-cells",
     data: cells,
-    cellSize: cellSize,
+    cellSize: gridAndCellSize,
     getPosition: d => d.position,
-    getFillColor: [200, 200, 200, 80],
+    getFillColor: [200, 200, 200, 100],
     getElevation: 0,
     pickable: false,
   });
