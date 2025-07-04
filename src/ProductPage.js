@@ -1,40 +1,45 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function ProductPage() {
   const { jan } = useParams();
-  const navigate = useNavigate();
 
-  // umapDataをlocalStorageから読み込む
-  const data = JSON.parse(localStorage.getItem("umapData") || "[]");
-  const product = data.find((d) => d.JAN === jan);
+  // ローカルストレージに保存したデータを取得
+  const allData = JSON.parse(localStorage.getItem("umapData") || "[]");
+  const product = allData.find((d) => d.JAN === jan);
 
   if (!product) {
-    return (
-      <div style={{ padding: "20px" }}>
-        <h1>商品が見つかりません</h1>
-        <button onClick={() => navigate(-1)}>戻る</button>
-      </div>
-    );
+    return <div>商品が見つかりません</div>;
   }
 
   return (
     <div style={{ padding: "20px" }}>
       <h1>商品ページ</h1>
-      <p>
-        <strong>JAN:</strong> {product.JAN}
-      </p>
-      <p>
-        <strong>Type:</strong> {product.Type}
-      </p>
+      <p><strong>JAN:</strong> {product.JAN}</p>
+      <p><strong>Type:</strong> {product.Type}</p>
+
+      {/* 評価プルダウン */}
+      <div style={{ marginTop: "20px" }}>
+        <label>
+          評価:
+          <select style={{ marginLeft: "10px", fontSize: "16px" }}>
+            <option value="5">★★★★★</option>
+            <option value="4">★★★★☆</option>
+            <option value="3">★★★☆☆</option>
+            <option value="2">★★☆☆☆</option>
+            <option value="1">★☆☆☆☆</option>
+          </select>
+        </label>
+      </div>
+
+      {/* 閉じるボタン */}
       <div style={{ marginTop: "30px" }}>
         <button
+          onClick={() => window.close()}
           style={{
-            marginRight: "10px",
             padding: "10px 20px",
             fontSize: "16px",
           }}
-          onClick={() => navigate(-1)}
         >
           閉じる
         </button>
