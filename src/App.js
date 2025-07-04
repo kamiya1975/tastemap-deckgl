@@ -344,7 +344,7 @@ function App() {
           cursor: "pointer",
         }}
       >
-        {is3D ? "2D表示" : "3D表示"}
+        {is3D ? "Mapに戻る" : "TasteData"}
       </button>
 
       <Drawer
@@ -393,7 +393,7 @@ function App() {
             flex: 1,
           }}
         >
-          <h3>最近傍ワインリスト</h3>
+          <h3>打点に近いワイン</h3>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {nearestPoints.map((item, idx) => (
               <li
