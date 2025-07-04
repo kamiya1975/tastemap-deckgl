@@ -359,24 +359,6 @@ function App() {
                   Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
                 </small>
                 <br />
-                <select
-                  value={userRatings[item.JAN] || ""}
-                  onClick={(e) => e.stopPropagation()}
-                  onChange={(e) => {
-                    const val = Number(e.target.value);
-                    setUserRatings((prev) => ({
-                      ...prev,
-                      [item.JAN]: val,
-                    }));
-                  }}
-                >
-                  <option value="">未評価</option>
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>
-                      {"★".repeat(n)}
-                    </option>
-                  ))}
-                </select>
               </li>
             ))}
           </ul>
