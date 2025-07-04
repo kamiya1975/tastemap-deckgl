@@ -2,8 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
 import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
-import { BottomSheet } from "react-spring-bottom-sheet";
-import "react-spring-bottom-sheet/dist/style.css";
+import Drawer from "@mui/material/Drawer";
 
 function App() {
   const [data, setData] = useState([]);
@@ -12,7 +11,7 @@ function App() {
   const [userPinCoords, setUserPinCoords] = useState(null);
   const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     fetch("umap_data.json")
@@ -33,7 +32,7 @@ function App() {
 
   useEffect(() => {
     if (nearestPoints.length > 0) {
-      setIsPanelOpen(true);
+      setIsDrawerOpen(true);
     }
   }, [nearestPoints]);
 
@@ -221,28 +220,6 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
-      {is3D && (
-        <select
-          value={zMetric}
-          onChange={e => setZMetric(e.target.value)}
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            zIndex: 1,
-            padding: "6px",
-            fontSize: "14px",
-          }}
-        >
-          <option value="">ー</option>
-          <option value="ブドウ糖">ブドウ糖</option>
-          <option value="リンゴ酸">リンゴ酸</option>
-          <option value="総ポリフェノール">総ポリフェノール</option>
-          <option value="Vanillin">Vanillin</option>
-          <option value="Furfural">Furfural</option>
-        </select>
-      )}
-
       {viewState && (
         <div
           style={{
@@ -270,17 +247,17 @@ function App() {
         </div>
       )}
 
-      {nearestPoints.length > 0 && (
-        <BottomSheet
-          open={isPanelOpen}
-          onDismiss={() => setIsPanelOpen(false)}
-          snapPoints={({ maxHeight }) => [
-            maxHeight * 0.2,
-            maxHeight * 0.5,
-            maxHeight * 0.9
-          ]}
-          defaultSnap={({ maxHeight }) => maxHeight * 0.5}
-        >
+      <Drawer
+        anchor="bottom"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        ModalProps={{ keepMounted: true }}
+        PaperProps={{
+          style: { height: "50%" }
+        }}
+      >
+        <div style={{ padding: "16px" }}>
+          <h3>最近傍ワインリスト</h3>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {nearestPoints.map((item, idx) => (
               <li
@@ -305,8 +282,8 @@ function App() {
               </li>
             ))}
           </ul>
-        </BottomSheet>
-      )}
+        </div>
+      </Drawer>
     </div>
   );
 }
