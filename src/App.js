@@ -25,6 +25,7 @@ function App() {
   const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [listMode, setListMode] = useState("nearest"); // "nearest" または "mywine"
   const [userRatings, setUserRatings] = useState({});
   const [productWindow, setProductWindow] = useState(null);
 
@@ -70,7 +71,7 @@ function App() {
     if (drawerContentRef.current) {
       drawerContentRef.current.scrollTop = 0;
     }
-  }, [nearestPoints]);
+  }, [nearestPoints, listMode]);
 
   useEffect(() => {
     const handleStorage = (event) => {
@@ -179,7 +180,7 @@ function App() {
     data: data.filter((d) => userRatings[d.JAN]),
     getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
     getFillColor: [255, 165, 0, 180],
-    getRadius: (d) => userRatings[d.JAN] * 0.1,
+    getRadius: (d) => (userRatings[d.JAN]?.score || 1) * 0.1,
     sizeUnits: "common",
     pickable: false,
   });
@@ -216,41 +217,24 @@ function App() {
       })
     : null;
 
+  const displayList = useMemo(() => {
+    if (listMode === "nearest") return nearestPoints;
+
+    return Object.entries(userRatings)
+      .map(([jan, val]) => {
+        const wine = data.find(d => d.JAN === jan);
+        return wine ? {
+          ...wine,
+          rating: val.score,
+          date: val.date
+        } : null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [listMode, nearestPoints, userRatings, data]);
+
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      {!is3D && (
-        <>
-          <div style={{
-            position: "absolute", top: "10px", left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 2, background: "rgba(255,255,255,0.85)",
-            padding: "4px 8px", borderRadius: "4px",
-            fontSize: "14px", fontWeight: "bold"
-          }}>↑ Sweet</div>
-          <div style={{
-            position: "absolute", bottom: "10px", left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 2, background: "rgba(255,255,255,0.85)",
-            padding: "4px 8px", borderRadius: "4px",
-            fontSize: "14px", fontWeight: "bold"
-          }}>↓ Dry</div>
-          <div style={{
-            position: "absolute", top: "50%", left: "10px",
-            transform: "translateY(-50%)",
-            zIndex: 2, background: "rgba(255,255,255,0.85)",
-            padding: "4px 8px", borderRadius: "4px",
-            fontSize: "14px", fontWeight: "bold"
-          }}>← Light</div>
-          <div style={{
-            position: "absolute", top: "50%", right: "10px",
-            transform: "translateY(-50%)",
-            zIndex: 2, background: "rgba(255,255,255,0.85)",
-            padding: "4px 8px", borderRadius: "4px",
-            fontSize: "14px", fontWeight: "bold"
-          }}>Heavy →</div>
-        </>
-      )}
-
       <DeckGL
         views={is3D ? new OrbitView() : new OrthographicView()}
         viewState={viewState}
@@ -278,6 +262,7 @@ function App() {
               .slice(0, 10);
 
             setNearestPoints(nearest);
+            setListMode("nearest");
             setIsDrawerOpen(true);
           }
         }}
@@ -299,54 +284,6 @@ function App() {
         ]}
       />
 
-      {is3D && (
-        <select
-          value={zMetric}
-          onChange={(e) => setZMetric(e.target.value)}
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            zIndex: 1,
-            padding: "6px",
-            fontSize: "14px",
-          }}
-        >
-          <option value="">ー</option>
-          <option value="ブドウ糖">甘味</option>
-          <option value="リンゴ酸">フルティー</option>
-          <option value="総ポリフェノール">渋味</option>
-          <option value="Vanillin">Vanillin</option>
-          <option value="Furfural">Furfural</option>
-        </select>
-      )}
-
-      <button
-        onClick={() => {
-          const nextIs3D = !is3D;
-          setIs3D(nextIs3D);
-          setViewState((prev) => ({
-            ...prev,
-            rotationX: nextIs3D ? 30 : 0,
-            rotationOrbit: nextIs3D ? 30 : 0,
-          }));
-        }}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: 1,
-          padding: "8px 12px",
-          fontSize: "14px",
-          background: "#fff",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        {is3D ? "→ Map" : "→ TasteData"}
-      </button>
-
       <Drawer
         anchor="bottom"
         open={isDrawerOpen}
@@ -362,12 +299,25 @@ function App() {
             borderBottom: "1px solid #ddd",
             background: "#f9f9f9",
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: "space-between"
           }}
         >
           <button
+            onClick={() => setListMode(listMode === "nearest" ? "mywine" : "nearest")}
+            style={{
+              background: "#eee",
+              border: "none",
+              padding: "8px 12px",
+              borderRadius: "4px",
+              cursor: "pointer"
+            }}
+          >
+            {listMode === "nearest" ? "My Wine" : "打点に近いワイン"}
+          </button>
+          <button
             onClick={() => {
               setIsDrawerOpen(false);
+              setListMode("nearest");
               if (productWindow) {
                 productWindow.close();
                 setProductWindow(null);
@@ -378,7 +328,7 @@ function App() {
               border: "none",
               padding: "8px 12px",
               borderRadius: "4px",
-              cursor: "pointer",
+              cursor: "pointer"
             }}
           >
             閉じる
@@ -393,9 +343,9 @@ function App() {
             flex: 1,
           }}
         >
-          <h3>打点に近いワイン</h3>
+          <h3>{listMode === "nearest" ? "打点に近いワイン" : "My Wine"}</h3>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {nearestPoints.map((item, idx) => (
+            {displayList.map((item, idx) => (
               <li
                 key={idx}
                 onClick={() => {
@@ -405,14 +355,28 @@ function App() {
                 style={{
                   padding: "8px 0",
                   borderBottom: "1px solid #eee",
-                  cursor: "pointer",
+                  cursor: "pointer"
                 }}
               >
-                <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-                <br />
-                <small>
-                  Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
-                </small>
+                {listMode === "nearest" ? (
+                  <>
+                    <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+                    <br />
+                    <small>
+                      Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
+                    </small>
+                  </>
+                ) : (
+                  <>
+                    <strong>{item.商品名 || "（名称不明）"}</strong>
+                    <br />
+                    <small>
+                      登録日: {item.date ? new Date(item.date).toLocaleString() : "不明"}<br/>
+                      Type: {item.Type || "不明"}<br/>
+                      評価: {"★".repeat(item.rating || 1)}
+                    </small>
+                  </>
+                )}
               </li>
             ))}
           </ul>
