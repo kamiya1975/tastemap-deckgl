@@ -57,7 +57,7 @@ function App() {
     const endX = +100;
     const startY = -100;
     const endY = +100;
-    const spacing = 2;
+    const spacing = 1;
 
     const lines = [];
     for (let x = startX; x <= endX; x += spacing) {
@@ -192,7 +192,7 @@ function App() {
               getSourcePosition: d => d.sourcePosition,
               getTargetPosition: d => d.targetPosition,
               getColor: [200, 200, 200, 120],
-              getWidth: 1,
+              getWidth: 0.5,
               pickable: false,
             }),
             mainLayer,
