@@ -34,7 +34,6 @@ function App() {
       .then((res) => res.json())
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
-        // 商品名をNameにコピー
         setData(
           d.map((item) => ({
             ...item,
@@ -44,7 +43,6 @@ function App() {
       });
   }, []);
 
-  // 永続化
   useEffect(() => {
     const stored = localStorage.getItem("userRatings");
     if (stored) {
@@ -155,8 +153,9 @@ function App() {
         sizeUnits: "common",
         pickable: true,
         onClick: (info) => {
-          if (info && (info.coordinate || info.position)) {
-            const [x, y] = info.coordinate || info.position;
+          // 修正: coordinateがあるときだけ処理する
+          if (info && info.coordinate) {
+            const [x, y] = info.coordinate;
             setUserPinCoords([x, y]);
 
             const nearest = data
