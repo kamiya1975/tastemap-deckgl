@@ -26,7 +26,7 @@ function App() {
   const [zMetric, setZMetric] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [userRatings, setUserRatings] = useState({});
-  const [productWindow, setProductWindow] = useState(null); // 💡 開いたウィンドウを保持
+  const [productWindow, setProductWindow] = useState(null);
 
   const drawerContentRef = useRef(null);
 
@@ -35,12 +35,13 @@ function App() {
       .then((res) => res.json())
       .then((d) => {
         console.log("データ読み込み完了:", d.length, "件");
-        setData(
-          d.map((item) => ({
-            ...item,
-            Name: item["商品名"],
-          }))
-        );
+        const mapped = d.map((item) => ({
+          ...item,
+          Name: item["商品名"],
+        }));
+        setData(mapped);
+        // 💡 ProductPage用に保存
+        localStorage.setItem("umapData", JSON.stringify(mapped));
       });
   }, []);
 
@@ -123,7 +124,7 @@ function App() {
           if (info && info.object) {
             const { umap_x, umap_y } = info.object;
             setViewState((prev) => ({
-              ...(prev || {}),
+              ...prev,
               target: [umap_x, umap_y, 0],
             }));
           }
@@ -246,6 +247,56 @@ function App() {
         />
       )}
 
+      <button
+        onClick={() => {
+          const nextIs3D = !is3D;
+          setIs3D(nextIs3D);
+          setViewState((prev) => ({
+            ...prev,
+            target: prev?.target || [0, 0, 0],
+            rotationX: nextIs3D ? 30 : 0,
+            rotationOrbit: nextIs3D ? 30 : 0,
+            zoom: prev?.zoom || 5,
+          }));
+        }}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 1,
+          padding: "8px 12px",
+          fontSize: "14px",
+          background: "#fff",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+      >
+        {is3D ? "2D表示" : "3D表示"}
+      </button>
+
+      {is3D && (
+        <select
+          value={zMetric}
+          onChange={(e) => setZMetric(e.target.value)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 1,
+            padding: "6px",
+            fontSize: "14px",
+          }}
+        >
+          <option value="">ー</option>
+          <option value="ブドウ糖">ブドウ糖</option>
+          <option value="リンゴ酸">リンゴ酸</option>
+          <option value="総ポリフェノール">総ポリフェノール</option>
+          <option value="Vanillin">Vanillin</option>
+          <option value="Furfural">Furfural</option>
+        </select>
+      )}
+
       <Drawer
         anchor="bottom"
         open={isDrawerOpen}
@@ -267,7 +318,7 @@ function App() {
             onClick={() => {
               setIsDrawerOpen(false);
               if (productWindow) {
-                productWindow.close(); // 💡 開いたタブを閉じる
+                productWindow.close();
                 setProductWindow(null);
               }
             }}
@@ -290,11 +341,11 @@ function App() {
                 key={idx}
                 onClick={() => {
                   setViewState((prev) => ({
-                    ...(prev || {}),
+                    ...prev,
                     target: [item.umap_x, item.umap_y, 0],
                   }));
                   const newWin = window.open(`/products/${item.JAN}`, "_blank");
-                  setProductWindow(newWin); // 💡 開いたタブを保持
+                  setProductWindow(newWin);
                 }}
                 style={{
                   padding: "8px 0",
