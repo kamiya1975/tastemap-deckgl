@@ -57,7 +57,7 @@ function App() {
     const endX = +100;
     const startY = -100;
     const endY = +100;
-    const spacing = 1;
+    const spacing = 0.1;
 
     const lines = [];
     for (let x = startX; x <= endX; x += spacing) {
