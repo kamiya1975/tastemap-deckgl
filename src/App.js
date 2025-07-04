@@ -267,7 +267,7 @@ function App() {
           if (is3D) return;
           if (info && info.coordinate) {
             const [x, y] = info.coordinate;
-            setUserPinCoords([x, y * -1]);
+            setUserPinCoords([x, y]);
 
             const nearest = data
               .map((d) => ({
