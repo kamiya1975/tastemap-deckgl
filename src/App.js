@@ -6,7 +6,7 @@ import Drawer from "@mui/material/Drawer";
 
 function App() {
   const [data, setData] = useState([]);
-  const [is3D, setIs3D] = useState(false); // ←デフォルトを2Dに
+  const [is3D, setIs3D] = useState(false); // デフォルト2D
   const [viewState, setViewState] = useState(null);
   const [userPinCoords, setUserPinCoords] = useState(null);
   const [nearestPoints, setNearestPoints] = useState([]);
@@ -52,28 +52,39 @@ function App() {
     Other: [150, 150, 150],
   };
 
+  // グリッド線
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
     const startY = -100;
     const endY = +100;
-    const spacing = 0.1;
+    const spacing = 1;
 
     const lines = [];
+
     for (let x = startX; x <= endX; x += spacing) {
+      const isHighlight = nearestPoints.some(
+        p => Math.abs(p.umap_x - x) < spacing / 2
+      );
       lines.push({
         sourcePosition: [x, startY, 0],
         targetPosition: [x, endY, 0],
+        isHighlight
       });
     }
+
     for (let y = startY; y <= endY; y += spacing) {
+      const isHighlight = nearestPoints.some(
+        p => Math.abs(p.umap_y - y) < spacing / 2
+      );
       lines.push({
         sourcePosition: [startX, y, 0],
         targetPosition: [endX, y, 0],
+        isHighlight
       });
     }
     return lines;
-  }, []);
+  }, [nearestPoints]);
 
   const mainLayer = useMemo(() => {
     if (is3D) {
@@ -164,10 +175,7 @@ function App() {
             maxZoom: 10.0,
           }}
           onClick={info => {
-            if (is3D) {
-              // 3Dでは打点を無効化
-              return;
-            }
+            if (is3D) return;
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
               setUserPinCoords([x, y]);
@@ -191,7 +199,10 @@ function App() {
               data: gridLines,
               getSourcePosition: d => d.sourcePosition,
               getTargetPosition: d => d.targetPosition,
-              getColor: [200, 200, 200, 120],
+              getColor: d =>
+                d.isHighlight
+                  ? [120, 120, 120, 200]
+                  : [200, 200, 200, 100],
               getWidth: 0.5,
               pickable: false,
             }),
