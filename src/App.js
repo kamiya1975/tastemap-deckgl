@@ -26,6 +26,7 @@ function App() {
   const [zMetric, setZMetric] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [userRatings, setUserRatings] = useState({});
+  const [productWindow, setProductWindow] = useState(null); // 💡 開いたウィンドウを保持
 
   const drawerContentRef = useRef(null);
 
@@ -245,56 +246,6 @@ function App() {
         />
       )}
 
-      <button
-        onClick={() => {
-          const nextIs3D = !is3D;
-          setIs3D(nextIs3D);
-          setViewState((prev) => ({
-            ...(prev || {}),
-            target: prev?.target || [0, 0, 0],
-            rotationX: nextIs3D ? 30 : 0,
-            rotationOrbit: nextIs3D ? 30 : 0,
-            zoom: prev?.zoom || 5,
-          }));
-        }}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: 1,
-          padding: "8px 12px",
-          fontSize: "14px",
-          background: "#fff",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        {is3D ? "2D表示" : "3D表示"}
-      </button>
-
-      {is3D && (
-        <select
-          value={zMetric}
-          onChange={(e) => setZMetric(e.target.value)}
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            zIndex: 1,
-            padding: "6px",
-            fontSize: "14px",
-          }}
-        >
-          <option value="">ー</option>
-          <option value="ブドウ糖">ブドウ糖</option>
-          <option value="リンゴ酸">リンゴ酸</option>
-          <option value="総ポリフェノール">総ポリフェノール</option>
-          <option value="Vanillin">Vanillin</option>
-          <option value="Furfural">Furfural</option>
-        </select>
-      )}
-
       <Drawer
         anchor="bottom"
         open={isDrawerOpen}
@@ -313,7 +264,13 @@ function App() {
           }}
         >
           <button
-            onClick={() => setIsDrawerOpen(false)}
+            onClick={() => {
+              setIsDrawerOpen(false);
+              if (productWindow) {
+                productWindow.close(); // 💡 開いたタブを閉じる
+                setProductWindow(null);
+              }
+            }}
             style={{
               display: "block",
               marginBottom: "8px",
@@ -336,6 +293,8 @@ function App() {
                     ...(prev || {}),
                     target: [item.umap_x, item.umap_y, 0],
                   }));
+                  const newWin = window.open(`/products/${item.JAN}`, "_blank");
+                  setProductWindow(newWin); // 💡 開いたタブを保持
                 }}
                 style={{
                   padding: "8px 0",
