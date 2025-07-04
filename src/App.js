@@ -6,7 +6,7 @@ import Drawer from "@mui/material/Drawer";
 
 function App() {
   const [data, setData] = useState([]);
-  const [is3D, setIs3D] = useState(true);
+  const [is3D, setIs3D] = useState(false); // ←デフォルトを2Dに
   const [viewState, setViewState] = useState(null);
   const [userPinCoords, setUserPinCoords] = useState(null);
   const [nearestPoints, setNearestPoints] = useState([]);
@@ -23,8 +23,8 @@ function App() {
         setData(d);
         setViewState({
           target: [0, 0, 0],
-          rotationX: 30,
-          rotationOrbit: 30,
+          rotationX: 0,
+          rotationOrbit: 0,
           zoom: 5,
           minZoom: 4.0,
           maxZoom: 10.0,
