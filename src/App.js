@@ -53,7 +53,7 @@ function App() {
   };
 
   // グリッド線の間隔
-  const gridInterval = 0.5; // ←ここを0.2や1.0に変更すれば調整可能
+  const gridInterval = 0.2; // ←ここを0.2や1.0に変更すれば調整可能
 
   // グリッド線
   const gridLines = useMemo(() => {
