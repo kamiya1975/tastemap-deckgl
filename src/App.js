@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer, GridCellLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 
 function App() {
@@ -52,24 +52,24 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // グリッド線の間隔
-  const gridInterval = 0.2; // ←ここを0.2や1.0に変更すれば調整可能
+  // 細かいグリッド間隔
+  const gridInterval = 2; // ←ここを0.5や1.0に変えれば線の細かさ調整可能
 
-  // グリッド線
   const gridLines = useMemo(() => {
     const startX = -100;
     const endX = +100;
     const startY = -100;
     const endY = +100;
+    const spacing = gridInterval;
 
     const lines = [];
-    for (let x = startX; x <= endX; x += gridInterval) {
+    for (let x = startX; x <= endX; x += spacing) {
       lines.push({
         sourcePosition: [x, startY, 0],
         targetPosition: [x, endY, 0],
       });
     }
-    for (let y = startY; y <= endY; y += gridInterval) {
+    for (let y = startY; y <= endY; y += spacing) {
       lines.push({
         sourcePosition: [startX, y, 0],
         targetPosition: [endX, y, 0],
@@ -78,23 +78,6 @@ function App() {
     return lines;
   }, [gridInterval]);
 
-  // グリッドセル（背景ブロック）
-  const cellSize = gridInterval; // ここも合わせて統一
-  const cells = useMemo(() => {
-    const map = new Map();
-    data.forEach(d => {
-      const x = Math.floor(d.umap_x / cellSize) * cellSize;
-      const y = Math.floor(d.umap_y / cellSize) * cellSize;
-      const key = `${x},${y}`;
-      if (!map.has(key)) {
-        map.set(key, { position: [x, y], count: 0 });
-      }
-      map.get(key).count += 1;
-    });
-    return Array.from(map.values());
-  }, [data, cellSize]);
-
-  // ワイン打点
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
@@ -138,16 +121,6 @@ function App() {
       });
     }
   }, [data, is3D, zMetric]);
-
-  const gridCellLayer = new GridCellLayer({
-    id: "grid-cells",
-    data: cells,
-    cellSize: cellSize,
-    getPosition: d => d.position,
-    getFillColor: [200, 200, 200, 100],
-    getElevation: 0,
-    pickable: false,
-  });
 
   const userPinLayer = userPinCoords
     ? new ScatterplotLayer({
@@ -199,24 +172,22 @@ function App() {
               const nearest = data
                 .map(d => ({
                   ...d,
-                  distance: Math.sqrt(
-                    Math.pow(d.umap_x - x, 2) + Math.pow(d.umap_y - y, 2)
-                  ),
+                  distance: Math.hypot(d.umap_x - x, d.umap_y - y),
                 }))
                 .sort((a, b) => a.distance - b.distance)
                 .slice(0, 10);
+
               setNearestPoints(nearest);
             }
           }}
           layers={[
-            gridCellLayer,
             new LineLayer({
               id: "grid-lines",
               data: gridLines,
               getSourcePosition: d => d.sourcePosition,
               getTargetPosition: d => d.targetPosition,
               getColor: [200, 200, 200, 120],
-              getWidth: 0.5,
+              getWidth: 1,
               pickable: false,
             }),
             mainLayer,
@@ -258,8 +229,6 @@ function App() {
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
             zoom: prev?.zoom || 5,
-            minZoom: 4.0,
-            maxZoom: 10.0,
           }));
         }}
         style={{
@@ -278,17 +247,64 @@ function App() {
         {is3D ? "2D表示" : "3D表示"}
       </button>
 
-      <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-  <div ref={drawerContentRef} style={{ width: "100%", padding: 16 }}>
-    <h3>近いワイン</h3>
-    {nearestPoints.map((d, i) => (
-      <div key={i} style={{ marginBottom: 8 }}>
-        {i + 1}. {d.Name || d.JAN}
-      </div>
-    ))}
-  </div>
-</Drawer>
-
+      <Drawer
+        anchor="bottom"
+        open={isDrawerOpen}
+        variant="persistent"
+        hideBackdrop
+        PaperProps={{
+          style: { height: "50%" }
+        }}
+      >
+        <div
+          ref={drawerContentRef}
+          style={{
+            padding: "16px",
+            overflowY: "auto",
+            height: "100%",
+          }}
+        >
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            style={{
+              display: "block",
+              marginBottom: "8px",
+              background: "#eee",
+              border: "none",
+              padding: "8px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            閉じる
+          </button>
+          <h3>最近傍ワインリスト</h3>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {nearestPoints.map((item, idx) => (
+              <li
+                key={idx}
+                onClick={() => {
+                  setViewState(prev => ({
+                    ...(prev || {}),
+                    target: [item.umap_x, item.umap_y, 0],
+                  }));
+                }}
+                style={{
+                  padding: "8px 0",
+                  borderBottom: "1px solid #eee",
+                  cursor: "pointer",
+                }}
+              >
+                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
+                <br />
+                <small>
+                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+                </small>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Drawer>
     </div>
   );
 }
