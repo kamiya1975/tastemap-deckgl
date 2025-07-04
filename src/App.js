@@ -137,7 +137,7 @@ function App() {
         radius: 0.05,
         extruded: true,
         elevationScale: 2,
-        getPosition: (d) => [d.BodyAxis, d.SweetAxis],
+        getPosition: (d) => [d.BodyAxis, -d.SweetAxis],
         getElevation: (d) => (zMetric ? Number(d[zMetric]) || 0 : 0),
         getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
@@ -155,7 +155,7 @@ function App() {
       return new ScatterplotLayer({
         id: "scatter",
         data,
-        getPosition: (d) => [d.BodyAxis, d.SweetAxis, 0],
+        getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
         getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         getRadius: 0.05,
         pickable: true,
@@ -226,14 +226,14 @@ function App() {
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
             fontSize: "14px", fontWeight: "bold"
-          }}>↑ Dry</div>
+          }}>↑ Sweet</div>
           <div style={{
             position: "absolute", bottom: "10px", left: "50%",
             transform: "translateX(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
             fontSize: "14px", fontWeight: "bold"
-          }}>↓ Sweet</div>
+          }}>↓ Dry</div>
           <div style={{
             position: "absolute", top: "50%", left: "10px",
             transform: "translateY(-50%)",
