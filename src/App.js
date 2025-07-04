@@ -226,14 +226,14 @@ function App() {
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
             fontSize: "14px", fontWeight: "bold"
-          }}>↑ Sweet</div>
+          }}>↑ Dry</div>
           <div style={{
             position: "absolute", bottom: "10px", left: "50%",
             transform: "translateX(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
             fontSize: "14px", fontWeight: "bold"
-          }}>↓ Dry</div>
+          }}>↓ Sweet</div>
           <div style={{
             position: "absolute", top: "50%", left: "10px",
             transform: "translateY(-50%)",
