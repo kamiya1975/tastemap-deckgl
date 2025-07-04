@@ -97,7 +97,7 @@ function App() {
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
-        id: columns-${zMetric},
+        id: `columns-${zMetric}`,
         data,
         diskResolution: 12,
         radius: 0.05,
