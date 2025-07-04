@@ -30,17 +30,29 @@ function App() {
 
   const drawerContentRef = useRef(null);
 
+  // ✅ PCA + UMAPをマージして読み込み
   useEffect(() => {
-    fetch("umap_data.json")
-      .then((res) => res.json())
-      .then((d) => {
-        const mapped = d.map((item) => ({
-          ...item,
-          Name: item["商品名"],
-        }));
-        setData(mapped);
-        localStorage.setItem("umapData", JSON.stringify(mapped));
+    Promise.all([
+      fetch("pca_result.json").then((res) => res.json()),
+      fetch("umap_data.json").then((res) => res.json())
+    ])
+    .then(([pcaData, umapData]) => {
+      const umapMap = {};
+      umapData.forEach((item) => {
+        umapMap[item.JAN] = item;
       });
+
+      const merged = pcaData.map((item) => ({
+        ...item,
+        ...(umapMap[item.JAN] || {})
+      }));
+
+      setData(merged);
+      localStorage.setItem("umapData", JSON.stringify(merged));
+    })
+    .catch((error) => {
+      console.error("データ取得エラー:", error);
+    });
   }, []);
 
   useEffect(() => {
@@ -102,8 +114,8 @@ function App() {
   const cells = useMemo(() => {
     const map = new Map();
     data.forEach((d) => {
-      const x = Math.floor(d.umap_x / cellSize) * cellSize;
-      const y = Math.floor(d.umap_y / cellSize) * cellSize;
+      const x = Math.floor(d.BodyAxis / cellSize) * cellSize;
+      const y = Math.floor(d.SweetAxis / cellSize) * cellSize;
       const key = `${x},${y}`;
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0, hasRating: false });
@@ -125,16 +137,16 @@ function App() {
         radius: 0.05,
         extruded: true,
         elevationScale: 2,
-        getPosition: (d) => [d.umap_x, d.umap_y],
+        getPosition: (d) => [d.BodyAxis, d.SweetAxis],
         getElevation: (d) => (zMetric ? Number(d[zMetric]) || 0 : 0),
         getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
         onClick: (info) => {
           if (info && info.object) {
-            const { umap_x, umap_y } = info.object;
+            const { BodyAxis, SweetAxis } = info.object;
             setViewState((prev) => ({
               ...prev,
-              target: [umap_x, umap_y, 0],
+              target: [BodyAxis, SweetAxis, 0],
             }));
           }
         },
@@ -143,7 +155,7 @@ function App() {
       return new ScatterplotLayer({
         id: "scatter",
         data,
-        getPosition: (d) => [d.umap_x, d.umap_y, 0],
+        getPosition: (d) => [d.BodyAxis, d.SweetAxis, 0],
         getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         getRadius: 0.05,
         pickable: true,
@@ -165,7 +177,7 @@ function App() {
   const ratingLayer = new ScatterplotLayer({
     id: "rating-bubbles",
     data: data.filter((d) => userRatings[d.JAN]),
-    getPosition: (d) => [d.umap_x, d.umap_y, 0],
+    getPosition: (d) => [d.BodyAxis, d.SweetAxis, 0],
     getFillColor: [255, 165, 0, 180],
     getRadius: (d) => userRatings[d.JAN] * 0.1,
     sizeUnits: "common",
@@ -188,8 +200,8 @@ function App() {
         id: "nearest-labels",
         data: nearestPoints.map((d, i) => ({
           position: [
-            d.umap_x,
-            d.umap_y,
+            d.BodyAxis,
+            d.SweetAxis,
             is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0,
           ],
           text: String(i + 1),
@@ -260,7 +272,7 @@ function App() {
             const nearest = data
               .map((d) => ({
                 ...d,
-                distance: Math.hypot(d.umap_x - x, d.umap_y - y),
+                distance: Math.hypot(d.BodyAxis - x, d.SweetAxis - y),
               }))
               .sort((a, b) => a.distance - b.distance)
               .slice(0, 10);
@@ -396,10 +408,10 @@ function App() {
                   cursor: "pointer",
                 }}
               >
-                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
+                <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
                 <br />
                 <small>
-                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+                  Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
                 </small>
               </li>
             ))}
