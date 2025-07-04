@@ -206,6 +206,39 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+      {/* 北 */}
+      <div style={{
+        position: "absolute", top: "10px", left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 2, background: "rgba(255,255,255,0.85)",
+        padding: "4px 8px", borderRadius: "4px",
+        fontSize: "14px", fontWeight: "bold"
+      }}>↑ 甘い</div>
+      {/* 南 */}
+      <div style={{
+        position: "absolute", bottom: "10px", left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 2, background: "rgba(255,255,255,0.85)",
+        padding: "4px 8px", borderRadius: "4px",
+        fontSize: "14px", fontWeight: "bold"
+      }}>↓ 渋い</div>
+      {/* 西 */}
+      <div style={{
+        position: "absolute", top: "50%", left: "10px",
+        transform: "translateY(-50%)",
+        zIndex: 2, background: "rgba(255,255,255,0.85)",
+        padding: "4px 8px", borderRadius: "4px",
+        fontSize: "14px", fontWeight: "bold"
+      }}>← 酸っぱい</div>
+      {/* 東 */}
+      <div style={{
+        position: "absolute", top: "50%", right: "10px",
+        transform: "translateY(-50%)",
+        zIndex: 2, background: "rgba(255,255,255,0.85)",
+        padding: "4px 8px", borderRadius: "4px",
+        fontSize: "14px", fontWeight: "bold"
+      }}>ボディ強い →</div>
+
       <DeckGL
         views={is3D ? new OrbitView() : new OrthographicView()}
         viewState={viewState}
@@ -275,7 +308,6 @@ function App() {
           <option value="Furfural">Furfural</option>
         </select>
       )}
-
       <button
         onClick={() => {
           const nextIs3D = !is3D;
@@ -352,25 +384,24 @@ function App() {
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {nearestPoints.map((item, idx) => (
               <li
-              key={idx}
-  onClick={() => {
-    const newWin = window.open(`/products/${item.JAN}`, "_blank");
-    setProductWindow(newWin);
-  }}
-  style={{
-    padding: "8px 0",
-    borderBottom: "1px solid #eee",
-    cursor: "pointer",
-  }}
->
-  <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
-  <br />
-  <small>
-    Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
-  </small>
-  <br />
-</li>
-
+                key={idx}
+                onClick={() => {
+                  const newWin = window.open(`/products/${item.JAN}`, "_blank");
+                  setProductWindow(newWin);
+                }}
+                style={{
+                  padding: "8px 0",
+                  borderBottom: "1px solid #eee",
+                  cursor: "pointer",
+                }}
+              >
+                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
+                <br />
+                <small>
+                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+                </small>
+                <br />
+              </li>
             ))}
           </ul>
         </div>
