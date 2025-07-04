@@ -282,70 +282,80 @@ function App() {
       </button>
 
       <Drawer
-        anchor="bottom"
-        open={isDrawerOpen}
-        variant="persistent"
-        hideBackdrop
-        PaperProps={{
-          style: { height: "50%" },
-        }}
-      >
-        <div
-          ref={drawerContentRef}
+  anchor="bottom"
+  open={isDrawerOpen}
+  variant="persistent"
+  hideBackdrop
+  PaperProps={{
+    style: { height: "50%", display: "flex", flexDirection: "column" },
+  }}
+>
+  {/* 固定ヘッダー */}
+  <div
+    style={{
+      padding: "8px 16px",
+      borderBottom: "1px solid #ddd",
+      background: "#f9f9f9",
+      display: "flex",
+      justifyContent: "flex-end",
+    }}
+  >
+    <button
+      onClick={() => {
+        setIsDrawerOpen(false);
+        if (productWindow) {
+          productWindow.close();
+          setProductWindow(null);
+        }
+      }}
+      style={{
+        background: "#eee",
+        border: "none",
+        padding: "8px 12px",
+        borderRadius: "4px",
+        cursor: "pointer",
+      }}
+    >
+      閉じる
+    </button>
+  </div>
+
+  {/* スクロール部分 */}
+  <div
+    ref={drawerContentRef}
+    style={{
+      padding: "16px",
+      overflowY: "auto",
+      flex: 1,
+    }}
+  >
+    <h3>最近傍ワインリスト</h3>
+    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+      {nearestPoints.map((item, idx) => (
+        <li
+          key={idx}
+          onClick={() => {
+            setViewState((prev) => ({
+              ...prev,
+              target: [item.umap_x, item.umap_y, 0],
+            }));
+            const newWin = window.open(`/products/${item.JAN}`, "_blank");
+            setProductWindow(newWin);
+          }}
           style={{
-            padding: "16px",
-            overflowY: "auto",
-            height: "100%",
+            padding: "8px 0",
+            borderBottom: "1px solid #eee",
+            cursor: "pointer",
           }}
         >
-          <button
-            onClick={() => {
-              setIsDrawerOpen(false);
-              if (productWindow) {
-                productWindow.close();
-                setProductWindow(null);
-              }
-            }}
-            style={{
-              display: "block",
-              marginLeft: "auto",
-              marginBottom: "8px",
-              background: "#eee",
-              border: "none",
-              padding: "8px",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            閉じる
-          </button>
-          <h3>最近傍ワインリスト</h3>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {nearestPoints.map((item, idx) => (
-              <li
-                key={idx}
-                onClick={() => {
-                  const newWin = window.open(`/products/${item.JAN}`, "_blank");
-                  setProductWindow(newWin);
-                }}
-                style={{
-                  padding: "8px 0",
-                  borderBottom: "1px solid #eee",
-                  cursor: "pointer",
-                }}
-              >
-                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
-                <br />
-                <small>
-                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
-                </small>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Drawer>
-    </div>
-  );
-}
-
-export default App;
+          <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
+          <br />
+          <small>
+            Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
+          </small>
+          <br />
+        </li>
+      ))}
+    </ul>
+  </div>
+</Drawer>
