@@ -30,7 +30,7 @@ function App() {
 
   const drawerContentRef = useRef(null);
 
-  // ✅ PCA + UMAPをマージして読み込み
+  // PCA + UMAPをマージして読み込み
   useEffect(() => {
     Promise.all([
       fetch("pca_result.json").then((res) => res.json()),
@@ -115,7 +115,7 @@ function App() {
     const map = new Map();
     data.forEach((d) => {
       const x = Math.floor(d.BodyAxis / cellSize) * cellSize;
-      const y = Math.floor(d.SweetAxis / cellSize) * cellSize;
+      const y = Math.floor(-d.SweetAxis / cellSize) * cellSize;
       const key = `${x},${y}`;
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0, hasRating: false });
@@ -146,7 +146,7 @@ function App() {
             const { BodyAxis, SweetAxis } = info.object;
             setViewState((prev) => ({
               ...prev,
-              target: [BodyAxis, SweetAxis, 0],
+              target: [BodyAxis, -SweetAxis, 0],
             }));
           }
         },
@@ -177,7 +177,7 @@ function App() {
   const ratingLayer = new ScatterplotLayer({
     id: "rating-bubbles",
     data: data.filter((d) => userRatings[d.JAN]),
-    getPosition: (d) => [d.BodyAxis, d.SweetAxis, 0],
+    getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
     getFillColor: [255, 165, 0, 180],
     getRadius: (d) => userRatings[d.JAN] * 0.1,
     sizeUnits: "common",
@@ -201,7 +201,7 @@ function App() {
         data: nearestPoints.map((d, i) => ({
           position: [
             d.BodyAxis,
-            d.SweetAxis,
+            -d.SweetAxis,
             is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0,
           ],
           text: String(i + 1),
@@ -267,12 +267,12 @@ function App() {
           if (is3D) return;
           if (info && info.coordinate) {
             const [x, y] = info.coordinate;
-            setUserPinCoords([x, y]);
+            setUserPinCoords([x, y * -1]);
 
             const nearest = data
               .map((d) => ({
                 ...d,
-                distance: Math.hypot(d.BodyAxis - x, d.SweetAxis - y),
+                distance: Math.hypot(d.BodyAxis - x, -d.SweetAxis - y),
               }))
               .sort((a, b) => a.distance - b.distance)
               .slice(0, 10);
