@@ -213,7 +213,7 @@ function App() {
         zIndex: 2, background: "rgba(255,255,255,0.85)",
         padding: "4px 8px", borderRadius: "4px",
         fontSize: "14px", fontWeight: "bold"
-      }}>↑ 甘い</div>
+      }}>↑ Sweet</div>
       {/* 南 */}
       <div style={{
         position: "absolute", bottom: "10px", left: "50%",
@@ -221,7 +221,7 @@ function App() {
         zIndex: 2, background: "rgba(255,255,255,0.85)",
         padding: "4px 8px", borderRadius: "4px",
         fontSize: "14px", fontWeight: "bold"
-      }}>↓ 渋い</div>
+      }}>↓ Dry</div>
       {/* 西 */}
       <div style={{
         position: "absolute", top: "50%", left: "10px",
@@ -229,7 +229,7 @@ function App() {
         zIndex: 2, background: "rgba(255,255,255,0.85)",
         padding: "4px 8px", borderRadius: "4px",
         fontSize: "14px", fontWeight: "bold"
-      }}>← 酸っぱい</div>
+      }}>← Light</div>
       {/* 東 */}
       <div style={{
         position: "absolute", top: "50%", right: "10px",
@@ -237,7 +237,7 @@ function App() {
         zIndex: 2, background: "rgba(255,255,255,0.85)",
         padding: "4px 8px", borderRadius: "4px",
         fontSize: "14px", fontWeight: "bold"
-      }}>ボディ強い →</div>
+      }}>Heavy →</div>
 
       <DeckGL
         views={is3D ? new OrbitView() : new OrthographicView()}
