@@ -72,23 +72,17 @@ function App() {
   const cellSize = 0.2;
 
   const gridLines = useMemo(() => {
-    const startX = -100;
-    const endX = +100;
-    const startY = -100;
-    const endY = +100;
-    const spacing = gridInterval;
-
     const lines = [];
-    for (let x = startX; x <= endX; x += spacing) {
+    for (let x = -100; x <= 100; x += gridInterval) {
       lines.push({
-        sourcePosition: [x, startY, 0],
-        targetPosition: [x, endY, 0],
+        sourcePosition: [x, -100, 0],
+        targetPosition: [x, 100, 0],
       });
     }
-    for (let y = startY; y <= endY; y += spacing) {
+    for (let y = -100; y <= 100; y += gridInterval) {
       lines.push({
-        sourcePosition: [startX, y, 0],
-        targetPosition: [endX, y, 0],
+        sourcePosition: [-100, y, 0],
+        targetPosition: [100, y, 0],
       });
     }
     return lines;
@@ -121,11 +115,7 @@ function App() {
         extruded: true,
         elevationScale: 2,
         getPosition: (d) => [d.umap_x, d.umap_y],
-        getElevation: (d) => {
-          if (!zMetric) return 0;
-          const val = Number(d[zMetric]);
-          return isNaN(val) ? 0 : val;
-        },
+        getElevation: (d) => (zMetric ? Number(d[zMetric]) || 0 : 0),
         getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
         onClick: (info) => {
@@ -147,12 +137,20 @@ function App() {
         getRadius: 0.05,
         pickable: true,
         onClick: (info) => {
-          if (info && info.object) {
-            const { umap_x, umap_y } = info.object;
-            setViewState((prev) => ({
-              ...(prev || {}),
-              target: [umap_x, umap_y, 0],
-            }));
+          if (info && info.coordinate) {
+            const [x, y] = info.coordinate;
+            setUserPinCoords([x, y]);
+
+            const nearest = data
+              .map((d) => ({
+                ...d,
+                distance: Math.hypot(d.umap_x - x, d.umap_y - y),
+              }))
+              .sort((a, b) => a.distance - b.distance)
+              .slice(0, 10);
+
+            setNearestPoints(nearest);
+            setIsDrawerOpen(true);
           }
         },
       });
@@ -162,7 +160,7 @@ function App() {
   const gridCellLayer = new GridCellLayer({
     id: "grid-cells",
     data: cells,
-    cellSize: cellSize,
+    cellSize,
     getPosition: (d) => d.position,
     getFillColor: (d) =>
       d.hasRating ? [180, 100, 50, 150] : [200, 200, 200, 80],
@@ -225,24 +223,6 @@ function App() {
             minZoom: 4.0,
             maxZoom: 10.0,
           }}
-          onClick={(info) => {
-            if (is3D) return;
-            if (info && info.coordinate) {
-              const [x, y] = info.coordinate;
-              setUserPinCoords([x, y]);
-
-              const nearest = data
-                .map((d) => ({
-                  ...d,
-                  distance: Math.hypot(d.umap_x - x, d.umap_y - y),
-                }))
-                .sort((a, b) => a.distance - b.distance)
-                .slice(0, 10);
-
-              setNearestPoints(nearest);
-              setIsDrawerOpen(true);
-            }
-          }}
           layers={[
             gridCellLayer,
             new LineLayer({
@@ -260,6 +240,56 @@ function App() {
             ratingLayer,
           ]}
         />
+      )}
+
+      <button
+        onClick={() => {
+          const nextIs3D = !is3D;
+          setIs3D(nextIs3D);
+          setViewState((prev) => ({
+            ...(prev || {}),
+            target: prev?.target || [0, 0, 0],
+            rotationX: nextIs3D ? 30 : 0,
+            rotationOrbit: nextIs3D ? 30 : 0,
+            zoom: prev?.zoom || 5,
+          }));
+        }}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 1,
+          padding: "8px 12px",
+          fontSize: "14px",
+          background: "#fff",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+      >
+        {is3D ? "2D表示" : "3D表示"}
+      </button>
+
+      {is3D && (
+        <select
+          value={zMetric}
+          onChange={(e) => setZMetric(e.target.value)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 1,
+            padding: "6px",
+            fontSize: "14px",
+          }}
+        >
+          <option value="">ー</option>
+          <option value="ブドウ糖">ブドウ糖</option>
+          <option value="リンゴ酸">リンゴ酸</option>
+          <option value="総ポリフェノール">総ポリフェノール</option>
+          <option value="Vanillin">Vanillin</option>
+          <option value="Furfural">Furfural</option>
+        </select>
       )}
 
       <Drawer
