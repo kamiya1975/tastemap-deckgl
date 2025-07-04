@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { OrbitView, OrthographicView } from "@deck.gl/core";
-import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, ColumnLayer, LineLayer, TextLayer, GridCellLayer } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 
 function App() {
   const [data, setData] = useState([]);
-  const [is3D, setIs3D] = useState(false); // ←デフォルトを2Dに
+  const [is3D, setIs3D] = useState(false);
   const [viewState, setViewState] = useState(null);
   const [userPinCoords, setUserPinCoords] = useState(null);
   const [nearestPoints, setNearestPoints] = useState([]);
@@ -122,6 +122,16 @@ function App() {
     }
   }, [data, is3D, zMetric]);
 
+  const gridCellLayer = new GridCellLayer({
+    id: "grid-cells",
+    data,
+    cellSize: 1, // グリッドの大きさ
+    extruded: false, // 平面表示
+    getPosition: d => [d.umap_x, d.umap_y],
+    getFillColor: [160, 160, 160, 80], // グレー
+    pickable: false,
+  });
+
   const userPinLayer = userPinCoords
     ? new ScatterplotLayer({
         id: "user-pin",
@@ -164,10 +174,7 @@ function App() {
             maxZoom: 10.0,
           }}
           onClick={info => {
-            if (is3D) {
-              // 3Dでは打点を無効化
-              return;
-            }
+            if (is3D) return;
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
               setUserPinCoords([x, y]);
@@ -186,6 +193,7 @@ function App() {
             }
           }}
           layers={[
+            gridCellLayer,
             new LineLayer({
               id: "grid-lines",
               data: gridLines,
@@ -253,92 +261,6 @@ function App() {
       >
         {is3D ? "2D表示" : "3D表示"}
       </button>
-
-      {viewState && (
-        <div
-          style={{
-            position: "absolute",
-            top: "50px",
-            right: "10px",
-            zIndex: 1,
-            background: "rgba(255,255,255,0.9)",
-            padding: "6px 10px",
-            fontSize: "12px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <div>Zoom: {viewState.zoom.toFixed(2)}</div>
-          {is3D && (
-            <>
-              <div>RotationX: {viewState.rotationX?.toFixed(1)}°</div>
-              <div>RotationOrbit: {viewState.rotationOrbit?.toFixed(1)}°</div>
-            </>
-          )}
-          <div>
-            Center: [{viewState.target[0].toFixed(2)}, {viewState.target[1].toFixed(2)}]
-          </div>
-        </div>
-      )}
-
-      <Drawer
-        anchor="bottom"
-        open={isDrawerOpen}
-        variant="persistent"
-        hideBackdrop
-        PaperProps={{
-          style: { height: "50%" }
-        }}
-      >
-        <div
-          ref={drawerContentRef}
-          style={{
-            padding: "16px",
-            overflowY: "auto",
-            height: "100%",
-          }}
-        >
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            style={{
-              display: "block",
-              marginBottom: "8px",
-              background: "#eee",
-              border: "none",
-              padding: "8px",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            閉じる
-          </button>
-          <h3>最近傍ワインリスト</h3>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {nearestPoints.map((item, idx) => (
-              <li
-                key={idx}
-                onClick={() => {
-                  setViewState(prev => ({
-                    ...(prev || {}),
-                    target: [item.umap_x, item.umap_y, 0],
-                  }));
-                }}
-                style={{
-                  padding: "8px 0",
-                  borderBottom: "1px solid #eee",
-                  cursor: "pointer",
-                }}
-              >
-                <strong>{idx + 1}.</strong> {item.Name || "（名称不明）"}
-                <br />
-                <small>
-                  Type: {item.Type || "不明"} / 距離: {item.distance.toFixed(2)}
-                </small>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Drawer>
     </div>
   );
 }
