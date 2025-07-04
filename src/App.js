@@ -19,6 +19,7 @@ function App() {
     fetch("umap_data.json")
       .then((res) => res.json())
       .then((d) => {
+        console.log("データ読み込み完了:", d.length, "件");
         setData(d);
         setViewState({
           target: [0, 0, 0],
@@ -51,15 +52,15 @@ function App() {
     Other: [150, 150, 150],
   };
 
-  // 細かいグリッド間隔
-  const gridInterval = 0.2;
+  // グリッド線の間隔
+  const gridInterval = 0.5; // ←ここを0.2や1.0に変更すれば調整可能
 
-  // グリッドの線
+  // グリッド線
   const gridLines = useMemo(() => {
     const startX = -100;
-    const endX = 100;
+    const endX = +100;
     const startY = -100;
-    const endY = 100;
+    const endY = +100;
 
     const lines = [];
     for (let x = startX; x <= endX; x += gridInterval) {
@@ -75,14 +76,15 @@ function App() {
       });
     }
     return lines;
-  }, []);
+  }, [gridInterval]);
 
-  // セルデータ
+  // グリッドセル（背景ブロック）
+  const cellSize = gridInterval; // ここも合わせて統一
   const cells = useMemo(() => {
     const map = new Map();
     data.forEach(d => {
-      const x = Math.floor(d.umap_x / gridInterval) * gridInterval;
-      const y = Math.floor(d.umap_y / gridInterval) * gridInterval;
+      const x = Math.floor(d.umap_x / cellSize) * cellSize;
+      const y = Math.floor(d.umap_y / cellSize) * cellSize;
       const key = `${x},${y}`;
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0 });
@@ -90,9 +92,9 @@ function App() {
       map.get(key).count += 1;
     });
     return Array.from(map.values());
-  }, [data, gridInterval]);
+  }, [data, cellSize]);
 
-  // メインレイヤー
+  // ワイン打点
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
@@ -103,9 +105,18 @@ function App() {
         extruded: true,
         elevationScale: 2,
         getPosition: d => [d.umap_x, d.umap_y],
-        getElevation: d => zMetric ? Number(d[zMetric]) || 0 : 0,
+        getElevation: d => (zMetric ? Number(d[zMetric]) || 0 : 0),
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
+        onClick: info => {
+          if (info && info.object) {
+            const { umap_x, umap_y } = info.object;
+            setViewState(prev => ({
+              ...(prev || {}),
+              target: [umap_x, umap_y, 0],
+            }));
+          }
+        },
       });
     } else {
       return new ScatterplotLayer({
@@ -115,6 +126,15 @@ function App() {
         getFillColor: d => typeColorMap[d.Type] || typeColorMap.Other,
         getRadius: 0.05,
         pickable: true,
+        onClick: info => {
+          if (info && info.object) {
+            const { umap_x, umap_y } = info.object;
+            setViewState(prev => ({
+              ...(prev || {}),
+              target: [umap_x, umap_y, 0],
+            }));
+          }
+        },
       });
     }
   }, [data, is3D, zMetric]);
@@ -122,9 +142,9 @@ function App() {
   const gridCellLayer = new GridCellLayer({
     id: "grid-cells",
     data: cells,
-    cellSize: gridInterval,
+    cellSize: cellSize,
     getPosition: d => d.position,
-    getFillColor: [200, 200, 200, 120],
+    getFillColor: [200, 200, 200, 100],
     getElevation: 0,
     pickable: false,
   });
@@ -164,12 +184,18 @@ function App() {
           views={is3D ? new OrbitView() : new OrthographicView()}
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
-          controller={true}
+          controller={{
+            minRotationX: 5,
+            maxRotationX: 90,
+            minZoom: 4.0,
+            maxZoom: 10.0,
+          }}
           onClick={info => {
             if (is3D) return;
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
               setUserPinCoords([x, y]);
+
               const nearest = data
                 .map(d => ({
                   ...d,
@@ -228,8 +254,12 @@ function App() {
           setIs3D(nextIs3D);
           setViewState(prev => ({
             ...(prev || {}),
+            target: prev?.target || [0, 0, 0],
             rotationX: nextIs3D ? 30 : 0,
             rotationOrbit: nextIs3D ? 30 : 0,
+            zoom: prev?.zoom || 5,
+            minZoom: 4.0,
+            maxZoom: 10.0,
           }));
         }}
         style={{
@@ -247,6 +277,17 @@ function App() {
       >
         {is3D ? "2D表示" : "3D表示"}
       </button>
+
+      <Drawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+        <div ref={drawerContentRef} style={{ width: 300, padding: 16 }}>
+          <h3>近いワイン</h3>
+          {nearestPoints.map((d, i) => (
+            <div key={i} style={{ marginBottom: 8 }}>
+              {i + 1}. {d.Name || d.JAN}
+            </div>
+          ))}
+        </div>
+      </Drawer>
     </div>
   );
 }
