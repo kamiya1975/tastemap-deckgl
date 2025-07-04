@@ -85,7 +85,7 @@ function App() {
     data.forEach(d => {
       const x = Math.floor(d.umap_x / cellSize) * cellSize;
       const y = Math.floor(d.umap_y / cellSize) * cellSize;
-      const key = ${x},${y};
+      const key = `${x},${y}`;
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0 });
       }
