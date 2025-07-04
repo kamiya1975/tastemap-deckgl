@@ -308,6 +308,7 @@ function App() {
             }}
             style={{
               display: "block",
+              marginLeft: "auto",
               marginBottom: "8px",
               background: "#eee",
               border: "none",
