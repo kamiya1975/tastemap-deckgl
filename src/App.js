@@ -164,6 +164,10 @@ function App() {
             maxZoom: 10.0,
           }}
           onClick={info => {
+            if (is3D) {
+              // 3Dでは打点を無効化
+              return;
+            }
             if (info && info.coordinate) {
               const [x, y] = info.coordinate;
               setUserPinCoords([x, y]);
