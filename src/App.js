@@ -136,23 +136,6 @@ function App() {
         getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         getRadius: 0.05,
         pickable: true,
-        onClick: (info) => {
-          if (info && info.coordinate) {
-            const [x, y] = info.coordinate;
-            setUserPinCoords([x, y]);
-
-            const nearest = data
-              .map((d) => ({
-                ...d,
-                distance: Math.hypot(d.umap_x - x, d.umap_y - y),
-              }))
-              .sort((a, b) => a.distance - b.distance)
-              .slice(0, 10);
-
-            setNearestPoints(nearest);
-            setIsDrawerOpen(true);
-          }
-        },
       });
     }
   }, [data, is3D, zMetric]);
@@ -218,10 +201,30 @@ function App() {
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
           controller={{
+            dragPan: true,
+            dragRotate: true,
             minRotationX: 5,
             maxRotationX: 90,
             minZoom: 4.0,
             maxZoom: 10.0,
+          }}
+          onClick={(info) => {
+            if (is3D) return;
+            if (info && info.coordinate) {
+              const [x, y] = info.coordinate;
+              setUserPinCoords([x, y]);
+
+              const nearest = data
+                .map((d) => ({
+                  ...d,
+                  distance: Math.hypot(d.umap_x - x, d.umap_y - y),
+                }))
+                .sort((a, b) => a.distance - b.distance)
+                .slice(0, 10);
+
+              setNearestPoints(nearest);
+              setIsDrawerOpen(true);
+            }
           }}
           layers={[
             gridCellLayer,
