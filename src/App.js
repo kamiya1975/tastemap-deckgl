@@ -313,9 +313,9 @@ function App() {
           }}
         >
           <option value="">ー</option>
-          <option value="ブドウ糖">ブドウ糖</option>
-          <option value="リンゴ酸">リンゴ酸</option>
-          <option value="総ポリフェノール">総ポリフェノール</option>
+          <option value="ブドウ糖">甘味</option>
+          <option value="リンゴ酸">フルティー</option>
+          <option value="総ポリフェノール">渋味</option>
           <option value="Vanillin">Vanillin</option>
           <option value="Furfural">Furfural</option>
         </select>
@@ -344,7 +344,7 @@ function App() {
           cursor: "pointer",
         }}
       >
-        {is3D ? "Mapに戻る" : "TasteData"}
+        {is3D ? "→ Map" : "TasteData"}
       </button>
 
       <Drawer
