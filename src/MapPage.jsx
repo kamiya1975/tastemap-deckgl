@@ -232,7 +232,7 @@ function App() {
         getColor: [0, 0, 0],
         getTextAnchor: "middle",
         getAlignmentBaseline: "center",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "Helvetica Neue",
       })
     : null;
 
