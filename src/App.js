@@ -397,7 +397,12 @@ function App() {
          open={isSliderOpen}
          onClose={() => setIsSliderOpen(false)}
          PaperProps={{
-         style: { width: "300px", padding: "16px" },
+         style: { 
+          width: "100%", 
+          height: "300px",
+          padding: "16px",
+          boxSizing: "border-box"
+         },
         }}
       >
         <h3>TasteMap スライダー</h3>
