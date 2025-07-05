@@ -544,7 +544,14 @@ function App() {
             flex: 1,
           }}
         >
-          <h3>打点に近いワイン</h3>
+          <h3
+           style={{
+           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          }}
+        >
+           打点に近いワイン
+          </h3>
+
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {nearestPoints.map((item, idx) => (
               <li
