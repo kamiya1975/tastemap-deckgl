@@ -184,6 +184,21 @@ function App() {
     pickable: false,
   });
 
+  const ratingDateLayer = new TextLayer({
+  id: "rating-dates",
+  data: data.filter((d) => userRatings[d.JAN]),
+  getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
+  getText: (d) => {
+    const dateStr = userRatings[d.JAN]?.date;
+    return dateStr ? new Date(dateStr).toLocaleDateString() : "";
+  },
+  getSize: 14,
+  sizeUnits: "pixels",
+  getColor: [50, 50, 50, 200],
+  getTextAnchor: "start",
+  getAlignmentBaseline: "center",
+  });
+
   const userPinLayer = userPinCoords
     ? new ScatterplotLayer({
         id: "user-pin",
