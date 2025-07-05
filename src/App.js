@@ -387,6 +387,8 @@ function App() {
           <button
             onClick={() => {
               setIsDrawerOpen(false);
+              setUserPinCoords(null);
+              setNearestPoints([]);
               if (productWindow) {
                 productWindow.close();
                 setProductWindow(null);
