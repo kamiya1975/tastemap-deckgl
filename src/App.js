@@ -366,6 +366,54 @@ function App() {
         {is3D ? "→ Map" : "→ TasteData"}
       </button>
 
+      <button
+        onClick={() => setIsSliderOpen(true)}
+        style={{
+          position: "absolute",
+          top: "50px",        // 「→ TasteData」ボタンの下に配置
+          right: "10px",
+          zIndex: 1,
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          background: "#eee",
+          border: "1px solid #ccc",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "bold",
+          fontSize: "20px",
+        }}
+      >
+        ★
+      </button>
+
+      <Drawer
+         anchor="right"
+         open={isSliderOpen}
+         onClose={() => setIsSliderOpen(false)}
+         PaperProps={{
+         style: { width: "300px", padding: "16px" },
+        }}
+      >
+        <h3>TasteMap スライダー</h3>
+        <p>ここにスライダーを置きます。</p>
+      <button
+         onClick={() => setIsSliderOpen(false)}
+         style={{
+         marginTop: "16px",
+         padding: "8px 12px",
+         background: "#eee",
+         border: "1px solid #ccc",
+         borderRadius: "4px",
+         cursor: "pointer",
+        }}
+      >
+        閉じる
+      </button>
+      </Drawer>
+
       <Drawer
         anchor="bottom"
         open={isDrawerOpen}
