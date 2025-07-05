@@ -393,34 +393,107 @@ function App() {
       )}
 
       <Drawer
-         anchor="top"
-         open={isSliderOpen}
-         onClose={() => setIsSliderOpen(false)}
-         PaperProps={{
-         style: { 
-          width: "100%", 
-          height: "700px",
-          padding: "16px",
-          boxSizing: "border-box"
-         },
-        }}
-      >
-        <h3>TasteMap スライダー</h3>
-        <p>ここにスライダーを置きます。</p>
-      <button
-         onClick={() => setIsSliderOpen(false)}
-         style={{
-         marginTop: "16px",
-         padding: "8px 12px",
-         background: "#eee",
-         border: "1px solid #ccc",
-         borderRadius: "4px",
-         cursor: "pointer",
-        }}
-      >
-        閉じる
-      </button>
-      </Drawer>
+  anchor="top"
+  open={isSliderOpen}
+  onClose={() => setIsSliderOpen(false)}
+  PaperProps={{
+    style: {
+      width: "100%",
+      height: "700px",
+      padding: "16px",
+      boxSizing: "border-box",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "stretch",
+    },
+  }}
+>
+  {/* 閉じるボタンを上に */}
+  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+    <button
+      onClick={() => setIsSliderOpen(false)}
+      style={{
+        background: "#eee",
+        border: "1px solid #ccc",
+        padding: "6px 10px",
+        borderRadius: "4px",
+        cursor: "pointer",
+      }}
+    >
+      閉じる
+    </button>
+  </div>
+
+  <h3 style={{ textAlign: "center", marginTop: "8px" }}>
+    基準のワインを飲んだ印象は？
+  </h3>
+
+  {/* スライダー1 */}
+  <div style={{ marginTop: "24px" }}>
+    <input
+      type="range"
+      min="0"
+      max="100"
+      defaultValue="50"
+      style={{ width: "100%" }}
+    />
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        fontSize: "14px",
+        marginTop: "4px",
+      }}
+    >
+      <span>← こんなに甘みはいらない</span>
+      <span>もう少し甘みがほしいな →</span>
+    </div>
+  </div>
+
+  {/* スライダー2 */}
+  <div style={{ marginTop: "24px" }}>
+    <input
+      type="range"
+      min="0"
+      max="100"
+      defaultValue="50"
+      style={{ width: "100%" }}
+    />
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        fontSize: "14px",
+        marginTop: "4px",
+      }}
+    >
+      <span>← もう少し軽やかな感じがいいな</span>
+      <span>もう少し濃厚なコクがほしいな →</span>
+    </div>
+  </div>
+
+  {/* 決定ボタン */}
+  <button
+    onClick={() => {
+      // ここに決定処理
+      setIsSliderOpen(false);
+    }}
+    style={{
+      marginTop: "24px",
+      padding: "10px",
+      background: "#1976d2",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      fontSize: "16px",
+    }}
+  >
+    決定
+  </button>
+</Drawer>
+
 
       <Drawer
         anchor="bottom"
