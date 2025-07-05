@@ -13,12 +13,10 @@ function ProductPage() {
     const found = data.find((d) => d.JAN === jan);
     setProduct(found);
 
-    // 既存評価を取得
+    // 既存評価を読み込み
     const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
-    if (typeof ratings[jan] === "object") {
-      setRating(ratings[jan].score || 0);
-    } else {
-      setRating(ratings[jan] || 0);
+    if (ratings[jan]) {
+      setRating(ratings[jan].rating);
     }
   }, [jan]);
 
@@ -26,12 +24,19 @@ function ProductPage() {
     const newRating = Number(e.target.value);
     setRating(newRating);
 
-    // userRatingsを更新
     const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
-    ratings[jan] = {
-      score: newRating,
-      date: new Date().toISOString()
-    };
+
+    if (newRating === 0) {
+      // 未評価に戻す → 削除
+      delete ratings[jan];
+    } else {
+      // 評価する
+      ratings[jan] = {
+        rating: newRating,
+        date: new Date().toISOString(),
+      };
+    }
+
     localStorage.setItem("userRatings", JSON.stringify(ratings));
   };
 
@@ -39,12 +44,16 @@ function ProductPage() {
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h2>{product.Name || "（名称不明）"}</h2>
+      <h2>{product.商品名 || "（名称不明）"}</h2>
       <p>JANコード: {product.JAN}</p>
       <p>タイプ: {product.Type || "不明"}</p>
       <label>
         評価:
-        <select value={rating} onChange={handleRatingChange} style={{ marginLeft: "8px" }}>
+        <select
+          value={rating}
+          onChange={handleRatingChange}
+          style={{ marginLeft: "8px" }}
+        >
           <option value={0}>未評価</option>
           <option value={1}>★</option>
           <option value={2}>★★</option>
