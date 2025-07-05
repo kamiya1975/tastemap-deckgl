@@ -190,7 +190,7 @@ function App() {
   const ratingDateLayer = new TextLayer({
   id: "rating-dates",
   data: data.filter((d) => userRatings[d.JAN]),
-  getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0.1],
+  getPosition: (d) => [d.BodyAxis, -d.SweetAxis,  is3D ? 0.1 : 0],
   getText: (d) => {
     const dateStr = userRatings[d.JAN]?.date;
     return dateStr ? new Date(dateStr).toLocaleDateString() : "";
