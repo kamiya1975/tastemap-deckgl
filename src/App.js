@@ -181,7 +181,7 @@ function App() {
   getFillColor: [255, 165, 0, 180],
   getRadius: (d) => {
     const ratingObj = userRatings[d.JAN];
-    return ratingObj ? ratingObj.rating * 1.0 : 0.1;
+    return ratingObj ? ratingObj.rating * 0.1 : 0.01;
   },
   sizeUnits: "common",
   pickable: false,
