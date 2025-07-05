@@ -367,11 +367,12 @@ function App() {
         {is3D ? "→ Map" : "→ TasteData"}
       </button>
 
+      {!is3D && (
       <button
         onClick={() => setIsSliderOpen(true)}
         style={{
           position: "absolute",
-          top: "50px",        // 「→ TasteData」ボタンの下に配置
+          top: "70px",        // 「→ TasteData」ボタンの下に配置
           right: "10px",
           zIndex: 1,
           width: "40px",
@@ -389,6 +390,7 @@ function App() {
       >
         ★
       </button>
+      )}
 
       <Drawer
          anchor="right"
