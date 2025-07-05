@@ -195,7 +195,7 @@ function App() {
     const dateStr = userRatings[d.JAN]?.date;
     return dateStr ? new Date(dateStr).toLocaleDateString() : "";
   },
-  getSize: 10,
+  getSize: 12,
   sizeUnits: "pixels",
   getColor: [50, 50, 50, 200],
   getTextAnchor: "start",
