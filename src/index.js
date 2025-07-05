@@ -1,23 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import ProductPage from './ProductPage'; // 💡 商品ページをimport
-import reportWebVitals from './reportWebVitals';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { BrowserRouter, Routes, Route } from 'react-router-dom'; // 💡 Routerをimport
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import IntroPage from "./IntroPage";
+import StorePage from "./StorePage";
+import SliderPage from "./SliderPage";
+import MapPage from "./MapPage";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/products/:jan" element={<ProductPage />} />
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>
-);
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<IntroPage />} />
+      <Route path="/store" element={<StorePage />} />
+      <Route path="/slider" element={<SliderPage />} />
+      <Route path="/map" element={<MapPage />} />
+    </Routes>
+  );
+}
 
-serviceWorkerRegistration.register();
-reportWebVitals();
+export default App;
