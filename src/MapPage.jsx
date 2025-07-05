@@ -557,6 +557,7 @@ function App() {
                   padding: "8px 0",
                   borderBottom: "1px solid #eee",
                   cursor: "pointer",
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                 }}
               >
                 <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
