@@ -27,6 +27,7 @@ function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [userRatings, setUserRatings] = useState({});
   const [productWindow, setProductWindow] = useState(null);
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
 
   const drawerContentRef = useRef(null);
 
