@@ -13,9 +13,13 @@ function ProductPage() {
     const found = data.find((d) => d.JAN === jan);
     setProduct(found);
 
-    // 既存評価
+    // 既存評価を取得
     const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
-    setRating(ratings[jan] || 0);
+    if (typeof ratings[jan] === "object") {
+      setRating(ratings[jan].score || 0);
+    } else {
+      setRating(ratings[jan] || 0);
+    }
   }, [jan]);
 
   const handleRatingChange = (e) => {
@@ -24,7 +28,10 @@ function ProductPage() {
 
     // userRatingsを更新
     const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
-    ratings[jan] = newRating;
+    ratings[jan] = {
+      score: newRating,
+      date: new Date().toISOString()
+    };
     localStorage.setItem("userRatings", JSON.stringify(ratings));
   };
 

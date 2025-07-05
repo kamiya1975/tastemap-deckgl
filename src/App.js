@@ -296,6 +296,7 @@ function App() {
           userPinLayer,
           textLayer,
           ratingLayer,
+          ratingDateLayer,
         ]}
       />
 
