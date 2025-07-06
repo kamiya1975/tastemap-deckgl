@@ -8,31 +8,36 @@ function SliderPage() {
   const [minMax, setMinMax] = useState(null);
 
   useEffect(() => {
-    // umapDataロード
-    const data = JSON.parse(localStorage.getItem("umapData") || "[]");
-    if (data.length === 0) return;
+    // pca_result.json を直接読み込み
+    fetch("pca_result.json")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.length === 0) return;
 
-    // 全体のmin/max
-    const sweetValues = data.map((d) => d.SweetAxis);
-    const bodyValues = data.map((d) => d.BodyAxis);
+        const sweetValues = data.map((d) => d.SweetAxis);
+        const bodyValues = data.map((d) => d.BodyAxis);
 
-    const minSweet = Math.min(...sweetValues);
-    const maxSweet = Math.max(...sweetValues);
-    const minBody = Math.min(...bodyValues);
-    const maxBody = Math.max(...bodyValues);
+        const minSweet = Math.min(...sweetValues);
+        const maxSweet = Math.max(...sweetValues);
+        const minBody = Math.min(...bodyValues);
+        const maxBody = Math.max(...bodyValues);
 
-    setMinMax({ minSweet, maxSweet, minBody, maxBody });
+        setMinMax({ minSweet, maxSweet, minBody, maxBody });
 
-    // blendFを探す
-    const blendF = data.find((d) => d.JAN === "blendF");
-    if (blendF) {
-      // スケーリングして0〜100に
-      const sweetScaled = ((blendF.SweetAxis - minSweet) / (maxSweet - minSweet)) * 100;
-      const bodyScaled = ((blendF.BodyAxis - minBody) / (maxBody - minBody)) * 100;
+        const blendF = data.find((d) => d.JAN === "blendF");
+        if (blendF) {
+          const sweetScaled =
+            ((blendF.SweetAxis - minSweet) / (maxSweet - minSweet)) * 100;
+          const bodyScaled =
+            ((blendF.BodyAxis - minBody) / (maxBody - minBody)) * 100;
 
-      setSweetness(Math.round(sweetScaled));
-      setBody(Math.round(bodyScaled));
-    }
+          setSweetness(Math.round(sweetScaled));
+          setBody(Math.round(bodyScaled));
+        }
+      })
+      .catch((error) => {
+        console.error("データ取得エラー:", error);
+      });
   }, []);
 
   const handleNext = () => {
@@ -40,13 +45,11 @@ function SliderPage() {
 
     const { minSweet, maxSweet, minBody, maxBody } = minMax;
 
-    // 0-100をDBスケールに逆変換
+    // スライダーをDBスケールに逆変換
     const sweetValue = minSweet + (sweetness / 100) * (maxSweet - minSweet);
     const bodyValue = minBody + (body / 100) * (maxBody - minBody);
 
-    // localStorageに保存
     localStorage.setItem("userPinCoords", JSON.stringify([bodyValue, -sweetValue]));
-
     navigate("/map");
   };
 
@@ -64,6 +67,11 @@ function SliderPage() {
           onChange={(e) => setSweetness(Number(e.target.value))}
           style={{ width: "100%" }}
         />
+        {minMax && (
+          <div style={{ fontSize: "12px", color: "#555" }}>
+            範囲: {minMax.minSweet.toFixed(2)} 〜 {minMax.maxSweet.toFixed(2)}
+          </div>
+        )}
       </div>
 
       <div style={{ marginBottom: "20px" }}>
@@ -76,6 +84,11 @@ function SliderPage() {
           onChange={(e) => setBody(Number(e.target.value))}
           style={{ width: "100%" }}
         />
+        {minMax && (
+          <div style={{ fontSize: "12px", color: "#555" }}>
+            範囲: {minMax.minBody.toFixed(2)} 〜 {minMax.maxBody.toFixed(2)}
+          </div>
+        )}
       </div>
 
       <button
