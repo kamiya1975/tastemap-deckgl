@@ -6,9 +6,9 @@ function SliderPage() {
   const [sweetness, setSweetness] = useState(50);
   const [body, setBody] = useState(50);
   const [minMax, setMinMax] = useState(null);
+  const [blendF, setBlendF] = useState(null);
 
   useEffect(() => {
-    // pca_result.json を直接読み込み
     fetch("pca_result.json")
       .then((res) => res.json())
       .then((data) => {
@@ -24,15 +24,9 @@ function SliderPage() {
 
         setMinMax({ minSweet, maxSweet, minBody, maxBody });
 
-        const blendF = data.find((d) => d.JAN === "blendF");
-        if (blendF) {
-          const sweetScaled =
-            ((blendF.SweetAxis - minSweet) / (maxSweet - minSweet)) * 100;
-          const bodyScaled =
-            ((blendF.BodyAxis - minBody) / (maxBody - minBody)) * 100;
-
-          setSweetness(Math.round(sweetScaled));
-          setBody(Math.round(bodyScaled));
+        const blendFItem = data.find((d) => d.JAN === "blendF");
+        if (blendFItem) {
+          setBlendF(blendFItem);
         }
       })
       .catch((error) => {
@@ -41,13 +35,15 @@ function SliderPage() {
   }, []);
 
   const handleNext = () => {
-    if (!minMax) return;
+    if (!minMax || !blendF) return;
 
     const { minSweet, maxSweet, minBody, maxBody } = minMax;
 
-    // スライダーをDBスケールに逆変換
-    const sweetValue = minSweet + (sweetness / 100) * (maxSweet - minSweet);
-    const bodyValue = minBody + (body / 100) * (maxBody - minBody);
+    // スライダー値を「blendFの位置±調整量」に変換
+    const sweetValue =
+      blendF.SweetAxis + ((sweetness - 50) / 100) * (maxSweet - minSweet);
+    const bodyValue =
+      blendF.BodyAxis + ((body - 50) / 100) * (maxBody - minBody);
 
     localStorage.setItem("userPinCoords", JSON.stringify([bodyValue, -sweetValue]));
     navigate("/map");
@@ -69,7 +65,7 @@ function SliderPage() {
         />
         {minMax && (
           <div style={{ fontSize: "12px", color: "#555" }}>
-            範囲: {minMax.minSweet.toFixed(2)} 〜 {minMax.maxSweet.toFixed(2)}
+            基準: {blendF ? blendF.SweetAxis.toFixed(2) : "−"}
           </div>
         )}
       </div>
@@ -86,7 +82,7 @@ function SliderPage() {
         />
         {minMax && (
           <div style={{ fontSize: "12px", color: "#555" }}>
-            範囲: {minMax.minBody.toFixed(2)} 〜 {minMax.maxBody.toFixed(2)}
+            基準: {blendF ? blendF.BodyAxis.toFixed(2) : "−"}
           </div>
         )}
       </div>
