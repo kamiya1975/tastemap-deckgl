@@ -358,27 +358,42 @@ function App() {
         onClick={() => {
           const nextIs3D = !is3D;
           setIs3D(nextIs3D);
-          setViewState((prev) => ({
-            ...prev,
-            rotationX: nextIs3D ? 30 : 0,
-            rotationOrbit: nextIs3D ? 30 : 0,
-          }));
-        }}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: 1,
-          padding: "8px 12px",
-          fontSize: "14px",
-          background: "#fff",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        {is3D ? "→ Map" : "→ TasteData"}
-      </button>
+
+          if (nextIs3D) {
+             // 3D用 viewState
+             setViewState({
+               target: [0, 0, 0],
+               rotationX: 30,
+               rotationOrbit: 30,
+               zoom: 5,
+               minZoom: 4.0,
+               maxZoom: 10.0,
+            });
+          } else {
+              // 2D用 viewState（rotationなし）
+               setViewState({
+                target: [0, 0, 0],
+                zoom: 5,
+                minZoom: 4.0,
+                maxZoom: 10.0,
+            });
+          }
+      }}
+      style={{
+        position: "absolute",
+        top: "10px",
+        right: "10px",
+        zIndex: 1,
+        padding: "8px 12px",
+        fontSize: "14px",
+        background: "#fff",
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        cursor: "pointer",
+      }}
+    >
+      {is3D ? "→ Map" : "→ TasteData"}
+    </button>
 
       {!is3D && (
       <button
