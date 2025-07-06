@@ -95,7 +95,7 @@ function App() {
       // viewStateを打点中心に更新
       setViewState((prev) => ({
         ...prev,
-        target: [coords[0], coords[1]+ 0.5, 0], // 中心を打点に
+        target: [coords[0], coords[1]+ 5.0, 0], // 中心を打点に
         zoom: prev.zoom // ズームは前のまま
       }));
 
