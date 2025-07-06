@@ -21,6 +21,7 @@ function App() {
     minZoom: 4.0,
     maxZoom: 10.0,
   });
+  const [saved2DViewState, setSaved2DViewState] = useState(null);
   const [userPinCoords, setUserPinCoords] = useState(null);
   const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
