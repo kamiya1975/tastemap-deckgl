@@ -253,7 +253,7 @@ function App() {
             transform: "translateX(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
-            fontSize: "14px", fontWeight: "bold"
+            fontSize: "14px", fontWeight: "bold",
             fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>↑ Sweet</div>
           <div style={{
@@ -261,7 +261,7 @@ function App() {
             transform: "translateX(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
-            fontSize: "14px", fontWeight: "bold"
+            fontSize: "14px", fontWeight: "bold",
             fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>↓ Dry</div>
           <div style={{
@@ -269,7 +269,7 @@ function App() {
             transform: "translateY(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
-            fontSize: "14px", fontWeight: "bold"
+            fontSize: "14px", fontWeight: "bold",
             fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>← Light</div>
           <div style={{
@@ -277,7 +277,7 @@ function App() {
             transform: "translateY(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
-            fontSize: "14px", fontWeight: "bold"
+            fontSize: "14px", fontWeight: "bold",
             fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>Heavy →</div>
         </>
