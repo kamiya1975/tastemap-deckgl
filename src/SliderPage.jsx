@@ -39,11 +39,16 @@ function SliderPage() {
 
     const { minSweet, maxSweet, minBody, maxBody } = minMax;
 
-    // スライダー値を「blendFの位置±調整量」に変換
+    // スライダー値をblendFを中心にスケーリング
     const sweetValue =
-      blendF.SweetAxis + ((sweetness - 50) / 100) * (maxSweet - minSweet);
+      sweetness <= 50
+        ? blendF.SweetAxis - ((50 - sweetness) / 50) * (blendF.SweetAxis - minSweet)
+        : blendF.SweetAxis + ((sweetness - 50) / 50) * (maxSweet - blendF.SweetAxis);
+
     const bodyValue =
-      blendF.BodyAxis + ((body - 50) / 100) * (maxBody - minBody);
+      body <= 50
+        ? blendF.BodyAxis - ((50 - body) / 50) * (blendF.BodyAxis - minBody)
+        : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
 
     localStorage.setItem("userPinCoords", JSON.stringify([bodyValue, -sweetValue]));
     navigate("/map");
@@ -65,7 +70,7 @@ function SliderPage() {
         />
         {minMax && (
           <div style={{ fontSize: "12px", color: "#555" }}>
-            基準: {blendF ? blendF.SweetAxis.toFixed(2) : "−"}
+            基準: {blendF ? blendF.SweetAxis.toFixed(2) : "−"} / 最小: {minMax.minSweet.toFixed(2)} / 最大: {minMax.maxSweet.toFixed(2)}
           </div>
         )}
       </div>
@@ -82,7 +87,7 @@ function SliderPage() {
         />
         {minMax && (
           <div style={{ fontSize: "12px", color: "#555" }}>
-            基準: {blendF ? blendF.BodyAxis.toFixed(2) : "−"}
+            基準: {blendF ? blendF.BodyAxis.toFixed(2) : "−"} / 最小: {minMax.minBody.toFixed(2)} / 最大: {minMax.maxBody.toFixed(2)}
           </div>
         )}
       </div>
