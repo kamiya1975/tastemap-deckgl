@@ -85,6 +85,28 @@ function App() {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
+  useEffect(() => {
+    // スライダーで保存した打点をロードする
+    const storedPin = localStorage.getItem("userPinCoords");
+    if (storedPin) {
+      const coords = JSON.parse(storedPin);
+      setUserPinCoords(coords);
+
+      if (data.length > 0) {
+        const nearest = data
+          .map((d) => ({
+            ...d,
+           distance: Math.hypot(d.BodyAxis - coords[0], -d.SweetAxis - coords[1]),
+          }))
+          .sort((a, b) => a.distance - b.distance)
+          .slice(0, 10);
+
+        setNearestPoints(nearest);
+        setIsDrawerOpen(true);
+      }
+    }
+  }, [data]);
+
   const typeColorMap = {
     White: [0, 120, 255],
     Red: [255, 0, 0],
