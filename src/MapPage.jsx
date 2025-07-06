@@ -92,6 +92,13 @@ function App() {
       const coords = JSON.parse(storedPin);
       setUserPinCoords(coords);
 
+      // viewStateを打点中心に更新
+      setViewState((prev) => ({
+        ...prev,
+        target: [coords[0], coords[1], 0], // 中心を打点に
+        zoom: prev.zoom // ズームは前のまま
+      }));
+
       if (data.length > 0) {
         const nearest = data
           .map((d) => ({
