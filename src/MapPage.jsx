@@ -237,7 +237,15 @@ function App() {
     : null;
 
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+    <div style={{ 
+      position: "absolute", 
+      top: 0,
+      left: 0,
+      margin: 0,
+      padding: 0,
+      width: "100%", 
+      height: "100%",
+       }}>
       {!is3D && (
         <>
           <div style={{
@@ -246,13 +254,15 @@ function App() {
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
             fontSize: "14px", fontWeight: "bold"
+            fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>↑ Sweet</div>
           <div style={{
-            position: "absolute", bottom: "10px", left: "50%",
+            position: "absolute", bottom: "30px", left: "50%",
             transform: "translateX(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
             fontSize: "14px", fontWeight: "bold"
+            fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>↓ Dry</div>
           <div style={{
             position: "absolute", top: "50%", left: "10px",
@@ -260,6 +270,7 @@ function App() {
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
             fontSize: "14px", fontWeight: "bold"
+            fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>← Light</div>
           <div style={{
             position: "absolute", top: "50%", right: "10px",
@@ -267,6 +278,7 @@ function App() {
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
             fontSize: "14px", fontWeight: "bold"
+            fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>Heavy →</div>
         </>
       )}
