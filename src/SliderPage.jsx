@@ -1,40 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function SliderPage() {
   const navigate = useNavigate();
-
-  const [sweetness, setSweetness] = useState(0);
-  const [body, setBody] = useState(0);
-  const [sweetRange, setSweetRange] = useState([0, 100]);
-  const [bodyRange, setBodyRange] = useState([0, 100]);
+  const [sweetness, setSweetness] = useState(50);
+  const [body, setBody] = useState(50);
+  const [minMax, setMinMax] = useState(null);
 
   useEffect(() => {
+    // umapDataロード
     const data = JSON.parse(localStorage.getItem("umapData") || "[]");
+    if (data.length === 0) return;
 
-    if (data.length > 0) {
-      const sweetValues = data.map(d => d.SweetAxis);
-      const bodyValues = data.map(d => d.BodyAxis);
-      const sweetMin = Math.min(...sweetValues);
-      const sweetMax = Math.max(...sweetValues);
-      const bodyMin = Math.min(...bodyValues);
-      const bodyMax = Math.max(...bodyValues);
+    // 全体のmin/max
+    const sweetValues = data.map((d) => d.SweetAxis);
+    const bodyValues = data.map((d) => d.BodyAxis);
 
-      setSweetRange([sweetMin, sweetMax]);
-      setBodyRange([bodyMin, bodyMax]);
+    const minSweet = Math.min(...sweetValues);
+    const maxSweet = Math.max(...sweetValues);
+    const minBody = Math.min(...bodyValues);
+    const maxBody = Math.max(...bodyValues);
 
-      // 範囲中央を初期値に
-      setSweetness((sweetMin + sweetMax) / 2);
-      setBody((bodyMin + bodyMax) / 2);
+    setMinMax({ minSweet, maxSweet, minBody, maxBody });
+
+    // blendFを探す
+    const blendF = data.find((d) => d.JAN === "blendF");
+    if (blendF) {
+      // スケーリングして0〜100に
+      const sweetScaled = ((blendF.SweetAxis - minSweet) / (maxSweet - minSweet)) * 100;
+      const bodyScaled = ((blendF.BodyAxis - minBody) / (maxBody - minBody)) * 100;
+
+      setSweetness(Math.round(sweetScaled));
+      setBody(Math.round(bodyScaled));
     }
   }, []);
 
   const handleNext = () => {
-    // SweetAxis, BodyAxisをlocalStorageに保存
-    localStorage.setItem(
-      "userPinCoords",
-      JSON.stringify([body, -sweetness])
-    );
+    if (!minMax) return;
+
+    const { minSweet, maxSweet, minBody, maxBody } = minMax;
+
+    // 0-100をDBスケールに逆変換
+    const sweetValue = minSweet + (sweetness / 100) * (maxSweet - minSweet);
+    const bodyValue = minBody + (body / 100) * (maxBody - minBody);
+
+    // localStorageに保存
+    localStorage.setItem("userPinCoords", JSON.stringify([bodyValue, -sweetValue]));
+
     navigate("/map");
   };
 
@@ -43,39 +55,27 @@ function SliderPage() {
       <h2>好みの調整</h2>
 
       <div style={{ marginBottom: "20px" }}>
-        <label>
-          甘味: {sweetness.toFixed(2)}
-        </label>
+        <label>甘味: {sweetness}</label>
         <input
           type="range"
-          min={sweetRange[0]}
-          max={sweetRange[1]}
-          step="0.01"
+          min="0"
+          max="100"
           value={sweetness}
-          onChange={(e) => setSweetness(parseFloat(e.target.value))}
+          onChange={(e) => setSweetness(Number(e.target.value))}
           style={{ width: "100%" }}
         />
-        <div style={{ fontSize: "12px", color: "#555" }}>
-          範囲: {sweetRange[0].toFixed(2)} ～ {sweetRange[1].toFixed(2)}
-        </div>
       </div>
 
       <div style={{ marginBottom: "20px" }}>
-        <label>
-          コク: {body.toFixed(2)}
-        </label>
+        <label>コク: {body}</label>
         <input
           type="range"
-          min={bodyRange[0]}
-          max={bodyRange[1]}
-          step="0.01"
+          min="0"
+          max="100"
           value={body}
-          onChange={(e) => setBody(parseFloat(e.target.value))}
+          onChange={(e) => setBody(Number(e.target.value))}
           style={{ width: "100%" }}
         />
-        <div style={{ fontSize: "12px", color: "#555" }}>
-          範囲: {bodyRange[0].toFixed(2)} ～ {bodyRange[1].toFixed(2)}
-        </div>
       </div>
 
       <button
