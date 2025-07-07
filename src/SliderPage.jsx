@@ -102,7 +102,7 @@ function SliderPage() {
             border: 2px solid #ccc;
             box-shadow: 0 0 6px rgba(0,0,0,0.2);
             cursor: pointer;
-            margin-top: -12px;
+            margin-top: -8px;
           }
 
           input[type=range]::-moz-range-thumb {
