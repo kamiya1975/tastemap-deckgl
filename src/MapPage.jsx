@@ -637,4 +637,4 @@ function App() {
   );
 }
 
-export default MapPage;
+export default App;
