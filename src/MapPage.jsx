@@ -450,7 +450,7 @@ function App() {
       )}
 
       <Drawer
-  anchor="top"
+  anchor="bottom"
   open={isSliderOpen}
   onClose={() => setIsSliderOpen(false)}
   PaperProps={{
