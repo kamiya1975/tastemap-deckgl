@@ -295,7 +295,7 @@ function App() {
             fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>↓ Dry</div>
           <div style={{
-            position: "absolute", top: "50%", left: "10px",
+            position: "absolute", top: "40%", left: "10px",
             transform: "translateY(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
@@ -303,7 +303,7 @@ function App() {
             fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>← Light</div>
           <div style={{
-            position: "absolute", top: "50%", right: "10px",
+            position: "absolute", top: "40%", right: "10px",
             transform: "translateY(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
