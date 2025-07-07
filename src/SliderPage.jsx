@@ -102,7 +102,7 @@ function SliderPage() {
             border: 2px solid #ccc;
             box-shadow: 0 0 6px rgba(0,0,0,0.2);
             cursor: pointer;
-            margin-top: -10px;
+            margin-top: -12px;
           }
 
           input[type=range]::-moz-range-thumb {
@@ -113,6 +113,10 @@ function SliderPage() {
             border: 2px solid #ccc;
             box-shadow: 0 0 6px rgba(0,0,0,0.2);
             cursor: pointer;
+          }
+
+          input[type=range] {
+            height: 10px; /* 👈 スライダー本体の高さも上げてバランス取る */
           }
         `}
         </style>
@@ -167,7 +171,7 @@ function SliderPage() {
           margin: "0 auto",
         }}
       >
-        次へ
+        地図生成
       </button>
     </div>
   );
