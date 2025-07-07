@@ -39,7 +39,6 @@ function SliderPage() {
 
     const { minSweet, maxSweet, minBody, maxBody } = minMax;
 
-    // スライダー値をblendFを中心にスケーリング
     const sweetValue =
       sweetness <= 50
         ? blendF.SweetAxis - ((50 - sweetness) / 50) * (blendF.SweetAxis - minSweet)
@@ -55,52 +54,70 @@ function SliderPage() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>好みの調整</h2>
+    <div style={{ padding: "30px", maxWidth: "600px", margin: "0 auto", fontFamily: "sans-serif" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "40px" }}>基準のワインを飲んだ印象は？</h2>
 
-      <div style={{ marginBottom: "20px" }}>
-        <label>甘味: {sweetness}</label>
+      {/* 甘味スライダー */}
+      <div style={{ marginBottom: "50px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px", fontWeight: "bold" }}>
+          <span>← こんなに甘みは不要</span>
+          <span>もっと甘みが欲しい →</span>
+        </div>
         <input
           type="range"
           min="0"
           max="100"
           value={sweetness}
           onChange={(e) => setSweetness(Number(e.target.value))}
-          style={{ width: "100%" }}
+          style={{
+            width: "100%",
+            appearance: "none",
+            height: "8px",
+            borderRadius: "5px",
+            background: `linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%)`,
+            outline: "none",
+            marginTop: "10px",
+          }}
         />
-        {minMax && (
-          <div style={{ fontSize: "12px", color: "#555" }}>
-            基準: {blendF ? blendF.SweetAxis.toFixed(2) : "−"} / 最小: {minMax.minSweet.toFixed(2)} / 最大: {minMax.maxSweet.toFixed(2)}
-          </div>
-        )}
       </div>
 
-      <div style={{ marginBottom: "20px" }}>
-        <label>コク: {body}</label>
+      {/* コクスライダー */}
+      <div style={{ marginBottom: "50px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px", fontWeight: "bold" }}>
+          <span>← もっと軽やかが良い</span>
+          <span>濃厚なコクが欲しい →</span>
+        </div>
         <input
           type="range"
           min="0"
           max="100"
           value={body}
           onChange={(e) => setBody(Number(e.target.value))}
-          style={{ width: "100%" }}
+          style={{
+            width: "100%",
+            appearance: "none",
+            height: "8px",
+            borderRadius: "5px",
+            background: `linear-gradient(to right, #007bff ${body}%, #ddd ${body}%)`,
+            outline: "none",
+            marginTop: "10px",
+          }}
         />
-        {minMax && (
-          <div style={{ fontSize: "12px", color: "#555" }}>
-            基準: {blendF ? blendF.BodyAxis.toFixed(2) : "−"} / 最小: {minMax.minBody.toFixed(2)} / 最大: {minMax.maxBody.toFixed(2)}
-          </div>
-        )}
       </div>
 
+      {/* 次へボタン */}
       <button
         onClick={handleNext}
         style={{
           background: "#4CAF50",
           color: "#fff",
-          padding: "10px 20px",
+          padding: "12px 24px",
+          fontSize: "16px",
           border: "none",
           borderRadius: "4px",
           cursor: "pointer",
+          display: "block",
+          margin: "0 auto",
         }}
       >
         次へ
