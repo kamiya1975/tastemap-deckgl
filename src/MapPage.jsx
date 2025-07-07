@@ -456,7 +456,7 @@ function App() {
   PaperProps={{
     style: {
       width: "100%",
-      height: "700px",
+      height: "300px",
       padding: "16px",
       boxSizing: "border-box",
       display: "flex",
