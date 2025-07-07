@@ -54,12 +54,22 @@ function SliderPage() {
   };
 
   return (
-    <div style={{ padding: "30px", maxWidth: "600px", margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "40px" }}>基準のワインを飲んだ印象は？</h2>
+    <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto", fontFamily: "sans-serif" }}>
+      <h2 style={{ textAlign: "center", fontSize: "20px", marginBottom: "30px" }}>
+        基準のワインを飲んだ印象は？
+      </h2>
 
       {/* 甘味スライダー */}
-      <div style={{ marginBottom: "50px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px", fontWeight: "bold" }}>
+      <div style={{ marginBottom: "40px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: "14px",
+            fontWeight: "bold",
+            marginBottom: "6px",
+          }}
+        >
           <span>← こんなに甘みは不要</span>
           <span>もっと甘みが欲しい →</span>
         </div>
@@ -76,14 +86,49 @@ function SliderPage() {
             borderRadius: "5px",
             background: `linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%)`,
             outline: "none",
-            marginTop: "10px",
+            marginTop: "8px",
+            // サム（つまみ）のカスタム
+            WebkitAppearance: "none",
           }}
         />
+        <style>
+          {`
+          input[type=range]::-webkit-slider-thumb {
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #ccc;
+            box-shadow: 0 0 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            margin-top: -10px;
+          }
+
+          input[type=range]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #ccc;
+            box-shadow: 0 0 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+          }
+        `}
+        </style>
       </div>
 
       {/* コクスライダー */}
-      <div style={{ marginBottom: "50px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px", fontWeight: "bold" }}>
+      <div style={{ marginBottom: "40px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: "14px",
+            fontWeight: "bold",
+            marginBottom: "6px",
+          }}
+        >
           <span>← もっと軽やかが良い</span>
           <span>濃厚なコクが欲しい →</span>
         </div>
@@ -100,7 +145,8 @@ function SliderPage() {
             borderRadius: "5px",
             background: `linear-gradient(to right, #007bff ${body}%, #ddd ${body}%)`,
             outline: "none",
-            marginTop: "10px",
+            marginTop: "8px",
+            WebkitAppearance: "none",
           }}
         />
       </div>
@@ -109,12 +155,13 @@ function SliderPage() {
       <button
         onClick={handleNext}
         style={{
-          background: "#4CAF50",
-          color: "#fff",
-          padding: "12px 24px",
+          background: "#fff",
+          color: "#007bff",
+          padding: "14px 30px",
           fontSize: "16px",
-          border: "none",
-          borderRadius: "4px",
+          fontWeight: "bold",
+          border: "2px solid #007bff",
+          borderRadius: "6px",
           cursor: "pointer",
           display: "block",
           margin: "0 auto",
