@@ -29,7 +29,8 @@ function App() {
   const [userRatings, setUserRatings] = useState({});
   const [productWindow, setProductWindow] = useState(null);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
-
+  const [sweetness, setSweetness] = useState(50);
+  const [body, setBody] = useState(50);
   const drawerContentRef = useRef(null);
 
   // PCA + UMAPをマージして読み込み
@@ -456,17 +457,17 @@ function App() {
   PaperProps={{
     style: {
       width: "100%",
-      height: "400px",
-      padding: "16px",
+      height: "420px",
+      padding: "24px",
       boxSizing: "border-box",
       display: "flex",
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "stretch",
+      fontFamily: "sans-serif",
     },
   }}
 >
-  {/* 閉じるボタンを上に */}
   <div style={{ display: "flex", justifyContent: "flex-end" }}>
     <button
       onClick={() => setIsSliderOpen(false)}
@@ -482,115 +483,165 @@ function App() {
     </button>
   </div>
 
-  <h3 style={{ textAlign: "center", marginTop: "8px" }}>
+  <h2 style={{ textAlign: "center", fontSize: "20px", marginBottom: "24px" }}>
     基準のワインを飲んだ印象は？
-  </h3>
+  </h2>
 
-  {/* スライダー1 */}
-  <div style={{ marginTop: "24px" }}>
-    <input
-      type="range"
-      min="0"
-      max="100"
-      defaultValue="50"
-      style={{ width: "100%" }}
-    />
+  {/* スライダー用のステート定義 */}
+  {/* これをApp関数内に追加しておいてください */}
+  // const [sweetness, setSweetness] = useState(50);
+  // const [body, setBody] = useState(50);
+
+  {/* 甘味スライダー */}
+  <div style={{ marginBottom: "32px" }}>
     <div
       style={{
         display: "flex",
         justifyContent: "space-between",
         fontSize: "14px",
-        marginTop: "4px",
+        fontWeight: "bold",
+        marginBottom: "6px",
       }}
     >
-      <span>← こんなに甘みはいらない</span>
-      <span>もう少し甘みがほしいな →</span>
+      <span>← こんなに甘みは不要</span>
+      <span>もっと甘みが欲しい →</span>
     </div>
-  </div>
-
-  {/* スライダー2 */}
-  <div style={{ marginTop: "24px" }}>
     <input
       type="range"
       min="0"
       max="100"
-      defaultValue="50"
-      style={{ width: "100%" }}
+      value={sweetness}
+      onChange={(e) => setSweetness(Number(e.target.value))}
+      style={{
+        width: "100%",
+        appearance: "none",
+        height: "10px",
+        borderRadius: "5px",
+        background: `linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%)`,
+        outline: "none",
+        marginTop: "8px",
+        WebkitAppearance: "none",
+      }}
     />
+  </div>
+
+  {/* コクスライダー */}
+  <div style={{ marginBottom: "32px" }}>
     <div
       style={{
         display: "flex",
         justifyContent: "space-between",
         fontSize: "14px",
-        marginTop: "4px",
+        fontWeight: "bold",
+        marginBottom: "6px",
       }}
     >
-      <span>← もう少し軽やかな感じがいいな</span>
-      <span>もう少し濃厚なコクがほしいな →</span>
+      <span>← もっと軽やかが良い</span>
+      <span>濃厚なコクが欲しい →</span>
     </div>
+    <input
+      type="range"
+      min="0"
+      max="100"
+      value={body}
+      onChange={(e) => setBody(Number(e.target.value))}
+      style={{
+        width: "100%",
+        appearance: "none",
+        height: "10px",
+        borderRadius: "5px",
+        background: `linear-gradient(to right, #007bff ${body}%, #ddd ${body}%)`,
+        outline: "none",
+        marginTop: "8px",
+        WebkitAppearance: "none",
+      }}
+    />
   </div>
+
+  <style>
+    {`
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #ccc;
+      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+      cursor: pointer;
+      margin-top: -2px;
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #ccc;
+      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    `}
+  </style>
 
   {/* 決定ボタン */}
   <button
     onClick={() => {
-      // ここに決定処理
+      // blendFから位置を計算
+      const blendF = data.find((d) => d.JAN === "blendF");
+      if (!blendF) return;
+
+      const sweetValues = data.map((d) => d.SweetAxis);
+      const bodyValues = data.map((d) => d.BodyAxis);
+      const minSweet = Math.min(...sweetValues);
+      const maxSweet = Math.max(...sweetValues);
+      const minBody = Math.min(...bodyValues);
+      const maxBody = Math.max(...bodyValues);
+
+      const sweetValue =
+        sweetness <= 50
+          ? blendF.SweetAxis - ((50 - sweetness) / 50) * (blendF.SweetAxis - minSweet)
+          : blendF.SweetAxis + ((sweetness - 50) / 50) * (maxSweet - blendF.SweetAxis);
+
+      const bodyValue =
+        body <= 50
+          ? blendF.BodyAxis - ((50 - body) / 50) * (blendF.BodyAxis - minBody)
+          : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
+
+      const coords = [bodyValue, -sweetValue];
+
+      setUserPinCoords(coords);
+      localStorage.setItem("userPinCoords", JSON.stringify(coords));
       setIsSliderOpen(false);
+
+      // 最近傍計算も追加
+      const nearest = data
+        .map((d) => ({
+          ...d,
+          distance: Math.hypot(d.BodyAxis - coords[0], -d.SweetAxis - coords[1]),
+        }))
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 10);
+
+      setNearestPoints(nearest);
+      setIsDrawerOpen(true);
     }}
     style={{
-      marginTop: "24px",
-      padding: "10px",
-      background: "#1976d2",
-      color: "white",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
+      background: "#fff",
+      color: "#007bff",
+      padding: "14px 30px",
       fontSize: "16px",
+      fontWeight: "bold",
+      border: "2px solid #007bff",
+      borderRadius: "6px",
+      cursor: "pointer",
+      display: "block",
+      margin: "0 auto",
     }}
   >
-    決定
+    地図生成
   </button>
 </Drawer>
-
-
-      <Drawer
-        anchor="bottom"
-        open={isDrawerOpen}
-        variant="persistent"
-        hideBackdrop
-        PaperProps={{
-          style: { height: "50%", display: "flex", flexDirection: "column" },
-        }}
-      >
-        <div
-          style={{
-            padding: "8px 16px",
-            borderBottom: "1px solid #ddd",
-            background: "#f9f9f9",
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          <button
-            onClick={() => {
-              setIsDrawerOpen(false);
-              setUserPinCoords(null);
-              setNearestPoints([]);
-              if (productWindow) {
-                productWindow.close();
-                setProductWindow(null);
-              }
-            }}
-            style={{
-              background: "#eee",
-              border: "none",
-              padding: "8px 12px",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            閉じる
-          </button>
-        </div>
 
         <div
           ref={drawerContentRef}
