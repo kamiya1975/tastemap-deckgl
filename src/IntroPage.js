@@ -1,16 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function IntroPage() {
   const navigate = useNavigate();
-  const images = ["/slide1.png", "/slide2.png", "/slide3.png"]; // 画像は public フォルダに配置
+  const images = ["/slide1.png", "/slide2.png", "/slide3.png"];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const startXRef = useRef(null);
 
-  const handleNextSlide = () => {
+  const handleTouchStart = (e) => {
+    startXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!startXRef.current) return;
+    const deltaX = e.changedTouches[0].clientX - startXRef.current;
+    if (deltaX > 50 && currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else if (deltaX < -50 && currentIndex < images.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+    startXRef.current = null;
+  };
+
+  const handleNext = () => {
     if (currentIndex < images.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      navigate("/store"); // 最後の画像なら遷移
+      navigate("/store");
     }
   };
 
@@ -23,23 +39,38 @@ export default function IntroPage() {
         border: "8px solid black",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         backgroundColor: "#fff",
+        position: "relative",
       }}
     >
-      {/* スライドエリア */}
-      <div
+      {/* スキップボタン */}
+      <button
+        onClick={() => navigate("/store")}
         style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 10,
+          background: "rgba(0,0,0,0.6)",
+          color: "#fff",
+          border: "none",
+          padding: "6px 12px",
+          borderRadius: "4px",
+          fontSize: "0.9rem",
         }}
+      >
+        スキップ
+      </button>
+
+      {/* 画像スライダー */}
+      <div
+        style={{ flex: 1, overflow: "hidden" }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <img
           src={images[currentIndex]}
-          alt={`画像${currentIndex + 1}`}
+          alt={`slide-${currentIndex + 1}`}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       </div>
@@ -63,7 +94,7 @@ export default function IntroPage() {
       {/* 次へボタン */}
       <div style={{ padding: "20px", textAlign: "center" }}>
         <button
-          onClick={handleNextSlide}
+          onClick={handleNext}
           style={{
             width: "80%",
             fontSize: "1.2rem",
