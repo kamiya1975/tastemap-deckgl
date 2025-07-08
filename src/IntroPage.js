@@ -50,7 +50,7 @@ function SliderIntro() {
       {/* フッターボタン */}
       <div className="footer-button">
         {currentIndex < slides.length - 1 ? (
-          <button onClick={() => navigate('/StorePage')}>スキップ</button>
+          <button onClick={() => navigate('/store')}>スキップ</button>
         ) : (
           <button onClick={handleStart}>はじめる</button>
         )}
