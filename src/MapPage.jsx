@@ -457,7 +457,7 @@ function App() {
   PaperProps={{
     style: {
       width: "100%",
-      height: "640px",
+      height: "500px",
       padding: "24px",
       boxSizing: "border-box",
       display: "flex",
@@ -645,9 +645,9 @@ function App() {
     style: {
       width: "100%",
       maxHeight: "280px",
-      padding: "16px",
+      padding: "0",
       boxSizing: "border-box",
-      overflowY: "auto",
+      overflowY: "hidden",
       fontFamily:
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     },
