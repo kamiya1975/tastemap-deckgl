@@ -107,7 +107,6 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 32px;
-  color: white;
 }
 
 .indicator {
@@ -139,10 +138,10 @@ body {
 }
 
 .footer-button button {
-  background: red;
-  color: white;
-  border: none;
-  padding: 14px 32px;
+  background: #fff;
+  color: #00aaff;
+  border: 2px solid #00aaff;
+  padding: 12px 32px;
   font-size: 18px;
-  border-radius: 20px;
+  border-radius: 8px;
 }

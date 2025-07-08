@@ -1,63 +1,62 @@
-import React, { useState, useRef, useEffect } from "react";
-import "./App.css";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './App.css'; // App.css に必要なクラスが含まれている前提
 
 const slides = [
-  { color: "#007bff", label: "青" },
-  { color: "#ffc107", label: "黄" },
-  { color: "#dc3545", label: "赤" },
+  { id: 1, color: 'blue', label: '画像 1' },
+  { id: 2, color: 'yellow', label: '画像 2' },
+  { id: 3, color: 'red', label: '画像 3' },
 ];
 
-export default function SliderIntro({ onFinish }) {
-  const [index, setIndex] = useState(0);
-  const containerRef = useRef(null);
+function SliderIntro() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // 初期表示時に先頭へ
-    if (containerRef.current) {
-      containerRef.current.scrollTo({ left: 0, behavior: "auto" });
-    }
-    setIndex(0);
-  }, []);
-
-  const handleNext = () => {
-    if (index < slides.length - 1) {
-      const newIndex = index + 1;
-      setIndex(newIndex);
-      containerRef.current.scrollTo({
-        left: containerRef.current.clientWidth * newIndex,
-        behavior: "smooth",
-      });
-    } else {
-      onFinish(); // 最後のスライドで「はじめる」押されたとき
-    }
+  const handleScroll = (e) => {
+    const index = Math.round(e.target.scrollLeft / window.innerWidth);
+    setCurrentIndex(index);
   };
 
-  const handleScroll = () => {
-    const newIndex = Math.round(
-      containerRef.current.scrollLeft / containerRef.current.clientWidth
-    );
-    setIndex(newIndex);
+  const handleStart = () => {
+    navigate('/StorePage');
   };
 
   return (
     <div className="intro-wrapper">
-      <div className="slides-container" ref={containerRef} onScroll={handleScroll}>
-        {slides.map((slide, idx) => (
-          <div className="slide" key={idx} style={{ backgroundColor: slide.color }}>
-            <h1>{slide.label}</h1>
+      <div className="slides-container" onScroll={handleScroll}>
+        {slides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className="slide"
+            style={{ backgroundColor: slide.color }}
+          >
+            <span style={{ fontSize: '24px', color: slide.color === 'yellow' ? '#000' : '#fff' }}>
+              {slide.label}
+            </span>
           </div>
         ))}
       </div>
+
+      {/* スライドインジケーター */}
       <div className="indicator">
-        {slides.map((_, idx) => (
-          <span key={idx} className={`dot ${idx === index ? "active" : ""}`} />
+        {slides.map((_, index) => (
+          <div
+            key={index}
+            className={`dot ${index === currentIndex ? 'active' : ''}`}
+          />
         ))}
       </div>
+
+      {/* フッターボタン */}
       <div className="footer-button">
-        <button onClick={handleNext}>
-          {index === slides.length - 1 ? "はじめる" : "つぎへ"}
-        </button>
+        {currentIndex < slides.length - 1 ? (
+          <button onClick={() => navigate('/StorePage')}>スキップ</button>
+        ) : (
+          <button onClick={handleStart}>はじめる</button>
+        )}
       </div>
     </div>
   );
 }
+
+export default SliderIntro;
