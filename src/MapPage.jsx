@@ -636,72 +636,63 @@ function App() {
   </button>
 </Drawer>
 
-{nearestPoints.length > 0 && (
-  <div
-    ref={drawerContentRef}
-    style={{
-      padding: "16px",
-      overflowY: "auto",
-      backgroundColor: "#fff",
-      position: "absolute",
-      bottom: 0,
+{/* 打点に近いワイン表示 */}
+<Drawer
+  anchor="bottom"
+  open={isDrawerOpen && nearestPoints.length > 0}
+  onClose={() => setIsDrawerOpen(false)}
+  PaperProps={{
+    style: {
       width: "100%",
       maxHeight: "280px",
-      boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
-    }}
-  >
-    {/* 閉じるボタン */}
-    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "8px" }}>
-      <button
-        onClick={() => setIsDrawerOpen(false)}
+      padding: "16px",
+      boxSizing: "border-box",
+      overflowY: "auto",
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    },
+  }}
+>
+  <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "8px" }}>
+    <button
+      onClick={() => setIsDrawerOpen(false)}
+      style={{
+        background: "#eee",
+        border: "1px solid #ccc",
+        padding: "6px 10px",
+        borderRadius: "4px",
+        cursor: "pointer",
+      }}
+    >
+      閉じる
+    </button>
+  </div>
+
+  <h3 style={{ marginBottom: "12px" }}>打点に近いワイン</h3>
+
+  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+    {nearestPoints.map((item, idx) => (
+      <li
+        key={idx}
+        onClick={() => {
+          const newWin = window.open(`/products/${item.JAN}`, "_blank");
+          setProductWindow(newWin);
+        }}
         style={{
-          background: "#eee",
-          border: "1px solid #ccc",
-          padding: "6px 10px",
-          borderRadius: "4px",
+          padding: "8px 0",
+          borderBottom: "1px solid #eee",
           cursor: "pointer",
         }}
       >
-        閉じる
-      </button>
-    </div>
-
-    <h3
-      style={{
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        marginBottom: "12px",
-      }}
-    >
-      打点に近いワイン
-    </h3>
-
-    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-      {nearestPoints.map((item, idx) => (
-        <li
-          key={idx}
-          onClick={() => {
-            const newWin = window.open(`/products/${item.JAN}`, "_blank");
-            setProductWindow(newWin);
-          }}
-          style={{
-            padding: "8px 0",
-            borderBottom: "1px solid #eee",
-            cursor: "pointer",
-            fontFamily:
-              '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          }}
-        >
-          <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-          <br />
-          <small>
-            Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
-          </small>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+        <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+        <br />
+        <small>
+          Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
+        </small>
+      </li>
+    ))}
+  </ul>
+</Drawer>
 </div> 
 );
 }
