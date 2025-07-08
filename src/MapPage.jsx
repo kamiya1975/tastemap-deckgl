@@ -641,7 +641,7 @@ function App() {
       margin: "0 auto",
     }}
   >
-    地図生成
+    決定
   </button>
 </Drawer>
 
