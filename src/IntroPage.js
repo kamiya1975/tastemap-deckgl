@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./SliderIntro.css";
+import "./App.css";
 
 const slides = [
   { color: "#007bff", label: "青" },
