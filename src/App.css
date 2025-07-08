@@ -136,7 +136,7 @@ body {
 /* ボタンエリアを上めに固定（←変更ポイント） */
 .footer-button {
   position: absolute;
-  bottom: 20px;
+  bottom: 50px;
   width: 100%;
   display: flex;
   justify-content: center;
