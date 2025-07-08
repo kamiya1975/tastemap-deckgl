@@ -1,6 +1,7 @@
+// src/IntroPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './App.css'; // App.css に必要なクラスが含まれている前提
+import './App.css';
 
 const slides = [
   { id: 1, color: 'blue', label: '画像 1' },
@@ -8,7 +9,7 @@ const slides = [
   { id: 3, color: 'red', label: '画像 3' },
 ];
 
-function SliderIntro() {
+export default function IntroPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
@@ -18,13 +19,13 @@ function SliderIntro() {
   };
 
   const handleStart = () => {
-    navigate('/StorePage');
+    navigate('/store'); // ← 小文字でOK
   };
 
   return (
     <div className="intro-wrapper">
       <div className="slides-container" onScroll={handleScroll}>
-        {slides.map((slide, index) => (
+        {slides.map((slide) => (
           <div
             key={slide.id}
             className="slide"
@@ -37,17 +38,12 @@ function SliderIntro() {
         ))}
       </div>
 
-      {/* スライドインジケーター */}
       <div className="indicator">
         {slides.map((_, index) => (
-          <div
-            key={index}
-            className={`dot ${index === currentIndex ? 'active' : ''}`}
-          />
+          <div key={index} className={`dot ${index === currentIndex ? 'active' : ''}`} />
         ))}
       </div>
 
-      {/* フッターボタン */}
       <div className="footer-button">
         {currentIndex < slides.length - 1 ? (
           <button onClick={() => navigate('/store')}>スキップ</button>
@@ -58,5 +54,3 @@ function SliderIntro() {
     </div>
   );
 }
-
-export default SliderIntro;
