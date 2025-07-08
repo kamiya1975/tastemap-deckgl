@@ -680,7 +680,7 @@ function App() {
     </ul>
   </div>
 </Drawer>
-</div>  {/* ← この閉じタグが必要 */}
+</div> 
 );
 }
 
