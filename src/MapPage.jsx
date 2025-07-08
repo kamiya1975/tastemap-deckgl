@@ -457,7 +457,7 @@ function App() {
   PaperProps={{
     style: {
       width: "100%",
-      height: "420px",
+      height: "640px",
       padding: "24px",
       boxSizing: "border-box",
       display: "flex",
@@ -553,36 +553,36 @@ function App() {
     />
   </div>
 
+  {/* カスタムスライダーCSS */}
   <style>
     {`
-    input[type=range]::-webkit-slider-thumb {
-      appearance: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: white;
-      border: 2px solid #ccc;
-      box-shadow: 0 0 6px rgba(0,0,0,0.2);
-      cursor: pointer;
-      margin-top: -2px;
-    }
+      input[type=range]::-webkit-slider-thumb {
+        appearance: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #ccc;
+        box-shadow: 0 0 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+        margin-top: -2px;
+      }
 
-    input[type=range]::-moz-range-thumb {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: white;
-      border: 2px solid #ccc;
-      box-shadow: 0 0 6px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
+      input[type=range]::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #ccc;
+        box-shadow: 0 0 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+      }
     `}
   </style>
 
-  {/* 決定ボタン */}
+  {/* 地図生成ボタン */}
   <button
     onClick={() => {
-      // blendFから位置を計算
       const blendF = data.find((d) => d.JAN === "blendF");
       if (!blendF) return;
 
@@ -604,12 +604,10 @@ function App() {
           : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
 
       const coords = [bodyValue, -sweetValue];
-
       setUserPinCoords(coords);
       localStorage.setItem("userPinCoords", JSON.stringify(coords));
       setIsSliderOpen(false);
 
-      // 最近傍計算も追加
       const nearest = data
         .map((d) => ({
           ...d,
@@ -636,51 +634,54 @@ function App() {
   >
     地図生成
   </button>
-</Drawer>
 
-        <div
-          ref={drawerContentRef}
+  {/* 近いワインリスト */}
+  <div
+    ref={drawerContentRef}
+    style={{
+      padding: "16px",
+      overflowY: "auto",
+      flex: 1,
+      marginTop: "20px",
+    }}
+  >
+    <h3
+      style={{
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        marginBottom: "12px",
+      }}
+    >
+      打点に近いワイン
+    </h3>
+
+    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+      {nearestPoints.map((item, idx) => (
+        <li
+          key={idx}
+          onClick={() => {
+            const newWin = window.open(`/products/${item.JAN}`, "_blank");
+            setProductWindow(newWin);
+          }}
           style={{
-            padding: "16px",
-            overflowY: "auto",
-            flex: 1,
+            padding: "8px 0",
+            borderBottom: "1px solid #eee",
+            cursor: "pointer",
+            fontFamily:
+              '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           }}
         >
-          <h3
-           style={{
-           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          }}
-        >
-           打点に近いワイン
-          </h3>
-
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {nearestPoints.map((item, idx) => (
-              <li
-                key={idx}
-                onClick={() => {
-                  const newWin = window.open(`/products/${item.JAN}`, "_blank");
-                  setProductWindow(newWin);
-                }}
-                style={{
-                  padding: "8px 0",
-                  borderBottom: "1px solid #eee",
-                  cursor: "pointer",
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                }}
-              >
-                <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-                <br />
-                <small>
-                  Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
-                </small>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Drawer>
-    </div>
-  );
+          <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+          <br />
+          <small>
+            Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
+          </small>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Drawer>
+</div>  {/* ← この閉じタグが必要 */}
+);
 }
 
 export default App;
