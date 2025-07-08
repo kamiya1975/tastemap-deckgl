@@ -686,5 +686,8 @@ function App() {
     </ul>
   </div>
 )}
+</div> 
+);
+}
 
 export default App;
