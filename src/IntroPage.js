@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 const slides = [
-  { id: 1, color: 'blue', label: '画像 1' },
-  { id: 2, color: 'yellow', label: '画像 2' },
-  { id: 3, color: 'red', label: '画像 3' },
+  { id: 1, color: 'blue', label: '説明１' },
+  { id: 2, color: 'yellow', label: '説明２' },
+  { id: 3, color: 'red', label: '説明３' },
 ];
 
 export default function IntroPage() {
