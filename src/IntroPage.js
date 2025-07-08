@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function IntroPage() {
   const navigate = useNavigate();
-  const images = ["/slide1.png", "/slide2.png", "/slide3.png"];
+  const slides = [
+    { color: "#2196f3", label: "画像 1" }, // 青
+    { color: "#ffeb3b", label: "画像 2" }, // 黄
+    { color: "#f44336", label: "画像 3" }, // 赤
+  ];
   const [currentIndex, setCurrentIndex] = useState(0);
   const startXRef = useRef(null);
 
@@ -16,7 +20,7 @@ export default function IntroPage() {
     const deltaX = e.changedTouches[0].clientX - startXRef.current;
     if (deltaX > 50 && currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-    } else if (deltaX < -50 && currentIndex < images.length - 1) {
+    } else if (deltaX < -50 && currentIndex < slides.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
     startXRef.current = null;
@@ -26,72 +30,73 @@ export default function IntroPage() {
     <div
       style={{
         height: "100vh",
-        maxWidth: "480px",
-        margin: "0 auto",
-        border: "8px solid black",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#fff",
-        position: "relative",
-        boxSizing: "border-box",
         justifyContent: "space-between",
-        padding: "40px 20px 60px",
+        position: "relative",
+        overflow: "hidden",
+        background: "#fff",
       }}
     >
-      {/* スライダーエリア */}
+      {/* スライド本体 */}
       <div
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         style={{
-          height: "60%",
+          flexGrow: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          backgroundColor: slides[currentIndex].color,
+          color: currentIndex === 1 ? "#000" : "#fff",
+          fontSize: "24px",
+          fontWeight: "bold",
+          userSelect: "none",
         }}
       >
-        <img
-          src={images[currentIndex]}
-          alt={`slide-${currentIndex + 1}`}
-          style={{
-            width: "100%",
-            maxHeight: "100%",
-            objectFit: "contain",
-            border: "2px solid black",
-          }}
-        />
+        {slides[currentIndex].label}
       </div>
 
-      {/* インジケーター */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-        {images.map((_, index) => (
-          <div
+      {/* インジケータ */}
+      <div style={{ textAlign: "center", margin: "12px 0" }}>
+        {slides.map((_, index) => (
+          <span
             key={index}
             style={{
+              display: "inline-block",
               width: "10px",
               height: "10px",
-              borderRadius: "50%",
-              backgroundColor: index === currentIndex ? "#555" : "#ccc",
               margin: "0 5px",
+              borderRadius: "50%",
+              backgroundColor: currentIndex === index ? "#333" : "#ccc",
             }}
           />
         ))}
       </div>
 
-      {/* スキップボタン */}
-      <div style={{ textAlign: "center", marginTop: "30px" }}>
+      {/* 固定ボタン */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "24px",
+          left: 0,
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
         <button
           onClick={() => navigate("/store")}
           style={{
-            fontSize: "1.1rem",
-            padding: "12px 24px",
-            border: "2px solid #33aaff",
-            color: "#33aaff",
-            background: "white",
+            fontSize: "1.2rem",
+            padding: "12px 32px",
+            background: "black",
+            color: "white",
+            border: "none",
             borderRadius: "6px",
             cursor: "pointer",
           }}
         >
-          スキップ
+          次へ
         </button>
       </div>
     </div>
