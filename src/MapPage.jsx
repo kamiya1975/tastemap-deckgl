@@ -427,7 +427,11 @@ function App() {
 
       {!is3D && (
       <button
-        onClick={() => setIsSliderOpen(true)}
+        onClick={() => {
+          setSweetness(50);   // ← 追加
+          setBody(50);        // ← 追加
+          setIsSliderOpen(true);
+        }}
         style={{
           position: "absolute",
           top: "70px",        // 「→ TasteData」ボタンの下に配置
