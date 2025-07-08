@@ -22,14 +22,6 @@ export default function IntroPage() {
     startXRef.current = null;
   };
 
-  const handleNext = () => {
-    if (currentIndex < images.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      navigate("/store");
-    }
-  };
-
   return (
     <div
       style={{
@@ -41,42 +33,36 @@ export default function IntroPage() {
         flexDirection: "column",
         backgroundColor: "#fff",
         position: "relative",
+        boxSizing: "border-box",
+        justifyContent: "space-between",
+        padding: "40px 20px 60px",
       }}
     >
-      {/* スキップボタン */}
-      <button
-        onClick={() => navigate("/store")}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: 10,
-          background: "rgba(0,0,0,0.6)",
-          color: "#fff",
-          border: "none",
-          padding: "6px 12px",
-          borderRadius: "4px",
-          fontSize: "0.9rem",
-        }}
-      >
-        スキップ
-      </button>
-
-      {/* 画像スライダー */}
+      {/* スライダーエリア */}
       <div
-        style={{ flex: 1, overflow: "hidden" }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        style={{
+          height: "60%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
         <img
           src={images[currentIndex]}
           alt={`slide-${currentIndex + 1}`}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{
+            width: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+            border: "2px solid black",
+          }}
         />
       </div>
 
       {/* インジケーター */}
-      <div style={{ display: "flex", justifyContent: "center", margin: "10px 0" }}>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
         {images.map((_, index) => (
           <div
             key={index}
@@ -84,29 +70,28 @@ export default function IntroPage() {
               width: "10px",
               height: "10px",
               borderRadius: "50%",
-              backgroundColor: index === currentIndex ? "#000" : "#ccc",
+              backgroundColor: index === currentIndex ? "#555" : "#ccc",
               margin: "0 5px",
             }}
           />
         ))}
       </div>
 
-      {/* 次へボタン */}
-      <div style={{ padding: "20px", textAlign: "center" }}>
+      {/* スキップボタン */}
+      <div style={{ textAlign: "center", marginTop: "30px" }}>
         <button
-          onClick={handleNext}
+          onClick={() => navigate("/store")}
           style={{
-            width: "80%",
-            fontSize: "1.2rem",
-            padding: "12px",
-            backgroundColor: "#000",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
+            fontSize: "1.1rem",
+            padding: "12px 24px",
+            border: "2px solid #33aaff",
+            color: "#33aaff",
+            background: "white",
+            borderRadius: "6px",
             cursor: "pointer",
           }}
         >
-          次へ
+          スキップ
         </button>
       </div>
     </div>
