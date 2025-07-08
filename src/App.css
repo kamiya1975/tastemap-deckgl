@@ -82,33 +82,37 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
 }
 
+/* 画面全体を覆うラッパー */
 .intro-wrapper {
-  position: relative;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
+/* 横スライドエリア */
 .slides-container {
   display: flex;
-  overflow-x: auto;
+  overflow-x: scroll;
   scroll-snap-type: x mandatory;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
   scroll-behavior: smooth;
 }
 
+/* 各スライド */
 .slide {
-  flex: 0 0 100%;
-  width: 100%;
-  height: 100%;
+  flex: 0 0 100vw;
+  height: 100vh;
   scroll-snap-align: start;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 32px;
+  align-items: center;
 }
 
+/* インジケーター */
 .indicator {
   position: absolute;
   bottom: 80px;
@@ -122,26 +126,29 @@ body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #ccc;
+  background: lightgray;
 }
 
 .dot.active {
-  background: #333;
+  background: black;
 }
 
+/* ボタンエリアを上めに固定（←変更ポイント） */
 .footer-button {
   position: absolute;
   bottom: 20px;
   width: 100%;
   display: flex;
   justify-content: center;
+  z-index: 10;
 }
 
 .footer-button button {
-  background: #fff;
-  color: #00aaff;
-  border: 2px solid #00aaff;
   padding: 12px 32px;
   font-size: 18px;
-  border-radius: 8px;
+  border: 2px solid #00aaff;
+  background-color: white;
+  color: #00aaff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
