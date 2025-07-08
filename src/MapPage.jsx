@@ -608,6 +608,11 @@ function App() {
       localStorage.setItem("userPinCoords", JSON.stringify(coords));
       setIsSliderOpen(false);
 
+      setViewState((prev) => ({
+      ...prev,
+      target: [coords[0], coords[1]+5.0, 0],
+    }));
+
       const nearest = data
         .map((d) => ({
           ...d,
