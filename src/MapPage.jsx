@@ -450,7 +450,7 @@ function App() {
       </button>
       )}
 
-      <Drawer
+<Drawer
   anchor="bottom"
   open={isSliderOpen}
   onClose={() => setIsSliderOpen(false)}
@@ -634,15 +634,21 @@ function App() {
   >
     地図生成
   </button>
+</Drawer>
 
-  {/* 近いワインリスト */}
+{/* Drawerの外に分離されたワインリスト表示 */}
+{nearestPoints.length > 0 && (
   <div
     ref={drawerContentRef}
     style={{
       padding: "16px",
       overflowY: "auto",
-      flex: 1,
-      marginTop: "20px",
+      backgroundColor: "#fff",
+      position: "absolute",
+      bottom: 0,
+      width: "100%",
+      maxHeight: "280px",
+      boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
     }}
   >
     <h3
@@ -679,9 +685,6 @@ function App() {
       ))}
     </ul>
   </div>
-</Drawer>
-</div> 
-);
-}
+)}
 
 export default App;
