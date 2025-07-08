@@ -105,6 +105,7 @@ body {
 /* 各スライド */
 .slide {
   flex: 0 0 100vw;
+  width: 100vh;
   height: 100vh;
   scroll-snap-align: start;
   display: flex;
