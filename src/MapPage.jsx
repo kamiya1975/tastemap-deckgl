@@ -636,7 +636,6 @@ function App() {
   </button>
 </Drawer>
 
-{/* Drawerの外に分離されたワインリスト表示 */}
 {nearestPoints.length > 0 && (
   <div
     ref={drawerContentRef}
@@ -651,9 +650,26 @@ function App() {
       boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
     }}
   >
+    {/* 閉じるボタン */}
+    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "8px" }}>
+      <button
+        onClick={() => setIsDrawerOpen(false)}
+        style={{
+          background: "#eee",
+          border: "1px solid #ccc",
+          padding: "6px 10px",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+      >
+        閉じる
+      </button>
+    </div>
+
     <h3
       style={{
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
         marginBottom: "12px",
       }}
     >
