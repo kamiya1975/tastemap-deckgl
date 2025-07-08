@@ -487,11 +487,6 @@ function App() {
     基準のワインを飲んだ印象は？
   </h2>
 
-  {/* スライダー用のステート定義 */}
-  {/* これをApp関数内に追加しておいてください */}
-  // const [sweetness, setSweetness] = useState(50);
-  // const [body, setBody] = useState(50);
-
   {/* 甘味スライダー */}
   <div style={{ marginBottom: "32px" }}>
     <div
