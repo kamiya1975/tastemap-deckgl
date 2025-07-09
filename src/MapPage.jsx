@@ -119,7 +119,6 @@ function App() {
           .slice(0, 10);
 
         setNearestPoints(nearest);
-        setIsDrawerOpen(true);
       }
     }
   }, [data]);
