@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+// 仮の店舗データ（prefecture単位で割当）
 const mockStores = [
-  { name: "スーパーマーケットA", branch: "●●●店", distance: 1.5, prefecture: "愛知県" },
-  { name: "スーパーマーケットB", branch: "●●●店", distance: 1.6, prefecture: "愛知県" },
-  { name: "スーパーマーケットA", branch: "●●●店", distance: 2.5, prefecture: "静岡県" },
-  { name: "スーパーマーケットC", branch: "●●●店", distance: 3.5, prefecture: "三重県" },
-  { name: "スーパーマーケットD", branch: "●●●店", distance: 3.6, prefecture: "岐阜県" },
-  { name: "スーパーマーケットA", branch: "●●●店", distance: 5.5, prefecture: "愛知県" },
+  { name: "スーパーマーケットA", branch: "●●●店", distance: 1.5, prefecture: "北海道" },
+  { name: "スーパーマーケットB", branch: "●●●店", distance: 1.6, prefecture: "北海道" },
+  { name: "スーパーマーケットC", branch: "●●●店", distance: 3.5, prefecture: "青森県" },
+  { name: "スーパーマーケットD", branch: "●●●店", distance: 3.6, prefecture: "岩手県" },
+  { name: "スーパーマーケットA", branch: "●●●店", distance: 5.5, prefecture: "宮城県" },
 ];
 
 const prefectures = [
@@ -23,119 +23,119 @@ const prefectures = [
 
 export default function StorePage() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState("nearby"); // "nearby" or "prefecture"
-  const [selectedPrefecture, setSelectedPrefecture] = useState("北海道");
-  const [stores, setStores] = useState([]);
+  const [tab, setTab] = useState("nearby");
+  const [expanded, setExpanded] = useState(null);
 
-  useEffect(() => {
-    setStores(mockStores);
-  }, []);
-
-  const filteredStores =
-    tab === "nearby"
-      ? stores.sort((a, b) => a.distance - b.distance)
-      : stores.filter((store) => store.prefecture === selectedPrefecture);
+  const sortedStores = [...mockStores].sort((a, b) => a.distance - b.distance);
 
   return (
     <div style={{ padding: "16px", fontFamily: "sans-serif" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "24px" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "16px" }}>
         購入した店舗を選んでください。
       </h2>
 
-      {/* タブ切替 */}
+      {/* タブ切り替え */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
         <button
           onClick={() => setTab("nearby")}
           style={{
-            padding: "8px 16px",
-            marginRight: "8px",
-            border: tab === "nearby" ? "2px solid #444" : "1px solid #ccc",
-            background: tab === "nearby" ? "#eee" : "#fff",
-            borderRadius: "8px",
-            cursor: "pointer",
+            padding: "8px 24px",
+            border: "none",
+            backgroundColor: tab === "nearby" ? "#000" : "#ccc",
+            color: tab === "nearby" ? "#fff" : "#333",
+            borderTopLeftRadius: "6px",
+            borderBottomLeftRadius: "6px",
           }}
         >
           近い店舗
         </button>
         <button
-          onClick={() => setTab("prefecture")}
+          onClick={() => setTab("list")}
           style={{
-            padding: "8px 16px",
-            border: tab === "prefecture" ? "2px solid #444" : "1px solid #ccc",
-            background: tab === "prefecture" ? "#eee" : "#fff",
-            borderRadius: "8px",
-            cursor: "pointer",
+            padding: "8px 24px",
+            border: "none",
+            backgroundColor: tab === "list" ? "#000" : "#ccc",
+            color: tab === "list" ? "#fff" : "#333",
+            borderTopRightRadius: "6px",
+            borderBottomRightRadius: "6px",
           }}
         >
           店舗一覧
         </button>
       </div>
 
-      {/* 都道府県セレクト */}
-      {tab === "prefecture" && (
-        <div style={{ textAlign: "center", marginBottom: "12px" }}>
-          <select
-            value={selectedPrefecture}
-            onChange={(e) => setSelectedPrefecture(e.target.value)}
-            style={{
-              fontSize: "1rem",
-              padding: "6px 12px",
-              borderRadius: "6px",
-              border: "1px solid #ccc",
-            }}
-          >
-            {prefectures.map((pref, idx) => (
-              <option key={idx} value={pref}>
-                {pref}
-              </option>
-            ))}
-          </select>
+      {/* タブ: 近い店舗 */}
+      {tab === "nearby" && (
+        <div style={{ maxWidth: "500px", margin: "0 auto", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden" }}>
+          <div style={{ display: "flex", background: "#999", color: "#fff" }}>
+            <div style={{ flex: "1", padding: "10px", textAlign: "center" }}>近い店舗</div>
+            <div style={{ flex: "2", padding: "10px", textAlign: "right" }}>距離</div>
+          </div>
+
+          {sortedStores.map((store, idx) => (
+            <div
+              key={idx}
+              onClick={() => navigate("/slider")}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "10px",
+                borderTop: "1px solid #ccc",
+                cursor: "pointer",
+                background: "#f9f9f9",
+              }}
+            >
+              <div>{store.name} {store.branch}</div>
+              <div>{store.distance}km</div>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* 店舗リスト */}
-      <div
-        style={{
-          maxWidth: "500px",
-          margin: "0 auto",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          overflow: "hidden",
-        }}
-      >
-        {/* ヘッダー */}
-        <div style={{ display: "flex", background: "#999", color: "#fff" }}>
-          <div style={{ flex: "1", padding: "10px", textAlign: "center" }}>📌</div>
-          <div style={{ flex: "4", padding: "10px" }}>店舗一覧</div>
-          <div style={{ flex: "2", padding: "10px", textAlign: "right" }}>距離</div>
-        </div>
+      {/* タブ: 店舗一覧（都道府県ごとのアコーディオン） */}
+      {tab === "list" && (
+        <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+          {prefectures.map((pref, idx) => {
+            const storesInPref = mockStores.filter((s) => s.prefecture === pref);
+            const isOpen = expanded === pref;
 
-        {/* 一覧 */}
-        {filteredStores.map((store, idx) => (
-          <div
-            key={idx}
-            onClick={() => {
-              // 選択データの処理など
-              navigate("/slider");
-            }}
-            style={{
-              display: "flex",
-              borderTop: "1px solid #ccc",
-              padding: "10px",
-              cursor: "pointer",
-              backgroundColor: "#f9f9f9",
-            }}
-          >
-            <div style={{ flex: "1", textAlign: "center" }}>　</div>
-            <div style={{ flex: "4" }}>
-              {store.name} {store.branch}
-            </div>
-            <div style={{ flex: "2", textAlign: "right" }}>
-              {store.distance}km
-            </div>
-          </div>
-        ))}
-      </div>
+            return (
+              <div key={idx} style={{ border: "1px solid #ccc", borderRadius: "6px", marginBottom: "8px" }}>
+                <div
+                  onClick={() => setExpanded(isOpen ? null : pref)}
+                  style={{
+                    padding: "10px",
+                    backgroundColor: "#f0f0f0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <span>{pref}</span>
+                  <span>{isOpen ? "▲" : "▼"}</span>
+                </div>
+
+                {isOpen &&
+                  storesInPref.map((store, i) => (
+                    <div
+                      key={i}
+                      onClick={() => navigate("/slider")}
+                      style={{
+                        padding: "10px",
+                        borderTop: "1px solid #ddd",
+                        cursor: "pointer",
+                        background: "#fff",
+                      }}
+                    >
+                      {store.name} {store.branch}
+                    </div>
+                  ))}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
