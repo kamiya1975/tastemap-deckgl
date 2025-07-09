@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// 仮データ
 const mockStores = [
   { name: "スーパーマーケットA", branch: "●●●店", distance: 1.5, prefecture: "北海道" },
   { name: "スーパーマーケットB", branch: "●●●店", distance: 1.6, prefecture: "北海道" },
@@ -30,131 +29,137 @@ export default function StorePage() {
     <div
       style={{
         fontFamily: "sans-serif",
-        minHeight: "100vh",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
-        padding: "16px",
-        boxSizing: "border-box",
       }}
     >
-      {/* タイトル */}
-      <h2 style={{ textAlign: "center", marginBottom: "12px" }}>
-        購入した店舗を選んでください。
-      </h2>
+      {/* タイトル（固定） */}
+      <div style={{ padding: "16px", textAlign: "center" }}>
+        <h2 style={{ margin: 0 }}>購入した店舗を選んでください。</h2>
+      </div>
 
-      {/* タブ + リストの枠 */}
+      {/* タブ（固定） */}
+      <div
+        style={{
+          display: "flex",
+          maxWidth: "500px",
+          width: "100%",
+          margin: "0 auto",
+          borderTopLeftRadius: "12px",
+          borderTopRightRadius: "12px",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          onClick={() => setTab("nearby")}
+          style={{
+            flex: 1,
+            textAlign: "center",
+            padding: "12px 0",
+            backgroundColor: tab === "nearby" ? "#000" : "#ccc",
+            color: "#fff",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          近い店舗
+        </div>
+        <div
+          onClick={() => setTab("list")}
+          style={{
+            flex: 1,
+            textAlign: "center",
+            padding: "12px 0",
+            backgroundColor: tab === "list" ? "#000" : "#ccc",
+            color: "#fff",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          店舗一覧
+        </div>
+      </div>
+
+      {/* リスト部分（スクロール可能） */}
       <div
         style={{
           flex: 1,
+          overflowY: "auto",
+          backgroundColor: "#fff",
           maxWidth: "500px",
           margin: "0 auto",
-          border: "1px solid #ccc",
-          borderRadius: "12px",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
+          width: "100%",
+          borderBottomLeftRadius: "12px",
+          borderBottomRightRadius: "12px",
+          borderLeft: "1px solid #ccc",
+          borderRight: "1px solid #ccc",
+          borderBottom: "1px solid #ccc",
         }}
       >
-        {/* タブ */}
-        <div style={{ display: "flex", backgroundColor: "#eee" }}>
-          <div
-            onClick={() => setTab("nearby")}
-            style={{
-              flex: 1,
-              textAlign: "center",
-              padding: "12px 0",
-              backgroundColor: tab === "nearby" ? "#000" : "#ccc",
-              color: "#fff",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "0.2s",
-            }}
-          >
-            近い店舗
-          </div>
-          <div
-            onClick={() => setTab("list")}
-            style={{
-              flex: 1,
-              textAlign: "center",
-              padding: "12px 0",
-              backgroundColor: tab === "list" ? "#000" : "#ccc",
-              color: "#fff",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "0.2s",
-            }}
-          >
-            店舗一覧
-          </div>
-        </div>
+        {tab === "nearby" &&
+          sortedStores.map((store, idx) => (
+            <div
+              key={idx}
+              onClick={handleStoreSelect}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "12px",
+                borderBottom: "1px solid #eee",
+                cursor: "pointer",
+              }}
+            >
+              <div>{store.name} {store.branch}</div>
+              <div>{store.distance}km</div>
+            </div>
+          ))}
 
-        {/* スクロール可能エリア */}
-        <div style={{ flex: 1, overflowY: "auto", backgroundColor: "#fff" }}>
-          {tab === "nearby" &&
-            sortedStores.map((store, idx) => (
-              <div
-                key={idx}
-                onClick={handleStoreSelect}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "12px",
-                  borderBottom: "1px solid #eee",
-                  cursor: "pointer",
-                }}
-              >
-                <div>{store.name} {store.branch}</div>
-                <div>{store.distance}km</div>
-              </div>
-            ))}
+        {tab === "list" &&
+          prefectures.map((pref, idx) => {
+            const storesInPref = mockStores.filter((s) => s.prefecture === pref);
+            const isOpen = expanded === pref;
 
-          {tab === "list" &&
-            prefectures.map((pref, idx) => {
-              const storesInPref = mockStores.filter((s) => s.prefecture === pref);
-              const isOpen = expanded === pref;
+            return (
+              <React.Fragment key={idx}>
+                <div
+                  onClick={() => setExpanded(isOpen ? null : pref)}
+                  style={{
+                    padding: "12px",
+                    fontWeight: "bold",
+                    backgroundColor: "#f0f0f0",
+                    borderBottom: "1px solid #ccc",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <span>{pref}</span>
+                  <span>{isOpen ? "▲" : "▼"}</span>
+                </div>
 
-              return (
-                <React.Fragment key={idx}>
-                  <div
-                    onClick={() => setExpanded(isOpen ? null : pref)}
-                    style={{
-                      padding: "12px",
-                      fontWeight: "bold",
-                      backgroundColor: "#f0f0f0",
-                      borderBottom: "1px solid #ccc",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <span>{pref}</span>
-                    <span>{isOpen ? "▲" : "▼"}</span>
-                  </div>
-
-                  {isOpen &&
-                    storesInPref.map((store, i) => (
-                      <div
-                        key={i}
-                        onClick={handleStoreSelect}
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          padding: "12px",
-                          borderBottom: "1px solid #eee",
-                          cursor: "pointer",
-                          backgroundColor: "#fff",
-                        }}
-                      >
-                        <div>{store.name} {store.branch}</div>
-                        <div>{store.distance}km</div>
-                      </div>
-                    ))}
-                </React.Fragment>
-              );
-            })}
-        </div>
+                {isOpen &&
+                  storesInPref.map((store, i) => (
+                    <div
+                      key={i}
+                      onClick={handleStoreSelect}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px",
+                        borderBottom: "1px solid #eee",
+                        cursor: "pointer",
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      <div>{store.name} {store.branch}</div>
+                      <div>{store.distance}km</div>
+                    </div>
+                  ))}
+              </React.Fragment>
+            );
+          })}
       </div>
     </div>
   );
