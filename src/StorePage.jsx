@@ -26,75 +26,64 @@ export default function StorePage() {
   };
 
   return (
-    <div
-      style={{
-        fontFamily: "sans-serif",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* タイトル（固定） */}
-      <div style={{ padding: "16px", textAlign: "center" }}>
-        <h2 style={{ margin: 0 }}>購入した店舗を選んでください。</h2>
-      </div>
-
-      {/* タブ（固定） */}
+    <div style={{ fontFamily: "sans-serif", height: "100vh", overflow: "hidden" }}>
+      {/* 固定ヘッダー */}
       <div
         style={{
-          display: "flex",
-          maxWidth: "500px",
+          position: "fixed",
+          top: 0,
           width: "100%",
-          margin: "0 auto",
-          borderTopLeftRadius: "12px",
-          borderTopRightRadius: "12px",
-          overflow: "hidden",
+          maxWidth: "500px",
+          backgroundColor: "#fff",
+          zIndex: 100,
+          borderBottom: "1px solid #ccc",
         }}
       >
-        <div
-          onClick={() => setTab("nearby")}
-          style={{
-            flex: 1,
-            textAlign: "center",
-            padding: "12px 0",
-            backgroundColor: tab === "nearby" ? "#000" : "#ccc",
-            color: "#fff",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          近い店舗
+        <div style={{ padding: "16px", textAlign: "center" }}>
+          <h2 style={{ margin: 0 }}>購入した店舗を選んでください。</h2>
         </div>
-        <div
-          onClick={() => setTab("list")}
-          style={{
-            flex: 1,
-            textAlign: "center",
-            padding: "12px 0",
-            backgroundColor: tab === "list" ? "#000" : "#ccc",
-            color: "#fff",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          店舗一覧
+
+        <div style={{ display: "flex" }}>
+          <div
+            onClick={() => setTab("nearby")}
+            style={{
+              flex: 1,
+              textAlign: "center",
+              padding: "12px 0",
+              backgroundColor: tab === "nearby" ? "#000" : "#ccc",
+              color: "#fff",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            近い店舗
+          </div>
+          <div
+            onClick={() => setTab("list")}
+            style={{
+              flex: 1,
+              textAlign: "center",
+              padding: "12px 0",
+              backgroundColor: tab === "list" ? "#000" : "#ccc",
+              color: "#fff",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            店舗一覧
+          </div>
         </div>
       </div>
 
-      {/* リスト部分（スクロール可能） */}
+      {/* スクロールエリア */}
       <div
         style={{
-          flex: 1,
+          paddingTop: "120px", // ヘッダー高さ分
           overflowY: "auto",
-          backgroundColor: "#fff",
+          height: "100vh",
           maxWidth: "500px",
           margin: "0 auto",
-          width: "100%",
-          borderBottomLeftRadius: "12px",
-          borderBottomRightRadius: "12px",
-          borderLeft: "1px solid #ccc",
-          borderRight: "1px solid #ccc",
-          borderBottom: "1px solid #ccc",
+          backgroundColor: "#fff",
         }}
       >
         {tab === "nearby" &&
