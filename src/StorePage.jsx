@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const mockStores = [
-  { name: "スーパーマーケットA", branch: "●●●店", distance: 1.5, prefecture: "北海道" },
-  { name: "スーパーマーケットB", branch: "●●●店", distance: 1.6, prefecture: "北海道" },
-  { name: "スーパーマーケットA", branch: "●●●店", distance: 2.5, prefecture: "青森県" },
-  { name: "スーパーマーケットC", branch: "●●●店", distance: 3.5, prefecture: "岩手県" },
-  { name: "スーパーマーケットD", branch: "●●●店", distance: 3.6, prefecture: "宮城県" },
-  { name: "スーパーマーケットA", branch: "●●●店", distance: 5.5, prefecture: "宮城県" },
+  { name: "スーパーマーケットA", branch: "●●●店", lat: 34.928, lng: 137.05, prefecture: "北海道" },
+  { name: "スーパーマーケットB", branch: "●●●店", lat: 34.93, lng: 137.04, prefecture: "北海道" },
+  { name: "スーパーマーケットA", branch: "●●●店", lat: 34.92, lng: 137.06, prefecture: "青森県" },
+  { name: "スーパーマーケットC", branch: "●●●店", lat: 34.925, lng: 137.045, prefecture: "岩手県" },
+  { name: "スーパーマーケットD", branch: "●●●店", lat: 34.927, lng: 137.042, prefecture: "宮城県" },
+  { name: "スーパーマーケットA", branch: "●●●店", lat: 34.93, lng: 137.055, prefecture: "宮城県" },
 ];
 
 const prefectures = [
@@ -21,11 +21,22 @@ const prefectures = [
   "福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県",
 ];
 
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const toRad = deg => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
+
 export default function StorePage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState("nearby");
   const [expanded, setExpanded] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
+  const [sortedStores, setSortedStores] = useState(mockStores);
 
   useEffect(() => {
     const askForLocation = async () => {
@@ -33,11 +44,12 @@ export default function StorePage() {
       if (allow) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            console.log("位置取得成功:", position.coords);
-            setUserLocation({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
+            const { latitude, longitude } = position.coords;
+            const updated = mockStores.map((store) => {
+              const distance = haversineDistance(latitude, longitude, store.lat, store.lng);
+              return { ...store, distance: distance.toFixed(1) };
             });
+            setSortedStores(updated.sort((a, b) => a.distance - b.distance));
             setTab("nearby");
           },
           (error) => {
@@ -53,15 +65,12 @@ export default function StorePage() {
     askForLocation();
   }, []);
 
-  const sortedStores = [...mockStores].sort((a, b) => a.distance - b.distance);
-
   const handleStoreSelect = () => {
     navigate("/slider");
   };
 
   return (
     <div style={{ fontFamily: "sans-serif", height: "100vh", overflow: "hidden" }}>
-      {/* 固定ヘッダー */}
       <div
         style={{
           position: "fixed",
@@ -109,7 +118,6 @@ export default function StorePage() {
         </div>
       </div>
 
-      {/* スクロールエリア */}
       <div
         style={{
           paddingTop: "120px",
@@ -181,7 +189,7 @@ export default function StorePage() {
                       <div style={{ textDecoration: "underline", color: "#007bff" }}>
                         {store.name} {store.branch}
                       </div>
-                      <div>{store.distance}km</div>
+                      <div>{store.distance ?? "-"}km</div>
                     </div>
                   ))}
               </React.Fragment>
