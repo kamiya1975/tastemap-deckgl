@@ -189,7 +189,8 @@ export default function StorePage() {
                       <div style={{ textDecoration: "underline", color: "#007bff" }}>
                         {store.name} {store.branch}
                       </div>
-                      <div>{store.distance ?? "-"}km</div>
+                      <div>{tab === "nearby" ? `${store.distance}km` : null}
+                      </div>
                     </div>
                   ))}
               </React.Fragment>
