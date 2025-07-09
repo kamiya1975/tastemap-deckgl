@@ -34,6 +34,7 @@ function App() {
   const [sweetness, setSweetness] = useState(50);
   const [body, setBody] = useState(50);
   const drawerContentRef = useRef(null);
+  const [hasConfirmedSlider, setHasConfirmedSlider] = useState(false);
 
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
