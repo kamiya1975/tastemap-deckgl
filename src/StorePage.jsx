@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const mockStores = [
@@ -18,6 +18,33 @@ export default function StorePage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState("nearby");
   const [expanded, setExpanded] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    const askForLocation = async () => {
+      const allow = window.confirm("近くの購入した店舗を探します。位置情報を取得しても良いですか？");
+      if (allow) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log("位置取得成功:", position.coords);
+            setUserLocation({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            });
+            setTab("nearby");
+          },
+          (error) => {
+            console.error("位置取得エラー:", error);
+            alert("位置情報の取得に失敗しました。店舗一覧を表示します。");
+            setTab("list");
+          }
+        );
+      } else {
+        setTab("list");
+      }
+    };
+    askForLocation();
+  }, []);
 
   const sortedStores = [...mockStores].sort((a, b) => a.distance - b.distance);
 
@@ -78,7 +105,7 @@ export default function StorePage() {
       {/* スクロールエリア */}
       <div
         style={{
-          paddingTop: "120px", // ヘッダー高さ分
+          paddingTop: "120px",
           overflowY: "auto",
           height: "100vh",
           maxWidth: "500px",
