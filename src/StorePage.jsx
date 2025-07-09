@@ -47,7 +47,7 @@ export default function StorePage() {
             borderBottomLeftRadius: "6px",
           }}
         >
-          近い店舗
+          店舗名
         </button>
         <button
           onClick={() => setTab("list")}
