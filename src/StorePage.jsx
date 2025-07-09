@@ -110,7 +110,9 @@ export default function StorePage() {
                 cursor: "pointer",
               }}
             >
-              <div>{store.name} {store.branch}</div>
+              <div> style={{ textDecoration: "underline", color: "#007bff" }}>
+                {store.name} {store.branch}
+                </div>
               <div>{store.distance}km</div>
             </div>
           ))}
