@@ -27,32 +27,43 @@ export default function StorePage() {
   };
 
   return (
-    <div style={{ fontFamily: "sans-serif", padding: "16px" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "16px" }}>
+    <div
+      style={{
+        fontFamily: "sans-serif",
+        height: "100vh",
+        overflow: "hidden", // ← 画面全体スクロール防止
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
+        padding: "16px",
+      }}
+    >
+      {/* タイトル（固定） */}
+      <h2 style={{ textAlign: "center", margin: 0, paddingBottom: "8px" }}>
         購入した店舗を選んでください。
       </h2>
 
-      {/* タブ＋リストの共通枠 */}
+      {/* タブ＋リスト全体 */}
       <div
         style={{
+          flex: 1,
           maxWidth: "500px",
           margin: "0 auto",
           border: "1px solid #ccc",
           borderRadius: "8px",
-          overflow: "hidden",
           display: "flex",
           flexDirection: "column",
-          height: "480px",
+          overflow: "hidden",
         }}
       >
-        {/* タブ部（固定） */}
+        {/* タブ部分（固定） */}
         <div style={{ display: "flex" }}>
           <div
             onClick={() => setTab("nearby")}
             style={{
               flex: 1,
               textAlign: "center",
-              padding: "10px 0",
+              padding: "12px 0",
               backgroundColor: tab === "nearby" ? "#000" : "#ccc",
               color: "#fff",
               fontWeight: "bold",
@@ -66,7 +77,7 @@ export default function StorePage() {
             style={{
               flex: 1,
               textAlign: "center",
-              padding: "10px 0",
+              padding: "12px 0",
               backgroundColor: tab === "list" ? "#000" : "#ccc",
               color: "#fff",
               fontWeight: "bold",
@@ -77,8 +88,8 @@ export default function StorePage() {
           </div>
         </div>
 
-        {/* リスト部分（スクロール） */}
-        <div style={{ overflowY: "auto", flex: 1, backgroundColor: "#fff" }}>
+        {/* リスト部分（スクロール可） */}
+        <div style={{ flex: 1, overflowY: "auto", backgroundColor: "#fff" }}>
           {tab === "nearby" &&
             sortedStores.map((store, idx) => (
               <div
