@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// 仮の位置情報付き mock データ
 const mockStores = [
   { name: "スーパーマーケットA", branch: "●●●店", prefecture: "北海道", lat: 34.928, lng: 137.05 },
   { name: "スーパーマーケットB", branch: "●●●店", prefecture: "北海道", lat: 34.93, lng: 137.04 },
@@ -12,18 +11,11 @@ const mockStores = [
 ];
 
 const prefectures = [
-  "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県",
-  "茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県",
-  "新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県",
-  "岐阜県", "静岡県", "愛知県", "三重県",
-  "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県",
-  "鳥取県", "島根県", "岡山県", "広島県", "山口県",
-  "徳島県", "香川県", "愛媛県", "高知県",
-  "福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県",
+  "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県"
 ];
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // 地球半径 (km)
+  const R = 6371;
   const toRad = deg => (deg * Math.PI) / 180;
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
@@ -39,30 +31,7 @@ export default function StorePage() {
   const [expanded, setExpanded] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [storesWithDistance, setStoresWithDistance] = useState([]);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setUserLocation({ lat: latitude, lng: longitude });
-
-        // 距離を再計算
-        const updatedStores = mockStores.map((store) => {
-          const distance = haversineDistance(latitude, longitude, store.lat, store.lng);
-          return { ...store, distance: distance.toFixed(1) };
-        });
-
-        // 距離で並び替え
-        const sorted = updatedStores.sort((a, b) => a.distance - b.distance);
-        setStoresWithDistance(sorted);
-      },
-      (err) => {
-        console.warn("位置情報の取得に失敗しました:", err);
-        // fallback: 距離順を使わない
-        setStoresWithDistance(mockStores.map(s => ({ ...s, distance: 999 })));
-      }
-    );
-  }, []);
+  const [showPermissionDialog, setShowPermissionDialog] = useState(true);
 
   const handleStoreSelect = () => {
     navigate("/slider");
@@ -70,6 +39,55 @@ export default function StorePage() {
 
   return (
     <div style={{ fontFamily: "sans-serif", height: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* 位置情報取得のダイアログ */}
+      {showPermissionDialog && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
+          backgroundColor: "rgba(0,0,0,0.6)", color: "#fff", zIndex: 9999,
+          display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"
+        }}>
+          <p style={{ fontSize: "18px", marginBottom: "20px" }}>
+            近くの購入した店舗を探します。位置情報を取得しても良いですか？
+          </p>
+          <div>
+            <button
+              onClick={() => {
+                setShowPermissionDialog(false);
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setUserLocation({ lat: latitude, lng: longitude });
+
+                    const updatedStores = mockStores.map((store) => {
+                      const distance = haversineDistance(latitude, longitude, store.lat, store.lng);
+                      return { ...store, distance: distance.toFixed(1) };
+                    });
+
+                    setStoresWithDistance(updatedStores.sort((a, b) => a.distance - b.distance));
+                  },
+                  (err) => {
+                    console.warn("位置情報の取得に失敗:", err);
+                    setStoresWithDistance(mockStores.map(s => ({ ...s, distance: 999 })));
+                  }
+                );
+              }}
+              style={{ marginRight: "10px", padding: "8px 16px" }}
+            >
+              Yes
+            </button>
+            <button
+              onClick={() => {
+                setShowPermissionDialog(false);
+                setStoresWithDistance(mockStores.map(s => ({ ...s, distance: 999 })));
+              }}
+              style={{ padding: "8px 16px" }}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* タイトル */}
       <div style={{ padding: "16px", textAlign: "center", position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
         <h2 style={{ margin: 0 }}>購入した店舗を選んでください。</h2>
@@ -87,7 +105,7 @@ export default function StorePage() {
         }}>店舗一覧</div>
       </div>
 
-      {/* 内容部分 */}
+      {/* 内容エリア */}
       <div style={{
         flex: 1, overflowY: "auto", backgroundColor: "#fff", maxWidth: "500px", margin: "0 auto", width: "100%",
         borderBottomLeftRadius: "12px", borderBottomRightRadius: "12px", borderLeft: "1px solid #ccc",
