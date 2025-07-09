@@ -10,9 +10,7 @@ const mockStores = [
   { name: "スーパーマーケットA", branch: "●●●店", prefecture: "宮城県", lat: 34.93, lng: 137.055 },
 ];
 
-const prefectures = [
-  "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県"
-];
+const prefectures = ["北海道", "青森県", "岩手県", "宮城県"];
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
@@ -31,7 +29,34 @@ export default function StorePage() {
   const [expanded, setExpanded] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [storesWithDistance, setStoresWithDistance] = useState([]);
-  const [showPermissionDialog, setShowPermissionDialog] = useState(true);
+  const [showPrompt, setShowPrompt] = useState(true);
+
+  const handleGetLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation({ lat: latitude, lng: longitude });
+
+        const updatedStores = mockStores.map((store) => {
+          const distance = haversineDistance(latitude, longitude, store.lat, store.lng);
+          return { ...store, distance: distance.toFixed(1) };
+        });
+
+        setStoresWithDistance(updatedStores.sort((a, b) => a.distance - b.distance));
+        setShowPrompt(false);
+      },
+      (err) => {
+        console.warn("位置情報の取得に失敗:", err);
+        setStoresWithDistance(mockStores.map(s => ({ ...s, distance: 999 })));
+        setShowPrompt(false);
+      }
+    );
+  };
+
+  const handleDeny = () => {
+    setStoresWithDistance(mockStores.map(s => ({ ...s, distance: 999 })));
+    setShowPrompt(false);
+  };
 
   const handleStoreSelect = () => {
     navigate("/slider");
@@ -39,51 +64,17 @@ export default function StorePage() {
 
   return (
     <div style={{ fontFamily: "sans-serif", height: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* 位置情報取得のダイアログ */}
-      {showPermissionDialog && (
+      {/* 上部のバナー形式の確認表示 */}
+      {showPrompt && (
         <div style={{
-          position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
-          backgroundColor: "rgba(0,0,0,0.6)", color: "#fff", zIndex: 9999,
-          display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"
+          backgroundColor: "#007bff", color: "#fff", padding: "10px",
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          fontSize: "14px"
         }}>
-          <p style={{ fontSize: "18px", marginBottom: "20px" }}>
-            近くの購入した店舗を探します。位置情報を取得しても良いですか？
-          </p>
+          <span>近くの購入した店舗を探します。位置情報を取得しても良いですか？</span>
           <div>
-            <button
-              onClick={() => {
-                setShowPermissionDialog(false);
-                navigator.geolocation.getCurrentPosition(
-                  (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setUserLocation({ lat: latitude, lng: longitude });
-
-                    const updatedStores = mockStores.map((store) => {
-                      const distance = haversineDistance(latitude, longitude, store.lat, store.lng);
-                      return { ...store, distance: distance.toFixed(1) };
-                    });
-
-                    setStoresWithDistance(updatedStores.sort((a, b) => a.distance - b.distance));
-                  },
-                  (err) => {
-                    console.warn("位置情報の取得に失敗:", err);
-                    setStoresWithDistance(mockStores.map(s => ({ ...s, distance: 999 })));
-                  }
-                );
-              }}
-              style={{ marginRight: "10px", padding: "8px 16px" }}
-            >
-              Yes
-            </button>
-            <button
-              onClick={() => {
-                setShowPermissionDialog(false);
-                setStoresWithDistance(mockStores.map(s => ({ ...s, distance: 999 })));
-              }}
-              style={{ padding: "8px 16px" }}
-            >
-              No
-            </button>
+            <button onClick={handleGetLocation} style={{ margin: "0 5px" }}>Yes</button>
+            <button onClick={handleDeny}>No</button>
           </div>
         </div>
       )}
@@ -105,7 +96,7 @@ export default function StorePage() {
         }}>店舗一覧</div>
       </div>
 
-      {/* 内容エリア */}
+      {/* 本体部分 */}
       <div style={{
         flex: 1, overflowY: "auto", backgroundColor: "#fff", maxWidth: "500px", margin: "0 auto", width: "100%",
         borderBottomLeftRadius: "12px", borderBottomRightRadius: "12px", borderLeft: "1px solid #ccc",
