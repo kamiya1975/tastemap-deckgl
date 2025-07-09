@@ -30,34 +30,33 @@ export default function StorePage() {
     <div
       style={{
         fontFamily: "sans-serif",
-        height: "100vh",
-        overflow: "hidden", // ← 画面全体スクロール防止
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        boxSizing: "border-box",
         padding: "16px",
+        boxSizing: "border-box",
       }}
     >
-      {/* タイトル（固定） */}
-      <h2 style={{ textAlign: "center", margin: 0, paddingBottom: "8px" }}>
+      {/* タイトル */}
+      <h2 style={{ textAlign: "center", marginBottom: "12px" }}>
         購入した店舗を選んでください。
       </h2>
 
-      {/* タブ＋リスト全体 */}
+      {/* タブ + リストの枠 */}
       <div
         style={{
           flex: 1,
           maxWidth: "500px",
           margin: "0 auto",
           border: "1px solid #ccc",
-          borderRadius: "8px",
+          borderRadius: "12px",
+          overflow: "hidden",
           display: "flex",
           flexDirection: "column",
-          overflow: "hidden",
         }}
       >
-        {/* タブ部分（固定） */}
-        <div style={{ display: "flex" }}>
+        {/* タブ */}
+        <div style={{ display: "flex", backgroundColor: "#eee" }}>
           <div
             onClick={() => setTab("nearby")}
             style={{
@@ -68,6 +67,7 @@ export default function StorePage() {
               color: "#fff",
               fontWeight: "bold",
               cursor: "pointer",
+              transition: "0.2s",
             }}
           >
             近い店舗
@@ -82,13 +82,14 @@ export default function StorePage() {
               color: "#fff",
               fontWeight: "bold",
               cursor: "pointer",
+              transition: "0.2s",
             }}
           >
             店舗一覧
           </div>
         </div>
 
-        {/* リスト部分（スクロール可） */}
+        {/* スクロール可能エリア */}
         <div style={{ flex: 1, overflowY: "auto", backgroundColor: "#fff" }}>
           {tab === "nearby" &&
             sortedStores.map((store, idx) => (
@@ -124,6 +125,7 @@ export default function StorePage() {
                       borderBottom: "1px solid #ccc",
                       display: "flex",
                       justifyContent: "space-between",
+                      alignItems: "center",
                       cursor: "pointer",
                     }}
                   >
@@ -142,6 +144,7 @@ export default function StorePage() {
                           padding: "12px",
                           borderBottom: "1px solid #eee",
                           cursor: "pointer",
+                          backgroundColor: "#fff",
                         }}
                       >
                         <div>{store.name} {store.branch}</div>
