@@ -2,12 +2,54 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const mockStores = [
-  { name: "スーパーマーケットA", branch: "●●●店", lat: 34.928, lng: 137.05, prefecture: "北海道" },
-  { name: "スーパーマーケットB", branch: "●●●店", lat: 34.93, lng: 137.04, prefecture: "北海道" },
-  { name: "スーパーマーケットA", branch: "●●●店", lat: 34.92, lng: 137.06, prefecture: "青森県" },
-  { name: "スーパーマーケットC", branch: "●●●店", lat: 34.925, lng: 137.045, prefecture: "岩手県" },
-  { name: "スーパーマーケットD", branch: "●●●店", lat: 34.927, lng: 137.042, prefecture: "宮城県" },
-  { name: "スーパーマーケットA", branch: "●●●店", lat: 34.93, lng: 137.055, prefecture: "宮城県" },
+  {
+    name: "スーパーマーケットA",
+    branch: "●●●店",
+    lat: 34.928,
+    lng: 137.05,
+    prefecture: "北海道",
+    products: ["4935919319140", "4935919080316"],
+  },
+  {
+    name: "スーパーマーケットB",
+    branch: "●●●店",
+    lat: 34.93,
+    lng: 137.04,
+    prefecture: "北海道",
+    products: ["4935919058186"],
+  },
+  {
+    name: "スーパーマーケットA",
+    branch: "●●●店",
+    lat: 34.92,
+    lng: 137.06,
+    prefecture: "青森県",
+    products: ["850832004260"],
+  },
+  {
+    name: "スーパーマーケットC",
+    branch: "●●●店",
+    lat: 34.925,
+    lng: 137.045,
+    prefecture: "岩手県",
+    products: ["4935919071604"],
+  },
+  {
+    name: "スーパーマーケットD",
+    branch: "●●●店",
+    lat: 34.927,
+    lng: 137.042,
+    prefecture: "宮城県",
+    products: ["4935919193559", "4935919197175"],
+  },
+  {
+    name: "スーパーマーケットA",
+    branch: "●●●店",
+    lat: 34.93,
+    lng: 137.055,
+    prefecture: "宮城県",
+    products: ["4935919052504"],
+  },
 ];
 
 const prefectures = [
@@ -65,8 +107,8 @@ export default function StorePage() {
     askForLocation();
   }, []);
 
-  const handleStoreSelect = () => {
-    navigate("/slider");
+  const handleStoreSelect = (store) => {
+    navigate("/map", { state: { selectedStore: store } });
   };
 
   return (
@@ -132,7 +174,7 @@ export default function StorePage() {
           sortedStores.map((store, idx) => (
             <div
               key={idx}
-              onClick={handleStoreSelect}
+              onClick={() => handleStoreSelect(store)}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -176,7 +218,7 @@ export default function StorePage() {
                   storesInPref.map((store, i) => (
                     <div
                       key={i}
-                      onClick={handleStoreSelect}
+                      onClick={() => handleStoreSelect(store)}
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -189,8 +231,7 @@ export default function StorePage() {
                       <div style={{ textDecoration: "underline", color: "#007bff" }}>
                         {store.name} {store.branch}
                       </div>
-                      <div>{tab === "nearby" ? `${store.distance}km` : null}
-                      </div>
+                      <div>{tab === "nearby" ? `${store.distance}km` : null}</div>
                     </div>
                   ))}
               </React.Fragment>
