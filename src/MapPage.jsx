@@ -9,8 +9,10 @@ import {
   GridCellLayer,
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
+import { useLocation } from "react-router-dom";
 
 function App() {
+  const location = useLocation();
   const [data, setData] = useState([]);
   const [is3D, setIs3D] = useState(false);
   const [viewState, setViewState] = useState({
@@ -32,6 +34,12 @@ function App() {
   const [sweetness, setSweetness] = useState(50);
   const [body, setBody] = useState(50);
   const drawerContentRef = useRef(null);
+
+  useEffect(() => {
+    if (location.state?.autoOpenSlider) {
+      setIsSliderOpen(true);
+    }
+  }, [location.state]);
 
   // PCA + UMAPをマージして読み込み
   useEffect(() => {

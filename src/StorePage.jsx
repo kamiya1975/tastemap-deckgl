@@ -108,7 +108,7 @@ export default function StorePage() {
   }, []);
 
   const handleStoreSelect = (store) => {
-    navigate("/map", { state: { selectedStore: store } });
+    navigate("/map", { state: { selectedStore: store, autoOpenSlider: true } });
   };
 
   return (
