@@ -406,7 +406,7 @@ function App() {
       setViewState({
         ...viewState,
         rotationX: 30,
-        rotationOrbit: 0,
+        rotationOrbit: 180,
       });
     } else {
       // 2D用に戻す
