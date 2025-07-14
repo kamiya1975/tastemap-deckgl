@@ -177,7 +177,7 @@ function App() {
         radius: 0.05,
         extruded: true,
         elevationScale: 2,
-        getPosition: (d) => [d.BodyAxis, -d.SweetAxis],
+        getPosition: (d) => [d.BodyAxis, d.SweetAxis],
         getElevation: (d) => (zMetric ? Number(d[zMetric]) || 0 : 0),
         getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
@@ -186,7 +186,7 @@ function App() {
             const { BodyAxis, SweetAxis } = info.object;
             setViewState((prev) => ({
               ...prev,
-              target: [BodyAxis, -SweetAxis, 0],
+              target: [BodyAxis, SweetAxis, 0],
             }));
           }
         },
