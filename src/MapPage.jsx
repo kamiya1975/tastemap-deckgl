@@ -155,7 +155,7 @@ function App() {
     const map = new Map();
     data.forEach((d) => {
       const x = Math.floor(d.BodyAxis / cellSize) * cellSize;
-      const y = Math.floor(-d.SweetAxis / cellSize) * cellSize;
+      const y = Math.floor((is3D ? d.SweetAxis : -d.SweetAxis) / cellSize) * cellSize;
       const key = `${x},${y}`;
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0, hasRating: false });
