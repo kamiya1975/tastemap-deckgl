@@ -405,7 +405,7 @@ function App() {
       // 3D用
       setViewState({
         ...viewState,
-        rotationX: 30,
+        rotationX: 45,
         rotationOrbit: 0,
       });
     } else {
