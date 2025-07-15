@@ -166,7 +166,7 @@ function App() {
       map.get(key).count += 1;
     });
     return Array.from(map.values());
-  }, [data, userRatings]);
+  }, [data, userRatings, is3D]);
 
   const mainLayer = useMemo(() => {
     if (is3D) {
