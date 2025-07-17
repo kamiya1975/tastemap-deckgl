@@ -268,7 +268,7 @@ function App() {
   for (let i = 1; i <= 5; i++) {
     layers.push(
       new ScatterplotLayer({
-        id: `rating-multi-circle-${i}`,
+        id: `rating-ring-${i}`,
         data: data.filter(
           (d) => userRatings[d.JAN] && userRatings[d.JAN].rating >= i
         ),
@@ -277,8 +277,8 @@ function App() {
         filled: true,
         stroked: true,
         getLineColor: [0, 0, 0, 255], // オレンジの枠線
-        getRadius: 0.12 + (i - 1) * 0.04, // 評価数に応じて大きく
-        lineWidthMinPixels: 1.5,
+        getRadius: baseRadius + (i - 1) * ringSpacing,  // 半径を間隔あけて調整
+        lineWidthMinPixels: 2,
         pickable: false,
       })
     );
