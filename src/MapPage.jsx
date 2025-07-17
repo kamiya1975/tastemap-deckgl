@@ -262,7 +262,7 @@ function App() {
       })
     : null;
 
-    const multiCircleLayers = useMemo(() => {
+  const multiCircleLayers = useMemo(() => {
   const layers = [];
 
   for (let i = 1; i <= 5; i++) {
@@ -274,7 +274,7 @@ function App() {
         ),
         getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
         getFillColor: [0, 0, 0, 0], // 中を透明に
-        getLineColor: [255, 165, 0, 200], // オレンジの枠線
+        getLineColor: [0, 0, 0, 255], // オレンジの枠線
         getRadius: 0.12 + (i - 1) * 0.04, // 評価数に応じて大きく
         stroked: true,
         filled: false,
