@@ -156,7 +156,7 @@ function App() {
     data.forEach((d) => {
       const x = Math.floor(d.BodyAxis / cellSize) * cellSize;
       const y = Math.floor((is3D ? d.SweetAxis : -d.SweetAxis) / cellSize) * cellSize;
-      const key = `${x},${y}`;
+      const key = ${x},${y};
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0, hasRating: false });
       }
@@ -171,7 +171,7 @@ function App() {
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
-        id: `columns-${zMetric}`,
+        id: columns-${zMetric},
         data,
         diskResolution: 12,
         radius: 0.05,
@@ -212,6 +212,19 @@ function App() {
       d.hasRating ? [180, 100, 50, 150] : [200, 200, 200, 80],
     getElevation: 0,
     pickable: false,
+  });
+
+  const ratingLayer = new ScatterplotLayer({
+  id: "rating-bubbles",
+  data: data.filter((d) => userRatings[d.JAN]),
+  getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
+  getFillColor: [255, 165, 0, 180],
+  getRadius: (d) => {
+    const ratingObj = userRatings[d.JAN];
+    return ratingObj ? ratingObj.rating * 0.2 : 0.01;
+  },
+  sizeUnits: "common",
+  pickable: false,
   });
 
   const ratingDateLayer = new TextLayer({
@@ -261,27 +274,6 @@ function App() {
         fontFamily: "Helvetica Neue",
       })
     : null;
-
-  const baseRadius = 0.15;
-  const ringSpacing = 0.06;
-
-  const ratingRingsData = useMemo(() => {
-  const rings = [];
-
-        data.forEach((d) => {
-        const rating = userRatings[d.JAN]?.rating;
-        if (!rating) return;
-
-        for (let i = 1; i <= rating; i++) {
-        rings.push({
-        position: [d.BodyAxis, -d.SweetAxis, 0],
-        radius: baseRadius + (i - 1) * ringSpacing,
-      });
-      }
-  });
-
-  return rings;
-}, [data, userRatings]);
 
   return (
     <div style={{ 
@@ -374,8 +366,8 @@ function App() {
           mainLayer,
           userPinLayer,
           textLayer,
+          ratingLayer,
           ratingDateLayer,
-          ratingRingLayer,  // ← ★ここで差し替え
         ]}
       />
 
@@ -532,7 +524,7 @@ function App() {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: `linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%)`,
+        background: linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%),
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -565,7 +557,7 @@ function App() {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: `linear-gradient(to right, #007bff ${body}%, #ddd ${body}%)`,
+        background: linear-gradient(to right, #007bff ${body}%, #ddd ${body}%),
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -575,7 +567,7 @@ function App() {
 
   {/* カスタムスライダーCSS */}
   <style>
-    {`
+    {
       input[type=range]::-webkit-slider-thumb {
         appearance: none;
         width: 28px;
@@ -597,7 +589,7 @@ function App() {
         box-shadow: 0 0 6px rgba(0,0,0,0.2);
         cursor: pointer;
       }
-    `}
+    }
   </style>
 
   {/* 地図生成ボタン */}
@@ -723,7 +715,7 @@ function App() {
         <li
           key={idx}
           onClick={() => {
-            const newWin = window.open(`/products/${item.JAN}`, "_blank");
+            const newWin = window.open(/products/${item.JAN}, "_blank");
             setProductWindow(newWin);
           }}
           style={{
