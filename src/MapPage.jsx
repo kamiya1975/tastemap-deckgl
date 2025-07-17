@@ -262,30 +262,39 @@ function App() {
       })
     : null;
 
-  const baseRadius = 0.15;
-  const ringSpacing = 0.05;
+const baseRadius = 0.15;
+const ringSpacing = 0.06;
 
-  const multiCircleLayers = useMemo(() => {
-  const layers = [];
+const ratingRingsData = useMemo(() => {
+  const rings = [];
 
-  for (let i = 1; i <= 5; i++) {
-    layers.push(
-      new ScatterplotLayer({
-        id: `rating-ring-${i}`,
-        data: data.filter(
-          (d) => userRatings[d.JAN]?.rating === i
-        ),
-        getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
-        getFillColor: [0, 0, 0, 0], // 中を透明に
-        filled: true,
-        stroked: true,
-        getLineColor: [0, 0, 0, 255], 
-        getRadius: baseRadius + (i - 1) * ringSpacing,  // 半径を間隔あけて調整
-        lineWidthMinPixels: 1.5,
-        pickable: false,
-      })
-    );
-  }
+  data.forEach((d) => {
+    const rating = userRatings[d.JAN]?.rating;
+    if (!rating) return;
+
+    for (let i = 1; i <= rating; i++) {
+      rings.push({
+        position: [d.BodyAxis, -d.SweetAxis, 0],
+        radius: baseRadius + (i - 1) * ringSpacing,
+      });
+    }
+  });
+
+  return rings;
+}, [data, userRatings]);
+
+const ratingRingLayer = new ScatterplotLayer({
+  id: "rating-rings",
+  data: ratingRingsData,
+  getPosition: (d) => d.position,
+  getRadius: (d) => d.radius,
+  getFillColor: [0, 0, 0, 0],
+  filled: true,
+  stroked: true,
+  getLineColor: [0, 0, 0, 255],
+  lineWidthMinPixels: 1.5,
+  pickable: false,
+});
 
   return layers;
 }, [data, userRatings]);
@@ -382,7 +391,7 @@ function App() {
           userPinLayer,
           textLayer,
           ratingDateLayer,
-          ...multiCircleLayers  // ← ★ここで差し替え
+          ratingRingLayer,  // ← ★ここで差し替え
         ]}
       />
 
