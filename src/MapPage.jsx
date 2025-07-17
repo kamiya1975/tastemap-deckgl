@@ -214,19 +214,6 @@ function App() {
     pickable: false,
   });
 
-  const ratingLayer = new ScatterplotLayer({
-  id: "rating-bubbles",
-  data: data.filter((d) => userRatings[d.JAN]),
-  getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
-  getFillColor: [255, 165, 0, 180],
-  getRadius: (d) => {
-    const ratingObj = userRatings[d.JAN];
-    return ratingObj ? ratingObj.rating * 0.2 : 0.01;
-  },
-  sizeUnits: "common",
-  pickable: false,
-  });
-
   const ratingDateLayer = new TextLayer({
   id: "rating-dates",
   data: data.filter((d) => userRatings[d.JAN]),
@@ -274,6 +261,30 @@ function App() {
         fontFamily: "Helvetica Neue",
       })
     : null;
+
+    const multiCircleLayers = useMemo(() => {
+  const layers = [];
+
+  for (let i = 1; i <= 5; i++) {
+    layers.push(
+      new ScatterplotLayer({
+        id: `rating-multi-circle-${i}`,
+        data: data.filter(
+          (d) => userRatings[d.JAN] && userRatings[d.JAN].rating >= i
+        ),
+        getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
+        getFillColor: [0, 0, 0, 0], // 中を透明に
+        getLineColor: [255, 165, 0, 200], // オレンジの枠線
+        getRadius: 0.12 + (i - 1) * 0.04, // 評価数に応じて大きく
+        stroked: true,
+        filled: false,
+        pickable: false,
+      })
+    );
+  }
+
+  return layers;
+}, [data, userRatings]);
 
   return (
     <div style={{ 
@@ -366,8 +377,8 @@ function App() {
           mainLayer,
           userPinLayer,
           textLayer,
-          ratingLayer,
           ratingDateLayer,
+          ...multiCircleLayers  // ← ★ここで差し替え
         ]}
       />
 
