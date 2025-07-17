@@ -283,18 +283,6 @@ function App() {
   return rings;
 }, [data, userRatings]);
 
-const ratingRingLayer = new ScatterplotLayer({
-  id: "rating-rings",
-  data: ratingRingsData,
-  getPosition: (d) => d.position,
-  getRadius: (d) => d.radius,
-  filled: true,
-  stroked: true,
-  getLineColor: [0, 0, 0, 255],
-  lineWidthMinPixels: 1.5,
-  pickable: false,
-});
-
   return (
     <div style={{ 
       position: "absolute", 
