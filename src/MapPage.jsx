@@ -296,9 +296,6 @@ const ratingRingLayer = new ScatterplotLayer({
   pickable: false,
 });
 
-  return layers;
-}, [data, userRatings]);
-
   return (
     <div style={{ 
       position: "absolute", 
