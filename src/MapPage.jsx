@@ -565,33 +565,6 @@ function App() {
     />
   </div>
 
-  {/* カスタムスライダーCSS */}
-  <style>
-    {
-      input[type=range]::-webkit-slider-thumb {
-        appearance: none;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: white;
-        border: 2px solid #ccc;
-        box-shadow: 0 0 6px rgba(0,0,0,0.2);
-        cursor: pointer;
-        margin-top: -2px;
-      }
-
-      input[type=range]::-moz-range-thumb {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: white;
-        border: 2px solid #ccc;
-        box-shadow: 0 0 6px rgba(0,0,0,0.2);
-        cursor: pointer;
-      }
-    }
-  </style>
-
   {/* 地図生成ボタン */}
   <button
     onClick={() => {
