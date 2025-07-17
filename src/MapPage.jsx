@@ -262,22 +262,22 @@ function App() {
       })
     : null;
 
-const baseRadius = 0.15;
-const ringSpacing = 0.06;
+  const baseRadius = 0.15;
+  const ringSpacing = 0.06;
 
-const ratingRingsData = useMemo(() => {
+  const ratingRingsData = useMemo(() => {
   const rings = [];
 
-  data.forEach((d) => {
-    const rating = userRatings[d.JAN]?.rating;
-    if (!rating) return;
+        data.forEach((d) => {
+        const rating = userRatings[d.JAN]?.rating;
+        if (!rating) return;
 
-    for (let i = 1; i <= rating; i++) {
-      rings.push({
+        for (let i = 1; i <= rating; i++) {
+        rings.push({
         position: [d.BodyAxis, -d.SweetAxis, 0],
         radius: baseRadius + (i - 1) * ringSpacing,
       });
-    }
+      }
   });
 
   return rings;
@@ -288,7 +288,6 @@ const ratingRingLayer = new ScatterplotLayer({
   data: ratingRingsData,
   getPosition: (d) => d.position,
   getRadius: (d) => d.radius,
-  getFillColor: [0, 0, 0, 0],
   filled: true,
   stroked: true,
   getLineColor: [0, 0, 0, 255],
