@@ -264,7 +264,8 @@ function App() {
 
   const baseRadius = 0.15;
   const ringSpacing = 0.05;
-  
+  const lineWidthMinPixels = 2.0;
+
   const multiCircleLayers = useMemo(() => {
   const layers = [];
 
@@ -281,7 +282,7 @@ function App() {
         stroked: true,
         getLineColor: [0, 0, 0, 255], 
         getRadius: baseRadius + (i - 1) * ringSpacing,  // 半径を間隔あけて調整
-        lineWidthMinPixels: 2,
+        lineWidthMinPixels,
         pickable: false,
       })
     );
