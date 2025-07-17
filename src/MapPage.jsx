@@ -171,7 +171,7 @@ function App() {
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
-        id: columns-${zMetric},
+        id: `columns-${zMetric}`,
         data,
         diskResolution: 12,
         radius: 0.05,
@@ -524,7 +524,7 @@ function App() {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%),
+        background: `linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%)`,
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -557,7 +557,7 @@ function App() {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: linear-gradient(to right, #007bff ${body}%, #ddd ${body}%),
+        background: `linear-gradient(to right, #007bff ${body}%, #ddd ${body}%)`,
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
