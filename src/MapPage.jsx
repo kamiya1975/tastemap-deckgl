@@ -274,10 +274,11 @@ function App() {
         ),
         getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
         getFillColor: [0, 0, 0, 0], // 中を透明に
+        filled: true,
+        stroked: true,
         getLineColor: [0, 0, 0, 255], // オレンジの枠線
         getRadius: 0.12 + (i - 1) * 0.04, // 評価数に応じて大きく
-        stroked: true,
-        filled: false,
+        lineWidthMinPixels: 1.5,
         pickable: false,
       })
     );
