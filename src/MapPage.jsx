@@ -264,7 +264,6 @@ function App() {
 
   const baseRadius = 0.15;
   const ringSpacing = 0.05;
-  const lineWidthMinPixels = 2.0;
 
   const multiCircleLayers = useMemo(() => {
   const layers = [];
@@ -274,7 +273,7 @@ function App() {
       new ScatterplotLayer({
         id: `rating-ring-${i}`,
         data: data.filter(
-          (d) => userRatings[d.JAN] && userRatings[d.JAN].rating >= i
+          (d) => userRatings[d.JAN]?.rating === i
         ),
         getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
         getFillColor: [0, 0, 0, 0], // 中を透明に
@@ -282,7 +281,7 @@ function App() {
         stroked: true,
         getLineColor: [0, 0, 0, 255], 
         getRadius: baseRadius + (i - 1) * ringSpacing,  // 半径を間隔あけて調整
-        lineWidthMinPixels,
+        lineWidthMinPixels: 1.5,
         pickable: false,
       })
     );
