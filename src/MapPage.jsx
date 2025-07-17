@@ -715,7 +715,7 @@ function App() {
         <li
           key={idx}
           onClick={() => {
-            const newWin = window.open(/products/${item.JAN}, "_blank");
+            const newWin = window.open(`/products/${item.JAN}`, "_blank");
             setProductWindow(newWin);
           }}
           style={{
