@@ -134,6 +134,7 @@ function App() {
   const gridInterval = 0.2;
   const cellSize = 0.2;
 
+  //グリッド線
   const { thinLines, thickLines } = useMemo(() => {
   const thin = [];
   const thick = [];
@@ -142,10 +143,10 @@ function App() {
       sourcePosition: [x, -100, 0],
       targetPosition: [x, 100, 0],
     };
-    if (x % 5 === 0) {
-      thick.push(line);      // ← xが5の倍数のとき太線に
+    if (Math.abs(x % 5) < 0.0001) {
+      thick.push(line);
     } else {
-      thin.push(line);       // ← それ以外は細線に
+      thin.push(line);
     }
   }
   for (let y = -100; y <= 100; y += gridInterval) {
@@ -153,8 +154,8 @@ function App() {
       sourcePosition: [-100, y, 0],
       targetPosition: [100, y, 0],
     };
-    if (y % 5 === 0) {
-      thick.push(line);      // ← yが5の倍数のとき太線に
+    if (Math.abs(y % 5) < 0.0001) {
+      thick.push(line);
     } else {
       thin.push(line);
     }
@@ -366,7 +367,7 @@ function App() {
         layers={[
           gridCellLayer,
           new LineLayer({
-            id: "grid-lines-thin",
+            id: "grid-lines-thin",//細い線
             data: thinLines,
             getSourcePosition: (d) => d.sourcePosition,
             getTargetPosition: (d) => d.targetPosition,
@@ -376,12 +377,12 @@ function App() {
             pickable: false,
           }),
           new LineLayer({
-            id: "grid-lines-thick",
+            id: "grid-lines-thick",//太い線
             data: thickLines,
             getSourcePosition: (d) => d.sourcePosition,
             getTargetPosition: (d) => d.targetPosition,
-            getColor: [120, 120, 120, 180],
-            getWidth: 2.5,
+            getColor: [50, 50, 50, 255],
+            getWidth: 3.5,
             widthUnits: "pixels",
             pickable: false,
           }),
