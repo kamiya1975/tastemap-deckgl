@@ -209,18 +209,6 @@ function App() {
         }
       },
     });
-  } else {
-    if (!userPinCoords) return null; // ← ここが重要！
-    return new ScatterplotLayer({
-      id: "user-pin",
-      data: [{ position: userPinCoords }],
-      getPosition: (d) => d.position,
-      getFillColor: [0, 255, 0, 180],
-      getRadius: 100,
-      radiusUnits: "pixels",
-    });
-  }
-}, [data, is3D, zMetric, userPinCoords]);
 
   //ブロック
   const gridCellLayer = new GridCellLayer({
@@ -279,28 +267,6 @@ function App() {
         getFillColor: [0, 255, 0, 200],
         getRadius: 0.3,
         pickable: false,
-      })
-    : null;
-
-  const textLayer = nearestPoints.length
-    ? new TextLayer({
-        id: "nearest-labels",
-        data: nearestPoints.map((d, i) => ({
-          position: [
-            d.BodyAxis,
-            -d.SweetAxis,
-            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0,
-          ],
-          text: String(i + 1),
-        })),
-        getPosition: (d) => d.position,
-        getText: (d) => d.text,
-        getSize: is3D ? 0.1 : 16,
-        sizeUnits: is3D ? "meters" : "pixels",
-        getColor: [0, 0, 0],
-        getTextAnchor: "middle",
-        getAlignmentBaseline: "center",
-        fontFamily: "Helvetica Neue",
       })
     : null;
 
