@@ -275,6 +275,62 @@ function App() {
       })
     : null;
 
+  const textLayer = useMemo(() => {
+  return nearestPoints.length
+    ? new TextLayer({
+        id: "nearest-labels",
+        data: nearestPoints.map((d, i) => ({
+          position: [
+            d.BodyAxis,
+            -d.SweetAxis,
+            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0,
+          ],
+          text: String(i + 1),
+        })),
+        getPosition: (d) => d.position,
+        getText: (d) => d.text,
+        getSize: is3D ? 0.1 : 16,
+        sizeUnits: is3D ? "meters" : "pixels",
+        getColor: [0, 0, 0],
+        getTextAnchor: "middle",
+        getAlignmentBaseline: "center",
+        fontFamily: "Helvetica Neue",
+      })
+    : null;
+}, [nearestPoints, is3D, zMetric]); // useMemo依存関係
+
+// 👇 ここにリングレイヤー
+const ratingCircleLayers = useMemo(() => {
+  return Object.entries(userRatings).flatMap(([jan, rating]) => {
+    const item = data.find(d => d.JAN === jan);
+    if (!item || !item.BodyAxis || !item.SweetAxis) return [];
+
+    const count = Math.min(rating, 6);
+    const radiusBase = 0.15;
+
+    return Array.from({ length: count }).map((_, i) => new PathLayer({
+      id: `ring-${jan}-${i}`,
+      data: [{
+        path: Array.from({ length: 40 }, (_, j) => {
+          const angle = (j / 40) * Math.PI * 2;
+          const radius = radiusBase * (i + 1);
+          return [
+            item.BodyAxis + Math.cos(angle) * radius,
+            (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius
+          ];
+        }),
+      }],
+      pickable: false,
+      getPath: d => d.path,
+      getColor: [51, 51, 51, 255],
+      widthMinPixels: 2,
+      widthMaxPixels: 2,
+      getWidth: 2,
+      opacity: 1,
+    }));
+  });
+}, [data, userRatings, is3D]);
+
   return (
     <div style={{ 
       position: "absolute", 
@@ -368,6 +424,7 @@ function App() {
           textLayer,
           ratingLayer,
           ratingDateLayer,
+          ...ratingCircleLayers,
         ]}
       />
 
