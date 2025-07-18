@@ -9,7 +9,8 @@ import {
   GridCellLayer,
   IconLayer,
 } from "@deck.gl/layers";
-import { SwipeableDrawer } from "@mui/material"; // ← Drawerの代わりに
+import Drawer from "@mui/material/Drawer";
+import { SwipeableDrawer } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
 function App() {
