@@ -665,34 +665,36 @@ function App() {
   </button>
 </Drawer>
 
-{/* 打点に近いワイン表示 */}
-<Drawer
-  anchor="bottom"
-  open={isDrawerOpen && nearestPoints.length > 0}
-  onClose={() => setIsDrawerOpen(false)}
-  PaperProps={{
-    style: {
-      width: "100%",
-      height: "700px",
-      padding: "0",
-      boxSizing: "border-box",
-      display: "flex",
-      flexDirection: "column",
-      fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-    },
-  }}
->
-  {/* 固定ヘッダー */}
+{/* 打点に近いワイン表示パネル（Drawerの代替） */}
+{isDrawerOpen && nearestPoints.length > 0 && (
   <div
     style={{
-      padding: "8px 16px",
-      borderBottom: "1px solid #ddd",
-      background: "#f9f9f9",
-      flexShrink: 0,
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      height: "50vh", // 必要に応じて調整（例: 40vh, 60vh など）
+      background: "#fff",
+      borderTop: "1px solid #ccc",
+      boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
+      zIndex: 10,
+      display: "flex",
+      flexDirection: "column",
+      pointerEvents: "auto",
     }}
   >
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    {/* 固定ヘッダー */}
+    <div
+      style={{
+        padding: "8px 16px",
+        borderBottom: "1px solid #ddd",
+        background: "#f9f9f9",
+        flexShrink: 0,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
       <h3 style={{ margin: 0 }}>打点に近いワイン</h3>
       <button
         onClick={() => {
@@ -711,44 +713,44 @@ function App() {
         閉じる
       </button>
     </div>
-  </div>
 
-  {/* スクロールするリスト部分 */}
-  <div
-    style={{
-      flex: 1,
-      overflowY: "auto",
-      padding: "8px 16px",
-      backgroundColor: "#fff",
-    }}
-  >
-    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-      {nearestPoints.map((item, idx) => (
-        <li
-          key={idx}
-          onClick={() => {
-            const newWin = window.open(`/products/${item.JAN}`, "_blank");
-            setProductWindow(newWin);
-          }}
-          style={{
-            padding: "8px 0",
-            borderBottom: "1px solid #eee",
-            cursor: "pointer",
-          }}
-        >
-          <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-          <br />
-          <small>
-            Type: {item.Type || "不明"} / 打点との距離: {item.distance?.toFixed(2)} / 
-            希望小売価格: {item.希望小売価格 ? `¥${item.希望小売価格.toLocaleString()}` : "不明"}<br />
-            Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}, 
-            星評価: {userRatings[item.JAN]?.rating ?? "なし"}
-          </small>
-        </li>
-      ))}
-    </ul>
+    {/* スクロールリスト */}
+    <div
+      style={{
+        flex: 1,
+        overflowY: "auto",
+        padding: "8px 16px",
+      }}
+    >
+      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+        {nearestPoints.map((item, idx) => (
+          <li
+            key={idx}
+            onClick={() => {
+              const newWin = window.open(`/products/${item.JAN}`, "_blank");
+              setProductWindow(newWin);
+            }}
+            style={{
+              padding: "8px 0",
+              borderBottom: "1px solid #eee",
+              cursor: "pointer",
+            }}
+          >
+            <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+            <br />
+            <small>
+              Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)} /
+              希望小売価格: {item.希望小売価格 ? `¥${item.希望小売価格.toLocaleString()}` : "不明"}
+              <br />
+              Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)},
+              星評価: {userRatings[item.JAN]?.rating ?? "なし"}
+            </small>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
-</Drawer>
+)}
 
 </div> 
 );
