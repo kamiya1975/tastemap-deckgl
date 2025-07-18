@@ -138,28 +138,31 @@ function App() {
   const { thinLines, thickLines } = useMemo(() => {
   const thin = [];
   const thick = [];
-  for (let x = -100; x <= 100; x += gridInterval) {
-    const line = {
+
+  for (let i = -500; i <= 500; i++) {
+    const x = i * gridInterval;
+    const xLine = {
       sourcePosition: [x, -100, 0],
       targetPosition: [x, 100, 0],
     };
     if (Math.abs(x % 5) < 0.0001) {
-      thick.push(line);
+      thick.push(xLine);
     } else {
-      thin.push(line);
+      thin.push(xLine);
     }
-  }
-  for (let y = -100; y <= 100; y += gridInterval) {
-    const line = {
+
+    const y = i * gridInterval;
+    const yLine = {
       sourcePosition: [-100, y, 0],
       targetPosition: [100, y, 0],
     };
     if (Math.abs(y % 5) < 0.0001) {
-      thick.push(line);
+      thick.push(yLine);
     } else {
-      thin.push(line);
+      thin.push(yLine);
     }
   }
+
   return { thinLines: thin, thickLines: thick };
 }, [gridInterval]);
 
