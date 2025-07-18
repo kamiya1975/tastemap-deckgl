@@ -26,7 +26,6 @@ function App() {
   });
   const [saved2DViewState, setSaved2DViewState] = useState(null);
   const [userPinCoords, setUserPinCoords] = useState(null);
-  const [nearestPoints, setNearestPoints] = useState([]);
   const [zMetric, setZMetric] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [userRatings, setUserRatings] = useState({});
@@ -111,18 +110,6 @@ function App() {
         target: [coords[0], coords[1]+ 5.0, 0], // 中心を打点に
         zoom: prev.zoom // ズームは前のまま
       }));
-
-      if (data.length > 0) {
-        const nearest = data
-          .map((d) => ({
-            ...d,
-           distance: Math.hypot(d.BodyAxis - coords[0], -d.SweetAxis - coords[1]),
-          }))
-          .sort((a, b) => a.distance - b.distance)
-          .slice(0, 10);
-
-        setNearestPoints(nearest);
-      }
     }
   }, [data]);
 
@@ -717,28 +704,6 @@ function App() {
       backgroundColor: "#fff",
     }}
   >
-    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-      {nearestPoints.map((item, idx) => (
-        <li
-          key={idx}
-          onClick={() => {
-            const newWin = window.open(`/products/${item.JAN}`, "_blank");
-            setProductWindow(newWin);
-          }}
-          style={{
-            padding: "8px 0",
-            borderBottom: "1px solid #eee",
-            cursor: "pointer",
-          }}
-        >
-          <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-          <br />
-          <small>
-            Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
-          </small>
-        </li>
-      ))}
-    </ul>
   </div>
 </Drawer>
 
