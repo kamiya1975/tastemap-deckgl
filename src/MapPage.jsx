@@ -142,10 +142,10 @@ function App() {
       sourcePosition: [x, -100, 0],
       targetPosition: [x, 100, 0],
     };
-    if (Math.abs(x % 1) < 0.0001 && Math.abs((x / 1) % 5) < 0.0001) {
-      thick.push(line);
+    if (x % 5 === 0) {
+      thick.push(line);      // ← xが5の倍数のとき太線に
     } else {
-      thin.push(line);
+      thin.push(line);       // ← それ以外は細線に
     }
   }
   for (let y = -100; y <= 100; y += gridInterval) {
@@ -153,8 +153,8 @@ function App() {
       sourcePosition: [-100, y, 0],
       targetPosition: [100, y, 0],
     };
-    if (Math.abs(y % 1) < 0.0001 && Math.abs((y / 1) % 5) < 0.0001) {
-      thick.push(line);
+    if (y % 5 === 0) {
+      thick.push(line);      // ← yが5の倍数のとき太線に
     } else {
       thin.push(line);
     }
@@ -380,10 +380,10 @@ function App() {
             getSourcePosition: (d) => d.sourcePosition,
             getTargetPosition: (d) => d.targetPosition,
             getColor: [120, 120, 120, 180],
-            getWidth: 2.5,
+            getWidth: 1.0,
             pickable: false,
           }),
-          
+
           mainLayer,
           userPinLayer,
           textLayer,
