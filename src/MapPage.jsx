@@ -235,16 +235,14 @@ function App() {
   data: data.filter((d) => userRatings[d.JAN]),
   getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
   getFillColor: [255, 165, 0, 100], // 色調整
-  getRadius: (d) => {  // バブルサイズ調整
+  getRadius: (d) => {
     const rating = userRatings[d.JAN]?.rating;
     if (!rating) return 0;
-
-    if (rating === 1) return 5;
-    if (rating === 2) return 8;
-    if (rating === 3) return 12;
-    if (rating === 4) return 16;
-    if (rating === 5) return 20;
-
+    if (rating === 1) return 1;
+    if (rating === 2) return 2;
+    if (rating === 3) return 3;
+    if (rating === 4) return 4;
+    if (rating === 5) return 5;
     return 0; // 念のため
   },
   sizeUnits: "pixels",
