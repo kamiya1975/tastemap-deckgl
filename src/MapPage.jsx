@@ -145,7 +145,7 @@ function App() {
       sourcePosition: [x, -100, 0],
       targetPosition: [x, 100, 0],
     };
-    if (Math.abs(x % 5) < 0.0001) {
+    if (Math.abs(x % 2.5) < 0.0001) {
       thick.push(xLine);
     } else {
       thin.push(xLine);
@@ -385,7 +385,7 @@ function App() {
             getSourcePosition: (d) => d.sourcePosition,
             getTargetPosition: (d) => d.targetPosition,
             getColor: [50, 50, 50, 255],
-            getWidth: 3.5,
+            getWidth: 1.5,
             widthUnits: "pixels",
             pickable: false,
           }),
