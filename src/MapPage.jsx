@@ -670,6 +670,8 @@ function App() {
   anchor="bottom"
   open={isDrawerOpen && nearestPoints.length > 0}
   onClose={() => setIsDrawerOpen(false)}
+  hideBackdrop={true}
+  disableEnforceFocus={true}
   BackdropProps={{ invisible: true }}
   PaperProps={{
     style: {
