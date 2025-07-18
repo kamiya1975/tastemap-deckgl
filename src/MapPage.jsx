@@ -372,6 +372,7 @@ function App() {
             getTargetPosition: (d) => d.targetPosition,
             getColor: [200, 200, 200, 100],
             getWidth: 1,
+            widthUnits: "pixels",
             pickable: false,
           }),
           new LineLayer({
@@ -381,6 +382,7 @@ function App() {
             getTargetPosition: (d) => d.targetPosition,
             getColor: [120, 120, 120, 180],
             getWidth: 2.5,
+            widthUnits: "pixels",
             pickable: false,
           }),
 
