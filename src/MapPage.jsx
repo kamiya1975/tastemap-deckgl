@@ -10,6 +10,7 @@ import {
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
+import { PathLayer } from "@deck.gl/layers";
 
 function App() {
   const location = useLocation();
