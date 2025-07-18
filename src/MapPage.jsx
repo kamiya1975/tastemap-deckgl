@@ -323,7 +323,7 @@ const ratingCircleLayers = useMemo(() => {
       }],
       pickable: false,
       getPath: d => d.path,
-      getColor: [51, 51, 51, 255],
+      getColor: [255, 0, 0, 255],
       widthMinPixels: 2,
       widthMaxPixels: 2,
       getWidth: 2,
