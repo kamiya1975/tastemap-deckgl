@@ -695,7 +695,7 @@ function App() {
       <button
         onClick={() => {
           setIsDrawerOpen(false);
-          //setUserPinCoords(null);
+          setUserPinCoords(null);
           setNearestPoints([]);
         }}
         style={{
