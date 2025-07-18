@@ -10,7 +10,6 @@ import {
   IconLayer,
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
-import { SwipeableDrawer } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
 function App() {
@@ -39,7 +38,6 @@ function App() {
   const [hasConfirmedSlider, setHasConfirmedSlider] = useState(false);
   const [sliderMarkCoords, setSliderMarkCoords] = useState(null);
   const [showRatingDates, setShowRatingDates] = useState(false);
-  const [drawerHeight, setDrawerHeight] = useState(120); // 初期は小さく開く
 
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -107,13 +105,6 @@ function App() {
     Sparkling: [255, 255, 0],
     Other: [150, 150, 150],
   };
-
-  const toggleDrawerHeight = () => {
-  const heights = [120, 400, window.innerHeight * 0.85];
-  const currentIndex = heights.indexOf(drawerHeight);
-  const nextIndex = (currentIndex + 1) % heights.length;
-  setDrawerHeight(heights[nextIndex]);
-};
 
   const gridInterval = 0.2;
   const cellSize = 0.2;
@@ -674,20 +665,17 @@ function App() {
   </button>
 </Drawer>
 
-<SwipeableDrawer
+{/* 打点に近いワイン表示 */}
+<Drawer
   anchor="bottom"
   open={isDrawerOpen && nearestPoints.length > 0}
   onClose={() => setIsDrawerOpen(false)}
-  onOpen={() => {}}
-  disableSwipeToOpen={false}
-  ModalProps={{ keepMounted: true }}
   PaperProps={{
     style: {
-      height: `${drawerHeight}px`,
-      transition: "height 0.3s ease",
-      borderTopLeftRadius: "12px",
-      borderTopRightRadius: "12px",
-      overflow: "hidden",
+      width: "100%",
+      height: "800px",
+      padding: "0",
+      boxSizing: "border-box",
       display: "flex",
       flexDirection: "column",
       fontFamily:
@@ -695,28 +683,6 @@ function App() {
     },
   }}
 >
-  {/* 高さ切替グリップバー */}
-  <div
-    onClick={toggleDrawerHeight}
-    style={{
-      height: "24px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "ns-resize",
-      background: "#ddd",
-    }}
-  >
-    <div
-      style={{
-        width: "36px",
-        height: "4px",
-        backgroundColor: "#888",
-        borderRadius: "2px",
-      }}
-    />
-  </div>
-
   {/* 固定ヘッダー */}
   <div
     style={{
@@ -779,7 +745,7 @@ function App() {
       ))}
     </ul>
   </div>
-</SwipeableDrawer>
+</Drawer>
 
 </div> 
 );
