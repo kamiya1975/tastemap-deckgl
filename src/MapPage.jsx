@@ -295,7 +295,6 @@ function App() {
       padding: 0,
       width: "100%", 
       height: "100%",
-      touchAction: "none",
        }}>
       {!is3D && (
         <>
@@ -671,9 +670,6 @@ function App() {
   anchor="bottom"
   open={isDrawerOpen && nearestPoints.length > 0}
   onClose={() => setIsDrawerOpen(false)}
-  hideBackdrop={true}
-  disableEnforceFocus={true}
-  BackdropProps={{ invisible: true }}
   PaperProps={{
     style: {
       width: "100%",
@@ -724,12 +720,7 @@ function App() {
       overflowY: "auto",
       padding: "8px 16px",
       backgroundColor: "#fff",
-      touchAction: "manipulation",
-      WebkitOverflowScrolling: "touch",
     }}
-    //onTouchStart={(e) => e.stopPropagation()}
-    //onTouchMove={(e) => e.stopPropagation()}
-    //onTouchEnd={(e) => e.stopPropagation()}
   >
     <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
       {nearestPoints.map((item, idx) => (
