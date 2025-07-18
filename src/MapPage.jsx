@@ -625,7 +625,6 @@ function App() {
       setUserPinCoords(coords);
       localStorage.setItem("userPinCoords", JSON.stringify(coords));
       setIsSliderOpen(false);
-
       setViewState((prev) => ({
       ...prev,
       target: [coords[0], coords[1]+5.0, 0],
@@ -692,7 +691,7 @@ function App() {
       <button
         onClick={() => {
           setIsDrawerOpen(false);
-          setUserPinCoords(null);
+          //setUserPinCoords(null);
           setNearestPoints([]);
         }}
         style={{
