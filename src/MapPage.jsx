@@ -7,6 +7,7 @@ import {
   LineLayer,
   TextLayer,
   GridCellLayer,
+  IconLayer,
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
