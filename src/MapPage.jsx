@@ -145,7 +145,7 @@ function App() {
       sourcePosition: [x, -100, 0],
       targetPosition: [x, 100, 0],
     };
-    if (Math.abs(x % 2.5) < 0.0001) {
+    if (i % 5 === 0) {
       thick.push(xLine);
     } else {
       thin.push(xLine);
@@ -156,7 +156,7 @@ function App() {
       sourcePosition: [-100, y, 0],
       targetPosition: [100, y, 0],
     };
-    if (Math.abs(y % 5) < 0.0001) {
+    if (i % 5 === 0) {
       thick.push(yLine);
     } else {
       thin.push(yLine);
