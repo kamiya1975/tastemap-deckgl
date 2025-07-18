@@ -237,7 +237,7 @@ function App() {
   getFillColor: [255, 165, 0, 100], //色調整
   getRadius: (d) => {
     const ratingObj = userRatings[d.JAN];
-    return ratingObj ? Math.max(ratingObj.rating * 0.01, 2) : 0; //バブルサイズ調整
+    return ratingObj ? Math.max(ratingObj.rating * 0.01, 1) : 0; //バブルサイズ調整
   },
   sizeUnits: "pixels",
   pickable: false,
