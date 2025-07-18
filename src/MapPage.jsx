@@ -481,7 +481,11 @@ function App() {
     cursor: "pointer",
   }}
 >
-  {!is3D && (
+    {is3D ? "2D" : "3D"}
+</button>
+
+{/* 2Dモード時のボタンたち */}
+{!is3D && (
   <>
     <button
       onClick={() => {
