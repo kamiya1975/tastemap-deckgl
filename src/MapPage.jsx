@@ -7,6 +7,7 @@ import {
   LineLayer,
   TextLayer,
   GridCellLayer,
+  IconLayer,
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
@@ -35,6 +36,8 @@ function App() {
   const [body, setBody] = useState(50);
   const drawerContentRef = useRef(null);
   const [hasConfirmedSlider, setHasConfirmedSlider] = useState(false);
+  const [sliderMarkCoords, setSliderMarkCoords] = useState(null);
+  const [showRatingDates, setShowRatingDates] = useState(true);
 
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -171,7 +174,7 @@ function App() {
     data.forEach((d) => {
       const x = Math.floor(d.BodyAxis / cellSize) * cellSize;
       const y = Math.floor((is3D ? d.SweetAxis : -d.SweetAxis) / cellSize) * cellSize;
-      const key = ${x},${y};
+      const key = `${x},${y}`;
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0, hasRating: false });
       }
@@ -186,7 +189,7 @@ function App() {
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
-        id: columns-${zMetric},
+        id: `columns-${zMetric}`,
         data,
         diskResolution: 12,
         radius: 0.05,
@@ -249,20 +252,22 @@ function App() {
   pickable: false,
 });
 
-  const ratingDateLayer = new TextLayer({
-  id: "rating-dates",
-  data: data.filter((d) => userRatings[d.JAN]),
-  getPosition: (d) => [d.BodyAxis, -d.SweetAxis,  is3D ? 0.1 : 0],
-  getText: (d) => {
-    const dateStr = userRatings[d.JAN]?.date;
-    return dateStr ? new Date(dateStr).toLocaleDateString() : "";
-  },
-  getSize: 12,
-  sizeUnits: "pixels",
-  getColor: [50, 50, 50, 200],
-  getTextAnchor: "start",
-  getAlignmentBaseline: "center",
-  });
+  const ratingDateLayer = showRatingDates
+  ? new TextLayer({
+      id: "rating-dates",
+      data: data.filter((d) => userRatings[d.JAN]),
+      getPosition: (d) => [d.BodyAxis, -d.SweetAxis, is3D ? 0.1 : 0],
+      getText: (d) => {
+        const dateStr = userRatings[d.JAN]?.date;
+        return dateStr ? new Date(dateStr).toLocaleDateString() : "";
+      },
+      getSize: 12,
+      sizeUnits: "pixels",
+      getColor: [50, 50, 50, 200],
+      getTextAnchor: "start",
+      getAlignmentBaseline: "center",
+    })
+  : null;
 
   const userPinLayer = userPinCoords
     ? new ScatterplotLayer({
@@ -294,6 +299,18 @@ function App() {
         getTextAnchor: "middle",
         getAlignmentBaseline: "center",
         fontFamily: "Helvetica Neue",
+      })
+    : null;
+
+  const sliderMarkLayer = sliderMarkCoords
+    ? new ScatterplotLayer({
+        id: "slider-mark",
+        data: [sliderMarkCoords],
+        getPosition: (d) => d,
+        getFillColor: [255, 0, 0, 180], // 赤色
+        getRadius: 0.25,
+        radiusUnits: "meters", // DeckGL座標系に合わせる
+        pickable: false,
       })
     : null;
 
@@ -401,6 +418,7 @@ function App() {
           userPinLayer,
           textLayer,
           ratingDateLayer,
+          sliderMarkLayer,
         ]}
       />
 
@@ -463,37 +481,64 @@ function App() {
     cursor: "pointer",
   }}
 >
-  {is3D ? "→ Map" : "→ TasteData"}
+    {is3D ? "2D" : "3D"}
 </button>
 
-      {!is3D && (
-      <button
-        onClick={() => {
-          setSweetness(50);   // ← 追加
-          setBody(50);        // ← 追加
-          setIsSliderOpen(true);
-        }}
-        style={{
-          position: "absolute",
-          top: "70px",        // 「→ TasteData」ボタンの下に配置
-          right: "10px",
-          zIndex: 1,
-          width: "40px",
-          height: "40px",
-          borderRadius: "50%",
-          background: "#eee",
-          border: "1px solid #ccc",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "bold",
-          fontSize: "20px",
-        }}
-      >
-        ★
-      </button>
-      )}
+{/* 2Dモード時のボタンたち */}
+{!is3D && (
+  <>
+    <button
+      onClick={() => {
+        setSweetness(50);
+        setBody(50);
+        setIsSliderOpen(true);
+      }}
+      style={{
+        position: "absolute",
+        top: "70px",
+        right: "10px",
+        zIndex: 1,
+        width: "40px",
+        height: "40px",
+        borderRadius: "50%",
+        background: "#eee",
+        border: "1px solid #ccc",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold",
+        fontSize: "20px",
+      }}
+    >
+      ●
+    </button>
+
+    {/* 評価日表示切替 ●ボタン */}
+    <button
+      onClick={() => setShowRatingDates(!showRatingDates)}
+      style={{
+        position: "absolute",
+        top: "120px", // ← ★ボタンより下
+        right: "10px",
+        zIndex: 1,
+        width: "40px",
+        height: "40px",
+        borderRadius: "50%",
+        background: "#eee",
+        border: "1px solid #ccc",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold",
+        fontSize: "20px",
+      }}
+    >
+      ★
+    </button>
+  </>
+)} 
 
 <Drawer
   anchor="bottom"
@@ -502,7 +547,7 @@ function App() {
   PaperProps={{
     style: {
       width: "100%",
-      height: "400px",
+      height: "700px",
       padding: "24px",
       boxSizing: "border-box",
       display: "flex",
@@ -557,7 +602,7 @@ function App() {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%),
+        background: `linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%)`,
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -590,7 +635,7 @@ function App() {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: linear-gradient(to right, #007bff ${body}%, #ddd ${body}%),
+        background: `linear-gradient(to right, #007bff ${body}%, #ddd ${body}%)`,
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -622,26 +667,15 @@ function App() {
           : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
 
       const coords = [bodyValue, -sweetValue];
-      setUserPinCoords(coords);
-      localStorage.setItem("userPinCoords", JSON.stringify(coords));
+      setSliderMarkCoords(coords); // ⭐新しい目印だけを残す
       setIsSliderOpen(false);
-
       setViewState((prev) => ({
       ...prev,
       target: [coords[0], coords[1]+5.0, 0],
+      zoom: 4.5  // ← ズーム指定
     }));
+  }}
 
-      const nearest = data
-        .map((d) => ({
-          ...d,
-          distance: Math.hypot(d.BodyAxis - coords[0], -d.SweetAxis - coords[1]),
-        }))
-        .sort((a, b) => a.distance - b.distance)
-        .slice(0, 10);
-
-      setNearestPoints(nearest);
-      setIsDrawerOpen(true);
-    }}
     style={{
       background: "#fff",
       color: "#007bff",
@@ -667,7 +701,7 @@ function App() {
   PaperProps={{
     style: {
       width: "100%",
-      height: "400px",
+      height: "700px",
       padding: "0",
       boxSizing: "border-box",
       display: "flex",
@@ -721,7 +755,7 @@ function App() {
         <li
           key={idx}
           onClick={() => {
-            const newWin = window.open(/products/${item.JAN}, "_blank");
+            const newWin = window.open(`/products/${item.JAN}`, "_blank");
             setProductWindow(newWin);
           }}
           style={{
