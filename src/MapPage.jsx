@@ -187,39 +187,41 @@ function App() {
   }, [data, userRatings, is3D]);
 
   const mainLayer = useMemo(() => {
-    if (is3D) {
-      return new ColumnLayer({
-        id: `columns-${zMetric}`,
-        data,
-        diskResolution: 12,
-        radius: 0.05,
-        extruded: true,
-        elevationScale: 2,
-        getPosition: (d) => [d.BodyAxis, d.SweetAxis],
-        getElevation: (d) => (zMetric ? Number(d[zMetric]) || 0 : 0),
-        getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
-        pickable: true,
-        onClick: (info) => {
-          if (info && info.object) {
-            const { BodyAxis, SweetAxis } = info.object;
-            setViewState((prev) => ({
-              ...prev,
-              target: [BodyAxis, SweetAxis, 0],
-            }));
-          }
-        },
-      });
-    } else {
-      return new ScatterplotLayer({
-        id: "scatter",
-        data,
-        getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
-        getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
-        getRadius: 0.05,
-        pickable: true,
-      });
-    }
-  }, [data, is3D, zMetric]);
+  if (is3D) {
+    return new ColumnLayer({
+      id: `columns-${zMetric}`,
+      data,
+      diskResolution: 12,
+      radius: 0.05,
+      extruded: true,
+      elevationScale: 2,
+      getPosition: (d) => [d.BodyAxis, d.SweetAxis],
+      getElevation: (d) => (zMetric ? Number(d[zMetric]) || 0 : 0),
+      getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
+      pickable: true,
+      onClick: (info) => {
+        if (info && info.object) {
+          const { BodyAxis, SweetAxis } = info.object;
+          setViewState((prev) => ({
+            ...prev,
+            target: [BodyAxis, SweetAxis, 0],
+          }));
+        }
+      },
+    });
+  } else {
+    if (!userPinCoords) return null; // ← ここが重要！
+    return new ScatterplotLayer({
+      id: "user-pin",
+      data: [{ position: userPinCoords }],
+      getPosition: (d) => d.position,
+      getFillColor: [0, 255, 0, 180],
+      getRadius: 100,
+      radiusUnits: "pixels",
+    });
+  }
+}, [data, is3D, zMetric, userPinCoords]);
+
   //ブロック
   const gridCellLayer = new GridCellLayer({
     id: "grid-cells",
