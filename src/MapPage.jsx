@@ -314,23 +314,6 @@ function App() {
       })
     : null;
 
-    const ratingDateLayer = showRatingDates
-  ? new TextLayer({
-      id: "rating-dates",
-      data: data.filter((d) => userRatings[d.JAN]),
-      getPosition: (d) => [d.BodyAxis, -d.SweetAxis, is3D ? 0.1 : 0],
-      getText: (d) => {
-        const dateStr = userRatings[d.JAN]?.date;
-        return dateStr ? new Date(dateStr).toLocaleDateString() : "";
-      },
-      getSize: 12,
-      sizeUnits: "pixels",
-      getColor: [50, 50, 50, 200],
-      getTextAnchor: "start",
-      getAlignmentBaseline: "center",
-    })
-  : null;
-
   return (
     <div style={{ 
       position: "absolute", 
