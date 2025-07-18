@@ -239,10 +239,10 @@ function App() {
     const rating = userRatings[d.JAN]?.rating;
     if (!rating) return 0;
     if (rating === 1) return 0.2;
-    if (rating === 2) return 0.3;
-    if (rating === 3) return 0.4;
-    if (rating === 4) return 0.5;
-    if (rating === 5) return 0.6;
+    if (rating === 2) return 0.25;
+    if (rating === 3) return 0.3;
+    if (rating === 4) return 0.35;
+    if (rating === 5) return 0.4;
     return 0; // 念のため
   },
   sizeUnits: "pixels",
