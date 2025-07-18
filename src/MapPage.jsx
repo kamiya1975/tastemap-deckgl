@@ -275,7 +275,7 @@ function App() {
       })
     : null;
 
-  const textLayer = useMemo(() => {
+  const nearestLabelLayer = useMemo(() => {
   return nearestPoints.length
     ? new TextLayer({
         id: "nearest-labels",
@@ -421,7 +421,7 @@ const ratingCircleLayers = useMemo(() => {
           }),
           mainLayer,
           userPinLayer,
-          textLayer,
+          nearestLabelLayer,
           ratingLayer,
           ratingDateLayer,
           ...ratingCircleLayers,
