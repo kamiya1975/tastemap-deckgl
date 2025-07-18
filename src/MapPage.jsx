@@ -533,8 +533,6 @@ function App() {
     >
       ●
     </button>
-  </>
-)}
 
 <Drawer
   anchor="bottom"
