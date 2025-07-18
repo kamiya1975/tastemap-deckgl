@@ -429,7 +429,7 @@ const ratingCircleLayers = useMemo(() => {
           userPinLayer,
           ...ratingCircleLayers,
           nearestLabelLayer,
-          ratingLayer,
+          //ratingLayer,
           ratingDateLayer,
         ]}
       />
