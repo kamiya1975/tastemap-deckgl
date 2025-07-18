@@ -298,7 +298,7 @@ function App() {
 }, [nearestPoints, is3D, zMetric]); // useMemo依存関係
 
 const ratingCircleLayers = useMemo(() => {
-  return Object.entries(userRatings).flatMap(([jan, rating]) => {
+  const layers = Object.entries(userRatings).flatMap(([jan, rating]) => {
     const item = data.find(d => String(d.JAN) === String(jan));
     if (!item || !item.BodyAxis || !item.SweetAxis) return [];
 
@@ -318,14 +318,17 @@ const ratingCircleLayers = useMemo(() => {
         }),
       }],
       getPath: d => d.path,
-      getColor: [255, 0, 0, 180],
+      getLineColor: [255, 0, 0, 180],
       getWidth: 2,
       widthUnits: "pixels",
       opacity: 0.8,
       pickable: false,
-      // coordinateSystem: COORDINATE_SYSTEM.CARTESIAN ←これ削除
+      coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
     }));
   });
+
+  console.log("リング描画数:", layers.length); // ← デバッグ
+  return layers;
 }, [data, userRatings, is3D]);
 
   return (
