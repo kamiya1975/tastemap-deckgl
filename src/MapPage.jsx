@@ -307,8 +307,8 @@ const ratingCircleLayers = useMemo(() => {
     const item = data.find(d => d.JAN === jan);
     if (!item || !item.BodyAxis || !item.SweetAxis) return [];
 
-    const count = Math.min(rating, 6);
-    const radiusBase = 0.4;
+    const count = Math.min(rating, 5);
+    const radiusBase = 0.18;
 
     return Array.from({ length: count }).map((_, i) => new PathLayer({
        id: `ring-${jan}-${i}`,
@@ -323,10 +323,10 @@ const ratingCircleLayers = useMemo(() => {
     }),
   }],
        getPath: d => d.path,
-       getColor: [255, 0, 0, 255],
+       getColor: [255, 0, 0, 180],
        getWidth: 2,
        widthUnits: "pixels",
-       opacity: 1,
+       opacity: 0.8,
        pickable: false,
        coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
      }));
