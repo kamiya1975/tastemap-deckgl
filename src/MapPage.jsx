@@ -661,7 +661,7 @@ function App() {
       margin: "0 auto",
     }}
   >
-    決定
+    Mapに表示
   </button>
 </Drawer>
 
