@@ -300,19 +300,14 @@ function App() {
     : null;
 
   const sliderMarkLayer = sliderMarkCoords
-    ? new IconLayer({
-      id: "slider-mark",
-      data: [{ position: sliderMarkCoords }],
-      getPosition: (d) => d.position,
-      getIcon: () => ({
-        url: "/images/slider-pin.png", // ← 適宜パス調整
-        width: 64,
-        height: 64,
-        anchorY: 64,
-      }),
-      sizeScale: 1,
-      getSize: 32,
-      pickable: false,
+    ? new ScatterplotLayer({
+        id: "slider-mark",
+        data: [sliderMarkCoords],
+        getPosition: (d) => d,
+        getFillColor: [255, 0, 0, 180], // 赤色
+        getRadius: 0.25,
+        radiusUnits: "meters", // DeckGL座標系に合わせる
+        pickable: false,
       })
     : null;
 
