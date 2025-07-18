@@ -384,7 +384,6 @@ function App() {
           }),
           mainLayer,
           userPinLayer,
-          textLayer,
           ratingDateLayer,
           sliderMarkLayer,
         ]}
