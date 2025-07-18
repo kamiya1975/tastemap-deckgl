@@ -81,6 +81,11 @@ function App() {
   }, [userRatings]);
 
   useEffect(() => {
+  console.log("userRatings", userRatings);
+  console.log("ratingCircleLayers", ratingCircleLayers);
+}, [userRatings, ratingCircleLayers]);
+
+  useEffect(() => {
     if (drawerContentRef.current) {
       drawerContentRef.current.scrollTop = 0;
     }
@@ -292,37 +297,24 @@ function App() {
     : null;
 }, [nearestPoints, is3D, zMetric]); // useMemo依存関係
 
-// 👇 ここにリングレイヤー
-const ratingCircleLayers = useMemo(() => {
-  return Object.entries(userRatings).flatMap(([jan, rating]) => {
-    const item = data.find(d => String(d.JAN) === String(jan));
-    if (!item || !item.BodyAxis || !item.SweetAxis) return [];
-
-    const count = Math.min(rating, 5);
-    const radiusBase = 0.18;
-
-    return Array.from({ length: count }).map((_, i) => new PathLayer({
-       id: `ring-${jan}-${i}`,
-       data: [{
-       path: Array.from({ length: 40 }, (_, j) => {
-       const angle = (j / 40) * Math.PI * 2;
-       const radius = radiusBase * (i + 1);
-      return [
-        item.BodyAxis + Math.cos(angle) * radius,
-        (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius
-      ];
-    }),
-  }],
-       getPath: d => d.path,
-       getColor: [255, 0, 0, 180],
-       getWidth: 2,
-       widthUnits: "pixels",
-       opacity: 0.8,
-       pickable: false,
-       coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
-     }));
-  });
-}, [data, userRatings, is3D]);
+const ratingCircleLayers = [
+  new PathLayer({
+    id: "debug-ring",
+    data: [{
+      path: Array.from({ length: 40 }, (_, j) => {
+        const angle = (j / 40) * Math.PI * 2;
+        const radius = 0.3;
+        return [1.0 + Math.cos(angle) * radius, -1.0 + Math.sin(angle) * radius];
+      }),
+    }],
+    getPath: d => d.path,
+    getColor: [255, 0, 0, 180],
+    getWidth: 2,
+    widthUnits: "pixels",
+    opacity: 0.8,
+    pickable: false,
+  })
+];
 
   return (
     <div style={{ 
