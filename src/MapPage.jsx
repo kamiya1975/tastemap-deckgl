@@ -98,6 +98,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+  console.log("userRatings:", userRatings);
+}, [userRatings]);
+
+  useEffect(() => {
     // スライダーで保存した打点をロードする
     const storedPin = localStorage.getItem("userPinCoords");
     if (storedPin) {
@@ -304,7 +308,7 @@ function App() {
 // 👇 ここにリングレイヤー
 const ratingCircleLayers = useMemo(() => {
   return Object.entries(userRatings).flatMap(([jan, rating]) => {
-    const item = data.find(d => d.JAN === jan);
+    const item = data.find(d => String(d.JAN) === String(jan));
     if (!item || !item.BodyAxis || !item.SweetAxis) return [];
 
     const count = Math.min(rating, 5);
