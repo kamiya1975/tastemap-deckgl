@@ -11,6 +11,7 @@ import {
 import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
 import { PathLayer } from "@deck.gl/layers";
+import { COORDINATE_SYSTEM } from '@deck.gl/core';
 
 function App() {
   const location = useLocation();
@@ -307,28 +308,28 @@ const ratingCircleLayers = useMemo(() => {
     if (!item || !item.BodyAxis || !item.SweetAxis) return [];
 
     const count = Math.min(rating, 6);
-    const radiusBase = 0.15;
+    const radiusBase = 0.4;
 
     return Array.from({ length: count }).map((_, i) => new PathLayer({
-      id: `ring-${jan}-${i}`,
-      data: [{
-        path: Array.from({ length: 40 }, (_, j) => {
-          const angle = (j / 40) * Math.PI * 2;
-          const radius = radiusBase * (i + 1);
-          return [
-            item.BodyAxis + Math.cos(angle) * radius,
-            (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius
-          ];
-        }),
-      }],
-      pickable: false,
-      getPath: d => d.path,
-      getColor: [255, 0, 0, 255],
-      widthMinPixels: 2,
-      widthMaxPixels: 2,
-      getWidth: 2,
-      opacity: 1,
-    }));
+       id: `ring-${jan}-${i}`,
+       data: [{
+       path: Array.from({ length: 40 }, (_, j) => {
+       const angle = (j / 40) * Math.PI * 2;
+       const radius = radiusBase * (i + 1);
+      return [
+        item.BodyAxis + Math.cos(angle) * radius,
+        (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius
+      ];
+    }),
+  }],
+       getPath: d => d.path,
+       getColor: [255, 0, 0, 255],
+       getWidth: 2,
+       widthUnits: "pixels",
+       opacity: 1,
+       pickable: false,
+       coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
+     }));
   });
 }, [data, userRatings, is3D]);
 
@@ -422,10 +423,10 @@ const ratingCircleLayers = useMemo(() => {
           }),
           mainLayer,
           userPinLayer,
-          nearestLabelLayer,
-          ratingDateLayer,
           ...ratingCircleLayers,
+          nearestLabelLayer,
           ratingLayer,
+          ratingDateLayer,
         ]}
       />
 
