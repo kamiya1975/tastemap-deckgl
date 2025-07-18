@@ -35,6 +35,7 @@ function App() {
   const [body, setBody] = useState(50);
   const drawerContentRef = useRef(null);
   const [hasConfirmedSlider, setHasConfirmedSlider] = useState(false);
+  const [sliderMarkCoords, setSliderMarkCoords] = useState(null);
 
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -297,6 +298,23 @@ function App() {
       })
     : null;
 
+  const sliderMarkLayer = sliderMarkCoords
+    ? new IconLayer({
+      id: "slider-mark",
+      data: [{ position: sliderMarkCoords }],
+      getPosition: (d) => d.position,
+      getIcon: () => ({
+        url: "/images/slider-pin.png", // ← 適宜パス調整
+        width: 64,
+        height: 64,
+        anchorY: 64,
+      }),
+      sizeScale: 1,
+      getSize: 32,
+      pickable: false,
+      })
+    : null;
+
   return (
     <div style={{ 
       position: "absolute", 
@@ -401,6 +419,7 @@ function App() {
           userPinLayer,
           textLayer,
           ratingDateLayer,
+          sliderMarkLayer,
         ]}
       />
 
@@ -622,26 +641,15 @@ function App() {
           : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
 
       const coords = [bodyValue, -sweetValue];
-      setUserPinCoords(coords);
-      localStorage.setItem("userPinCoords", JSON.stringify(coords));
+      setSliderMarkCoords(coords); // ⭐新しい目印だけを残す
       setIsSliderOpen(false);
       setViewState((prev) => ({
       ...prev,
       target: [coords[0], coords[1]+5.0, 0],
       zoom: 4.5  // ← ズーム指定
     }));
+  }}
 
-      const nearest = data
-        .map((d) => ({
-          ...d,
-          distance: Math.hypot(d.BodyAxis - coords[0], -d.SweetAxis - coords[1]),
-        }))
-        .sort((a, b) => a.distance - b.distance)
-        .slice(0, 10);
-
-      setNearestPoints(nearest);
-      setIsDrawerOpen(true);
-    }}
     style={{
       background: "#fff",
       color: "#007bff",
