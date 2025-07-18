@@ -629,7 +629,7 @@ function App() {
       setViewState((prev) => ({
       ...prev,
       target: [coords[0], coords[1]+5.0, 0],
-      zoom: 6.5  // ← ズーム指定
+      zoom: 8.0  // ← ズーム指定
     }));
 
       const nearest = data
