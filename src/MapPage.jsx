@@ -673,7 +673,7 @@ function App() {
       bottom: 0,
       left: 0,
       width: "100%",
-      height: "600px", // 必要に応じて調整
+      height: "550px", // 必要に応じて調整
       background: "#fff",
       borderTop: "1px solid #ccc",
       boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
