@@ -134,22 +134,33 @@ function App() {
   const gridInterval = 0.2;
   const cellSize = 0.2;
 
-  const gridLines = useMemo(() => {
-    const lines = [];
-    for (let x = -100; x <= 100; x += gridInterval) {
-      lines.push({
-        sourcePosition: [x, -100, 0],
-        targetPosition: [x, 100, 0],
-      });
+  const { thinLines, thickLines } = useMemo(() => {
+  const thin = [];
+  const thick = [];
+  for (let x = -100; x <= 100; x += gridInterval) {
+    const line = {
+      sourcePosition: [x, -100, 0],
+      targetPosition: [x, 100, 0],
+    };
+    if (Math.abs(x % 1) < 0.0001 && Math.abs((x / 1) % 5) < 0.0001) {
+      thick.push(line);
+    } else {
+      thin.push(line);
     }
-    for (let y = -100; y <= 100; y += gridInterval) {
-      lines.push({
-        sourcePosition: [-100, y, 0],
-        targetPosition: [100, y, 0],
-      });
+  }
+  for (let y = -100; y <= 100; y += gridInterval) {
+    const line = {
+      sourcePosition: [-100, y, 0],
+      targetPosition: [100, y, 0],
+    };
+    if (Math.abs(y % 1) < 0.0001 && Math.abs((y / 1) % 5) < 0.0001) {
+      thick.push(line);
+    } else {
+      thin.push(line);
     }
-    return lines;
-  }, [gridInterval]);
+  }
+  return { thinLines: thin, thickLines: thick };
+}, [gridInterval]);
 
   const cells = useMemo(() => {
     const map = new Map();
@@ -355,14 +366,24 @@ function App() {
         layers={[
           gridCellLayer,
           new LineLayer({
-            id: "grid-lines",
-            data: gridLines,
+            id: "grid-lines-thin",
+            data: thinLines,
             getSourcePosition: (d) => d.sourcePosition,
             getTargetPosition: (d) => d.targetPosition,
-            getColor: [200, 200, 200, 120],
+            getColor: [200, 200, 200, 100],
             getWidth: 1,
             pickable: false,
           }),
+          new LineLayer({
+            id: "grid-lines-thick",
+            data: thickLines,
+            getSourcePosition: (d) => d.sourcePosition,
+            getTargetPosition: (d) => d.targetPosition,
+            getColor: [120, 120, 120, 180],
+            getWidth: 2.5,
+            pickable: false,
+          }),
+          
           mainLayer,
           userPinLayer,
           textLayer,
