@@ -670,6 +670,7 @@ function App() {
   anchor="bottom"
   open={isDrawerOpen && nearestPoints.length > 0}
   onClose={() => setIsDrawerOpen(false)}
+  BackdropProps={{ invisible: true }}
   PaperProps={{
     style: {
       width: "100%",
