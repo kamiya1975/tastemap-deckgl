@@ -237,7 +237,7 @@ function App() {
   getFillColor: [255, 165, 0, 100], //色調整
   getRadius: (d) => {
     const ratingObj = userRatings[d.JAN];
-    return ratingObj ? ratingObj.rating * 0.001 : 0; //バブルサイズ調整
+    return ratingObj ? ratingObj.rating * 0.5 : 0; //バブルサイズ調整
   },
   sizeUnits: "pixels",
   pickable: false,
@@ -370,7 +370,6 @@ function App() {
         }}
         layers={[
           ratingLayer,
-          ratingDateLayer,
           gridCellLayer,
           new LineLayer({
             id: "grid-lines-thin",//細い線
@@ -395,6 +394,7 @@ function App() {
           mainLayer,
           userPinLayer,
           textLayer,
+          ratingDateLayer,
         ]}
       />
 
