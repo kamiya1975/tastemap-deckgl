@@ -224,7 +224,7 @@ function App() {
     cellSize,
     getPosition: (d) => d.position,
     getFillColor: (d) =>
-      d.hasRating ? [180, 100, 50, 100] : [200, 200, 200, 40],
+      d.hasRating ? [180, 100, 50, 100] : [200, 200, 200, 80],
     getElevation: 0,
     pickable: false,
   });
