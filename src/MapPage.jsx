@@ -37,6 +37,7 @@ function App() {
   const drawerContentRef = useRef(null);
   const [hasConfirmedSlider, setHasConfirmedSlider] = useState(false);
   const [sliderMarkCoords, setSliderMarkCoords] = useState(null);
+  const [showRatingDates, setShowRatingDates] = useState(true);
 
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -311,6 +312,23 @@ function App() {
       })
     : null;
 
+    const ratingDateLayer = showRatingDates
+  ? new TextLayer({
+      id: "rating-dates",
+      data: data.filter((d) => userRatings[d.JAN]),
+      getPosition: (d) => [d.BodyAxis, -d.SweetAxis, is3D ? 0.1 : 0],
+      getText: (d) => {
+        const dateStr = userRatings[d.JAN]?.date;
+        return dateStr ? new Date(dateStr).toLocaleDateString() : "";
+      },
+      getSize: 12,
+      sizeUnits: "pixels",
+      getColor: [50, 50, 50, 200],
+      getTextAnchor: "start",
+      getAlignmentBaseline: "center",
+    })
+  : null;
+
   return (
     <div style={{ 
       position: "absolute", 
@@ -478,37 +496,60 @@ function App() {
     cursor: "pointer",
   }}
 >
-  {is3D ? "→ Map" : "→ TasteData"}
-</button>
+  {!is3D && (
+  <>
+    <button
+      onClick={() => {
+        setSweetness(50);
+        setBody(50);
+        setIsSliderOpen(true);
+      }}
+      style={{
+        position: "absolute",
+        top: "70px",
+        right: "10px",
+        zIndex: 1,
+        width: "40px",
+        height: "40px",
+        borderRadius: "50%",
+        background: "#eee",
+        border: "1px solid #ccc",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold",
+        fontSize: "20px",
+      }}
+    >
+      ★
+    </button>
 
-      {!is3D && (
-      <button
-        onClick={() => {
-          setSweetness(50);   // ← 追加
-          setBody(50);        // ← 追加
-          setIsSliderOpen(true);
-        }}
-        style={{
-          position: "absolute",
-          top: "70px",        // 「→ TasteData」ボタンの下に配置
-          right: "10px",
-          zIndex: 1,
-          width: "40px",
-          height: "40px",
-          borderRadius: "50%",
-          background: "#eee",
-          border: "1px solid #ccc",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "bold",
-          fontSize: "20px",
-        }}
-      >
-        ★
-      </button>
-      )}
+    {/* 評価日表示切替 ●ボタン */}
+    <button
+      onClick={() => setShowRatingDates(!showRatingDates)}
+      style={{
+        position: "absolute",
+        top: "120px", // ← ★ボタンより下
+        right: "10px",
+        zIndex: 1,
+        width: "40px",
+        height: "40px",
+        borderRadius: "50%",
+        background: "#eee",
+        border: "1px solid #ccc",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold",
+        fontSize: "20px",
+      }}
+    >
+      ●
+    </button>
+  </>
+)}
 
 <Drawer
   anchor="bottom"
