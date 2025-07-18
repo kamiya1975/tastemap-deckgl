@@ -228,7 +228,7 @@ function App() {
     getElevation: 0,
     pickable: false,
   });
-  
+
 　//バブル調整
   const ratingLayer = new ScatterplotLayer({
   id: "rating-bubbles",
@@ -237,7 +237,7 @@ function App() {
   getFillColor: [255, 165, 0, 100], //色調整
   getRadius: (d) => {
     const ratingObj = userRatings[d.JAN];
-    return ratingObj ? ratingObj.rating * 20 : 0; //バブルサイズ調整
+    return ratingObj ? ratingObj.rating * 2 : 0; //バブルサイズ調整
   },
   sizeUnits: "pixels",
   pickable: false,
