@@ -511,7 +511,7 @@ function App() {
         fontSize: "20px",
       }}
     >
-      ★
+      ●
     </button>
 
     {/* 評価日表示切替 ●ボタン */}
@@ -535,7 +535,7 @@ function App() {
         fontSize: "20px",
       }}
     >
-      ●
+      ★
     </button>
   </>
 )} 
