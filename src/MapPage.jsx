@@ -10,8 +10,6 @@ import {
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
-import { PathLayer } from "@deck.gl/layers";
-import { COORDINATE_SYSTEM } from '@deck.gl/core';
 
 function App() {
   const location = useLocation();
@@ -81,11 +79,6 @@ function App() {
   }, [userRatings]);
 
   useEffect(() => {
-  console.log("userRatings", userRatings);
-  console.log("ratingCircleLayers", ratingCircleLayers);
-}, [userRatings, ratingCircleLayers]);
-
-  useEffect(() => {
     if (drawerContentRef.current) {
       drawerContentRef.current.scrollTop = 0;
     }
@@ -101,10 +94,6 @@ function App() {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
-
-  useEffect(() => {
-  console.log("userRatings:", userRatings);
-}, [userRatings]);
 
   useEffect(() => {
     // スライダーで保存した打点をロードする
@@ -225,6 +214,19 @@ function App() {
     pickable: false,
   });
 
+  const ratingLayer = new ScatterplotLayer({
+  id: "rating-bubbles",
+  data: data.filter((d) => userRatings[d.JAN]),
+  getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
+  getFillColor: [255, 165, 0, 180],
+  getRadius: (d) => {
+    const ratingObj = userRatings[d.JAN];
+    return ratingObj ? ratingObj.rating * 0.2 : 0.01;
+  },
+  sizeUnits: "common",
+  pickable: false,
+  });
+
   const ratingDateLayer = new TextLayer({
   id: "rating-dates",
   data: data.filter((d) => userRatings[d.JAN]),
@@ -272,64 +274,6 @@ function App() {
         fontFamily: "Helvetica Neue",
       })
     : null;
-
-  const nearestLabelLayer = useMemo(() => {
-  return nearestPoints.length
-    ? new TextLayer({
-        id: "nearest-labels",
-        data: nearestPoints.map((d, i) => ({
-          position: [
-            d.BodyAxis,
-            -d.SweetAxis,
-            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0,
-          ],
-          text: String(i + 1),
-        })),
-        getPosition: (d) => d.position,
-        getText: (d) => d.text,
-        getSize: is3D ? 0.1 : 16,
-        sizeUnits: is3D ? "meters" : "pixels",
-        getColor: [0, 0, 0],
-        getTextAnchor: "middle",
-        getAlignmentBaseline: "center",
-        fontFamily: "Helvetica Neue",
-      })
-    : null;
-}, [nearestPoints, is3D, zMetric]); // useMemo依存関係
-
-const ratingCircleLayers = useMemo(() => {
-  const layers = Object.entries(userRatings).flatMap(([jan, rating]) => {
-    const item = data.find(d => String(d.JAN) === String(jan));
-    if (!item || !item.BodyAxis || !item.SweetAxis) return [];
-
-    const count = Math.min(rating, 5);
-    const radiusBase = 0.18;
-
-    return Array.from({ length: count }).map((_, i) => new PathLayer({
-      id: `ring-${jan}-${i}`,
-      data: [{
-        path: Array.from({ length: 40 }, (_, j) => {
-          const angle = (j / 40) * Math.PI * 2;
-          const radius = radiusBase * (i + 1);
-          return [
-            item.BodyAxis + Math.cos(angle) * radius,
-            (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius
-          ];
-        }),
-      }],
-      getPath: d => d.path,
-      getLineColor: [255, 0, 0, 180],
-      getWidth: 2,
-      widthUnits: "pixels",
-      opacity: 0.8,
-      pickable: false,
-      coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
-    }));
-  });
-
-  console.log("リング描画数:", layers.length); // ← デバッグ
-  return layers;
-}, [data, userRatings, is3D]);
 
   return (
     <div style={{ 
@@ -421,8 +365,8 @@ const ratingCircleLayers = useMemo(() => {
           }),
           mainLayer,
           userPinLayer,
-          ...ratingCircleLayers,
-          nearestLabelLayer,
+          textLayer,
+          ratingLayer,
           ratingDateLayer,
         ]}
       />
