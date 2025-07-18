@@ -739,7 +739,10 @@ function App() {
           <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
           <br />
           <small>
-            Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)}
+            Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)} / 
+            希望小売価格: {item.希望小売価格 ? `¥${item.希望小売価格.toLocaleString()}` : "不明"}<br />
+            x: {item.BodyAxis?.toFixed(2)}, y: {item.SweetAxis?.toFixed(2)}, 
+            星評価: {userRatings[item.JAN]?.rating ?? "なし"}
           </small>
         </li>
       ))}
