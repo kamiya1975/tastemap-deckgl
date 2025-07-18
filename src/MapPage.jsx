@@ -519,7 +519,7 @@ function App() {
   PaperProps={{
     style: {
       width: "100%",
-      height: "800px",
+      height: "800px",// 必要に応じて調整
       padding: "24px",
       boxSizing: "border-box",
       display: "flex",
@@ -673,7 +673,7 @@ function App() {
       bottom: 0,
       left: 0,
       width: "100%",
-      height: "50vh", // 必要に応じて調整（例: 40vh, 60vh など）
+      height: "600px", // 必要に応じて調整
       background: "#fff",
       borderTop: "1px solid #ccc",
       boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
