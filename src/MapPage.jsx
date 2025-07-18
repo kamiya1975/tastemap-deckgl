@@ -726,9 +726,9 @@ function App() {
       touchAction: "manipulation",
       WebkitOverflowScrolling: "touch",
     }}
-    onTouchStart={(e) => e.stopPropagation()}
-    onTouchMove={(e) => e.stopPropagation()}
-    onTouchEnd={(e) => e.stopPropagation()}
+    //onTouchStart={(e) => e.stopPropagation()}
+    //onTouchMove={(e) => e.stopPropagation()}
+    //onTouchEnd={(e) => e.stopPropagation()}
   >
     <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
       {nearestPoints.map((item, idx) => (
