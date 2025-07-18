@@ -228,17 +228,18 @@ function App() {
     getElevation: 0,
     pickable: false,
   });
-
+  
+　//バブル調整
   const ratingLayer = new ScatterplotLayer({
   id: "rating-bubbles",
   data: data.filter((d) => userRatings[d.JAN]),
   getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
-  getFillColor: [255, 165, 0, 180],
+  getFillColor: [255, 165, 0, 100], //色調整
   getRadius: (d) => {
     const ratingObj = userRatings[d.JAN];
-    return ratingObj ? ratingObj.rating * 0.2 : 0.01;
+    return ratingObj ? ratingObj.rating * 20 : 0; //バブルサイズ調整
   },
-  sizeUnits: "common",
+  sizeUnits: "pixels",
   pickable: false,
   });
 
