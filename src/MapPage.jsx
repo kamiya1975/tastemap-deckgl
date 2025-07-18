@@ -661,7 +661,7 @@ function App() {
       margin: "0 auto",
     }}
   >
-    Mapに表示
+    あなたの好みをMapに表示
   </button>
 </Drawer>
 
