@@ -368,6 +368,8 @@ function App() {
           }
         }}
         layers={[
+          ratingLayer,
+          ratingDateLayer,
           gridCellLayer,
           new LineLayer({
             id: "grid-lines-thin",//細い線
@@ -389,12 +391,9 @@ function App() {
             widthUnits: "pixels",
             pickable: false,
           }),
-
           mainLayer,
           userPinLayer,
           textLayer,
-          ratingLayer,
-          ratingDateLayer,
         ]}
       />
 
