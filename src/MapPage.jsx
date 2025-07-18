@@ -37,7 +37,7 @@ function App() {
   const drawerContentRef = useRef(null);
   const [hasConfirmedSlider, setHasConfirmedSlider] = useState(false);
   const [sliderMarkCoords, setSliderMarkCoords] = useState(null);
-  const [showRatingDates, setShowRatingDates] = useState(true);
+  const [showRatingDates, setShowRatingDates] = useState(false);
 
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
