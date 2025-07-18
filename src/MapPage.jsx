@@ -338,33 +338,8 @@ function App() {
         views={is3D ? new OrbitView() : new OrthographicView()}
         viewState={viewState}
         onViewStateChange={({ viewState: vs }) => setViewState(vs)}
-        controller={{
-          dragPan: true,
-          dragRotate: true,
-          touchRotate: true,
-          minRotationX: 5,
-          maxRotationX: 90,
-          minZoom: 4.0,
-          maxZoom: 10.0,
-        }}
-        onClick={(info) => {
-          if (is3D) return;
-          if (info && info.coordinate) {
-            const [x, y] = info.coordinate;
-            setUserPinCoords([x, y]);
-
-            const nearest = data
-              .map((d) => ({
-                ...d,
-                distance: Math.hypot(d.BodyAxis - x, -d.SweetAxis - y),
-              }))
-              .sort((a, b) => a.distance - b.distance)
-              .slice(0, 10);
-
-            setNearestPoints(nearest);
-            setIsDrawerOpen(true);
-          }
-        }}
+        controller={false}
+        onClick={() => {}}
         layers={[
           ratingLayer,
           gridCellLayer,
