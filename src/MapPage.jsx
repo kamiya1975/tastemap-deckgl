@@ -341,6 +341,7 @@ function App() {
         controller={{
           dragPan: true,
           dragRotate: true,
+          touchRotate: true,
           minRotationX: 5,
           maxRotationX: 90,
           minZoom: 4.0,
