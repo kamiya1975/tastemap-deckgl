@@ -380,7 +380,7 @@ function App() {
             getSourcePosition: (d) => d.sourcePosition,
             getTargetPosition: (d) => d.targetPosition,
             getColor: [120, 120, 120, 180],
-            getWidth: 2.0,
+            getWidth: 2.5,
             pickable: false,
           }),
 
