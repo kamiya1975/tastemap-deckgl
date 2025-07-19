@@ -11,7 +11,6 @@ import {
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function App() {
