@@ -254,7 +254,7 @@ const sortedRatedWineList = useMemo(() => {
       data: sortedRatedWineList.map((item, idx, arr) => {
         const total = arr.length;
         return {
-          position: [item.BodyAxis, -item.SweetAxis, 0.05],
+          position: [item.BodyAxis, -item.SweetAxis, 0.1],
           text: `${total - idx}`,
         };
       }),
@@ -266,6 +266,9 @@ const sortedRatedWineList = useMemo(() => {
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
       fontFamily: "Helvetica Neue, Arial, sans-serif",
+      parameters: {
+        depthTest: false 
+      }
     })
   : null;
 
@@ -299,7 +302,6 @@ const sortedRatedWineList = useMemo(() => {
         getTextAnchor: "middle",
         getAlignmentBaseline: "center",
         fontFamily: '"Helvetica Neue", Arial, sans-serif'
-
       })
     : null;
 
