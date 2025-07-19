@@ -888,12 +888,17 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data }) {
                     cursor: "pointer",
                   }}
                 >
-                  <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-                  <br />
-                  <small>
-                    Type: {item.Type || "不明"} / 評価日:{" "}
-                    {item.date ? new Date(item.date).toLocaleDateString() : "不明"} / 価格:{" "}
-                    {item.希望小売価格
+                  <strong>
+                    {item.date
+                     ? new Date(item.date).toLocaleDateString()
+                     : "（日付不明）"}
+                   </strong>{" "}
+                    {item.商品名 || "（名称不明）"}
+                    <br />
+                    <small>
+                     Type: {item.Type || "不明"} / 価格:{" "}
+                     {item.date ? new Date(item.date).toLocaleDateString() : "不明"} / 価格:{" "}
+                     {item.希望小売価格
                       ? `¥${item.希望小売価格.toLocaleString()}`
                       : "不明"}
                     <br />
