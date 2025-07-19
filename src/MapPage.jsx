@@ -265,16 +265,8 @@ const sortedRatedWineList = useMemo(() => {
       getPosition: (d) => d.position,
       getText: (d) => d.text,
 
-      // ✅ ズームに応じて調整する getSize（関数）
-      getSize: ({ viewport }) => {
-        if (is3D) {
-          return 1.2; // 3Dでは控えめな固定値（meters）
-        } else {
-          const zoom = viewport.zoom;
-          const baseSize = 24;
-          return baseSize * Math.pow(2, zoom - 5); // ← 拡大時にサイズ維持
-        }
-      },
+      // ✅ 修正ポイント
+      getSize: is3D ? 0.6 : 20, // ← 3Dは0.6 meters, 2Dは固定20px
 
       sizeUnits: is3D ? "meters" : "pixels",
       getColor: [50, 50, 50, 200],
