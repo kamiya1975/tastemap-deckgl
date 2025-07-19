@@ -392,7 +392,6 @@ const sortedRatedWineList = useMemo(() => {
           }
         }}
         layers={[
-          ratingLayer,
           gridCellLayer,
           new LineLayer({
             id: "grid-lines-thin",//細い線
