@@ -265,15 +265,21 @@ const sortedRatedWineList = useMemo(() => {
       getPosition: (d) => d.position,
       getText: (d) => d.text,
 
-      // ✅ サイズ設定
-      getSize: is3D ? 0.6 : 20,              // 3Dは0.6 meters、2Dは20px
-      sizeUnits: is3D ? "meters" : "pixels", // 単位切替
+      getSize: ({ viewport }) => {
+        if (is3D) {
+          return 0.6; // 小さめmeters
+        } else {
+          const zoom = viewport.zoom || 5;
+          const baseSize = 20;
+          return baseSize * Math.pow(2, 5 - zoom);
+        }
+      },
+      sizeUnits: is3D ? "meters" : "pixels",
 
       getColor: [50, 50, 50, 200],
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
       fontFamily: '"Helvetica Neue", Arial, sans-serif',
-
       parameters: {
         depthTest: false,
       },
