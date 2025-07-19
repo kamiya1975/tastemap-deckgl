@@ -100,6 +100,23 @@ function App() {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
+  //あなたが評価したワイン
+  const sortedRatedWineList = useMemo(() => {
+  return Object.entries(userRatings)
+    .filter(([_, rating]) => rating.rating != null)
+    .map(([jan, rating]) => {
+      const matched = data.find((d) => String(d.JAN) === String(jan));
+      if (!matched) return null;
+      return {
+        ...matched,
+        date: rating.date,
+        rating: rating.rating,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.date) - new Date(b.date)); // 古い順
+  }, [userRatings, data]);
+
   const typeColorMap = {
     White: [0, 120, 255],
     Red: [255, 0, 0],
@@ -226,22 +243,6 @@ function App() {
   sizeUnits: "pixels",
   pickable: false,
 });
-
-const sortedRatedWineList = useMemo(() => {
-  return Object.entries(userRatings)
-    .filter(([_, rating]) => rating.rating != null)
-    .map(([jan, rating]) => {
-      const matched = data.find((d) => String(d.JAN) === String(jan));
-      if (!matched) return null;
-      return {
-        ...matched,
-        date: rating.date,
-        rating: rating.rating,
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => new Date(a.date) - new Date(b.date)); // 古い順
-}, [userRatings, data]);
 
   const ratingDateLayer = showRatingDates
   ? new TextLayer({
