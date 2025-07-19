@@ -228,6 +228,7 @@ function App() {
 });
 
 const sortedRatedWineList = useMemo(() => {
+  if (!Array.isArray(data)) return [];
   return Object.entries(userRatings)
     .filter(([_, rating]) => rating.rating != null)
     .map(([jan, rating]) => {
@@ -700,14 +701,15 @@ const sortedRatedWineList = useMemo(() => {
     />
 
     <RatedWinePanel
-      isOpen={isRatingListOpen}
-      onClose={() => {
-       setIsRatingListOpen(false);
-       setShowRatingDates(false);
-      }}
-      userRatings={userRatings}
-      data={data}
-    />
+  isOpen={isRatingListOpen}
+  onClose={() => {
+    setIsRatingListOpen(false);
+    setShowRatingDates(false);
+  }}
+  userRatings={userRatings}
+  data={data}
+  sortedRatedWineList={sortedRatedWineList ?? []}
+/>
 
   </div> 
   );
@@ -814,12 +816,12 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
 
 function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineList }) {
   const displayList = useMemo(() => {
-    return [...sortedRatedWineList]
-      .map((item, idx, arr) => {
-        const total = arr.length;
-        const indexFromOldest = total - idx;
-        return { ...item, displayIndex: indexFromOldest };
-      });
+    if (!Array.isArray(sortedRatedWineList)) return [];
+    return [...sortedRatedWineList].map((item, idx, arr) => {
+      const total = arr.length;
+      const indexFromOldest = total - idx;
+      return { ...item, displayIndex: indexFromOldest };
+    });
   }, [sortedRatedWineList]);
 
   return (
@@ -922,5 +924,6 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
     </AnimatePresence>
   );
 }
+
 
 export default App;
