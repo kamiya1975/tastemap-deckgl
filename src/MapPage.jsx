@@ -249,7 +249,7 @@ const sortedRatedWineList = useMemo(() => {
       id: "rating-index-labels",
       data: sortedRatedWineList.map((item, idx) => ({
         position: [item.BodyAxis, -item.SweetAxis, is3D ? 0.1 : 0.05],
-        text: `${total - idx}` 
+        text: `${total - idx}`, 
       })),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
