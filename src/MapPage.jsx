@@ -812,22 +812,15 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
   );
 }
 
-function RatedWinePanel({ isOpen, onClose, userRatings, data }) {
-  const ratedWineList = useMemo(() => {
-    return Object.entries(userRatings)
-      .filter(([_, rating]) => rating.rating != null)
-      .map(([jan, rating]) => {
-        const matched = data.find((d) => String(d.JAN) === String(jan));
-        if (!matched) return null;
-        return {
-          ...matched,
-          date: rating.date || null,
-          rating: rating.rating || null,
-        };
-      })
-      .filter(Boolean)
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [userRatings, data]);
+function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineList }) {
+  const displayList = useMemo(() => {
+    return [...sortedRatedWineList]
+      .map((item, idx, arr) => {
+        const total = arr.length;
+        const indexFromOldest = total - idx;
+        return { ...item, displayIndex: indexFromOldest };
+      });
+  }, [sortedRatedWineList]);
 
   return (
     <AnimatePresence>
@@ -868,9 +861,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data }) {
           >
             <h3 style={{ margin: 0 }}>あなたが評価したワイン</h3>
             <button
-              onClick={() => {
-                onClose();
-              }}
+              onClick={onClose}
               style={{
                 background: "#eee",
                 border: "1px solid #ccc",
@@ -893,51 +884,43 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data }) {
             }}
           >
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {[...sortedRatedWineList] // 新しい順にするため reverse()
-                .map((item, idx, arr) => {
-                  const total = arr.length;
-                  const indexFromOldest = total - idx;
-                  return { ...item, displayIndex: indexFromOldest };
-                })
-                .map((item, idx) => (
-                  <li
-                     key={idx}
-                     onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
-                     style={{
-                       padding: "10px 0",
-                       borderBottom: "1px solid #eee",
-                       cursor: "pointer",
-                   }}
-                  >
-                   <div>
-                     <strong>
-                       {item.displayIndex}、{item.date
-                          ? new Date(item.date).toLocaleDateString()
-                          : "（日付不明）"}
+              {displayList.map((item, idx) => (
+                <li
+                  key={idx}
+                  onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
+                  style={{
+                    padding: "10px 0",
+                    borderBottom: "1px solid #eee",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div>
+                    <strong>
+                      {item.displayIndex}、{item.date
+                        ? new Date(item.date).toLocaleDateString()
+                        : "（日付不明）"}
                     </strong>
                     <br />
-                     {item.商品名 || "（名称不明）"}
+                    {item.商品名 || "（名称不明）"}
                   </div>
                   <small>
                     Type: {item.Type || "不明"} / 価格:{" "}
                     {item.希望小売価格
-                     ? `¥${item.希望小売価格.toLocaleString()}`
-                     : "不明"}
+                      ? `¥${item.希望小売価格.toLocaleString()}`
+                      : "不明"}
                     <br />
                     Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
                     {item.SweetAxis?.toFixed(2)} / 星評価:{" "}
                     {item.rating ?? "なし"}
                   </small>
                 </li>
-             ))}
-          </ul>
-
+              ))}
+            </ul>
           </div>
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
-
 
 export default App;
