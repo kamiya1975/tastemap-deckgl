@@ -248,13 +248,13 @@ const sortedRatedWineList = useMemo(() => {
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 }, [userRatings, data]);
 
-  const ratingDateLayer = showRatingDates && sortedRatedWineList.length > 0
+  const ratingDateLayer = (is3D && showRatingDates && sortedRatedWineList.length > 0)
   ? new TextLayer({
       id: "rating-index-labels",
       data: sortedRatedWineList.map((item, idx, arr) => {
         const total = arr.length;
         return {
-          position: [item.BodyAxis, -item.SweetAxis, is3D ? 0.1 : 0.1],
+          position: [item.BodyAxis, -item.SweetAxis, 0.05],
           text: `${total - idx}`,
         };
       }),
@@ -287,7 +287,7 @@ const sortedRatedWineList = useMemo(() => {
           position: [
             d.BodyAxis,
             -d.SweetAxis,
-            !is3D ? (Number(d[zMetric]) || 0) + 0.05 : 1,
+            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 1,
           ],
           text: String(i + 1),
         })),
@@ -416,8 +416,8 @@ const sortedRatedWineList = useMemo(() => {
           }),
           mainLayer,
           userPinLayer,
-          ratingDateLayer,
           sliderMarkLayer,
+          ratingDateLayer,
           textLayer,
         ]}
       />
