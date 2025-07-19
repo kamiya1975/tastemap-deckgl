@@ -40,6 +40,8 @@ function App() {
   const [sliderMarkCoords, setSliderMarkCoords] = useState(null);
   const [showRatingDates, setShowRatingDates] = useState(false);
   const [isRatingListOpen, setIsRatingListOpen] = useState(false);
+
+
   const sortedRatedWineList = useMemo(() => {
   return Object.entries(userRatings)
     .filter(([_, rating]) => rating.rating != null)
@@ -55,7 +57,7 @@ function App() {
     .filter(Boolean)
     .sort((a, b) => new Date(a.date) - new Date(b.date)); // 古い順
 }, [userRatings, data]);
-
+  
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
       setIsSliderOpen(true);
