@@ -287,7 +287,7 @@ const sortedRatedWineList = useMemo(() => {
           position: [
             d.BodyAxis,
             -d.SweetAxis,
-            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 1,
+            !is3D ? (Number(d[zMetric]) || 0) + 0.05 : 1,
           ],
           text: String(i + 1),
         })),
