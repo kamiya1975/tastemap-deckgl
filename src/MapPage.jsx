@@ -513,7 +513,7 @@ const sortedRatedWineList = useMemo(() => {
 )}
 
     {/* 評価日表示切替 ●ボタン */}
-    {is2D && (
+    {is3D && (
     <button
      onClick={() => {
        const next = !showRatingDates;
