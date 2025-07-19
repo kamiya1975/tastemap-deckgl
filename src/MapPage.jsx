@@ -909,10 +909,9 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                     >
                       {item.displayIndex}.
                     </strong>
-                    <span style={{ fontSize: "12px", color: "#555" }}>
+                    <span style={{ fontSize: "15px", color: "#555" }}>
                        {item.date ? new Date(item.date).toLocaleDateString() : "（日付不明）"}
                     </span>
-
                     <br />
                     {item.商品名 || "（名称不明）"}
                   </div>
