@@ -294,11 +294,7 @@ const sortedRatedWineList = useMemo(() => {
         getColor: [0, 0, 0, 255],
         getTextAnchor: "middle",
         getAlignmentBaseline: "center",
-        ffontFamily: "Helvetica Neue, sans-serif",
-        sizeMinPixels: 10,
-        sizeMaxPixels: 32,
-        background: true,
-        backgroundPadding: [2, 1],
+        fontFamily: "Helvetica Neue, sans-serif",
         backgroundColor: [255, 255, 255, 200],
       })
     : null;
