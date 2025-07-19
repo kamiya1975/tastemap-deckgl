@@ -298,7 +298,8 @@ const sortedRatedWineList = useMemo(() => {
         getColor: [0, 0, 0],
         getTextAnchor: "middle",
         getAlignmentBaseline: "center",
-        fontFamily: "Helvetica Neue",
+        fontFamily: '"Helvetica Neue", Arial, sans-serif'
+
       })
     : null;
 
@@ -392,6 +393,7 @@ const sortedRatedWineList = useMemo(() => {
           }
         }}
         layers={[
+          ratingLayer,
           gridCellLayer,
           new LineLayer({
             id: "grid-lines-thin",//細い線
