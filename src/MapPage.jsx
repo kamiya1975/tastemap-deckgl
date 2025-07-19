@@ -287,29 +287,29 @@ const sortedRatedWineList = useMemo(() => {
     : null;
 
   const textLayer = nearestPoints.length
-    ? new TextLayer({
-        id: "nearest-labels",
-        data: nearestPoints.map((d, i) => ({
-          position: [
-            d.BodyAxis,
-            -d.SweetAxis,
-            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 1,
-          ],
+  ? new TextLayer({
+      id: "nearest-labels",
+      data: nearestPoints.map((d, i) => {
+        const y = is3D ? d.SweetAxis : -d.SweetAxis; // ← 修正ポイント
+        const z = is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0.01; // ← 2Dでも地面から少し浮かせる
+        return {
+          position: [d.BodyAxis, y, z],
           text: String(i + 1),
-        })),
-        getPosition: (d) => d.position,
-        getText: (d) => d.text,
-        getSize: is3D ? 0.1 : 16,
-        sizeUnits: is3D ? "meters" : "pixels",
-        getColor: [0, 0, 0],
-        getTextAnchor: "middle",
-        getAlignmentBaseline: "center",
-        fontFamily: '"Helvetica Neue", Arial, sans-serif',
-        parameters: {
-          depthTest: false,
-        }
-      })
-    : null;
+        };
+      }),
+      getPosition: (d) => d.position,
+      getText: (d) => d.text,
+      getSize: is3D ? 0.1 : 16,
+      sizeUnits: is3D ? "meters" : "pixels",
+      getColor: [0, 0, 0],
+      getTextAnchor: "middle",
+      getAlignmentBaseline: "center",
+      fontFamily: '"Helvetica Neue", Arial, sans-serif',
+      parameters: {
+        depthTest: false, // 他オブジェクトの裏に隠れないように
+      },
+    })
+  : null;
 
   const sliderMarkLayer = sliderMarkCoords
   ? new ScatterplotLayer({
