@@ -902,7 +902,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                       style={{
                         display: "inline-block",
                         color: "rgb(50, 50, 50)",
-                        fontSize: "16px",
+                        fontSize: "17px",
                         fontWeight: "bold",
                         marginRight: "4px",
                         fontFamily: '"Helvetica Neue", Arial, sans-serif',
@@ -910,7 +910,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                     >
                       {item.displayIndex}.
                     </strong>
-                    <span style={{ fontSize: "17px", color: "#555" }}>
+                    <span style={{ fontSize: "15px", color: "#555" }}>
                        {item.date ? new Date(item.date).toLocaleDateString() : "（日付不明）"}
                     </span>
                     <br />
