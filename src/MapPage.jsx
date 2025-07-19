@@ -283,7 +283,7 @@ const sortedRatedWineList = useMemo(() => {
           position: [
             d.BodyAxis,
             -d.SweetAxis,
-            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0,
+            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0.1,
           ],
           text: String(i + 1),
         })),
@@ -291,10 +291,12 @@ const sortedRatedWineList = useMemo(() => {
         getText: (d) => d.text,
         getSize: is3D ? 0.1 : 16,
         sizeUnits: is3D ? "meters" : "pixels",
-        getColor: [0, 0, 0],
+        getColor: [0, 0, 0, 255],
         getTextAnchor: "middle",
         getAlignmentBaseline: "center",
-        fontFamily: "Helvetica Neue",
+        ffontFamily: "Helvetica Neue, sans-serif",
+        sizeMinPixels: 10,
+        sizeMaxPixels: 32,
       })
     : null;
 
@@ -412,9 +414,9 @@ const sortedRatedWineList = useMemo(() => {
           }),
           mainLayer,
           userPinLayer,
-          textLayer,
           ratingDateLayer,
           sliderMarkLayer,
+          textLayer,
         ]}
       />
 
