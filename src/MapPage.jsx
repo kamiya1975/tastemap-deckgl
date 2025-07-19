@@ -901,7 +901,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                       style={{
                         display: "inline-block",
                         color: "rgb(50, 50, 50)",
-                        fontSize: "12px",
+                        fontSize: "15px",
                         fontWeight: "bold",
                         marginRight: "4px",
                         fontFamily: '"Helvetica Neue", Arial, sans-serif',
