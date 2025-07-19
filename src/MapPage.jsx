@@ -899,7 +899,6 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data }) {
                     </div>
                     <small>
                      Type: {item.Type || "不明"} / 価格:{" "}
-                     {item.date ? new Date(item.date).toLocaleDateString() : "不明"} / 価格:{" "}
                      {item.希望小売価格
                       ? `¥${item.希望小売価格.toLocaleString()}`
                       : "不明"}
