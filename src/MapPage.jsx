@@ -692,7 +692,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
             bottom: 0,
             left: 0,
             right: 0,
-            height: "550px",
+            height: "500px",
             backgroundColor: "#fff",
             boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
             zIndex: 1000,
