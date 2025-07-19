@@ -244,20 +244,21 @@ const sortedRatedWineList = useMemo(() => {
     .sort((a, b) => new Date(a.date) - new Date(b.date)); // 古い順
 }, [userRatings, data]);
 
-  const ratingDateLayer = showRatingDates
+  const ratingDateLayer = showRatingDates && sortedRatedWineList.length > 0
   ? new TextLayer({
       id: "rating-index-labels",
       data: sortedRatedWineList.map((item, idx) => ({
-        ...item,
-        index: idx + 1,
+        position: [item.BodyAxis, -item.SweetAxis, is3D ? 0.1 : 0.05],
+        text: String(idx + 1),
       })),
-      getPosition: (d) => [d.BodyAxis, -d.SweetAxis, is3D ? 0.1 : 0.05],
-      getText: (d) => String(d.index),
+      getPosition: (d) => d.position,
+      getText: (d) => d.text,
       getSize: 16,
       sizeUnits: "pixels",
       getColor: [50, 50, 50, 200],
-      getTextAnchor: "start",
+      getTextAnchor: "middle",
       getAlignmentBaseline: "center",
+      fontFamily: "Helvetica Neue, Arial, sans-serif",
     })
   : null;
 
