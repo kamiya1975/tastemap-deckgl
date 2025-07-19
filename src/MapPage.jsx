@@ -249,7 +249,7 @@ const sortedRatedWineList = useMemo(() => {
       id: "rating-index-labels",
       data: sortedRatedWineList.map((item, idx) => ({
         position: [item.BodyAxis, -item.SweetAxis, is3D ? 0.1 : 0.05],
-        text: `${item.displayIndex}`, 
+        text: `${total - idx}` 
       })),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
@@ -902,7 +902,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                       style={{
                         display: "inline-block",
                         color: "rgb(50, 50, 50)",
-                        fontSize: "17px",
+                        fontSize: "16px",
                         fontWeight: "bold",
                         marginRight: "4px",
                         fontFamily: '"Helvetica Neue", Arial, sans-serif',
