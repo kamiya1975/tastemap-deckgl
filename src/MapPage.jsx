@@ -673,7 +673,7 @@ function App() {
       userRatings={userRatings}
     />
 
-  </div>  {/* Appコンポーネントのreturnの閉じタグ */}
+  </div> 
   );
 } // ← App関数の閉じ
 
