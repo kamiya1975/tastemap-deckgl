@@ -265,14 +265,15 @@ const sortedRatedWineList = useMemo(() => {
       getPosition: (d) => d.position,
       getText: (d) => d.text,
 
-      // ✅ 修正ポイント
-      getSize: is3D ? 0.6 : 20, // ← 3Dは0.6 meters, 2Dは固定20px
+      // ✅ サイズ設定
+      getSize: is3D ? 0.6 : 20,              // 3Dは0.6 meters、2Dは20px
+      sizeUnits: is3D ? "meters" : "pixels", // 単位切替
 
-      sizeUnits: is3D ? "meters" : "pixels",
       getColor: [50, 50, 50, 200],
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
       fontFamily: '"Helvetica Neue", Arial, sans-serif',
+
       parameters: {
         depthTest: false,
       },
