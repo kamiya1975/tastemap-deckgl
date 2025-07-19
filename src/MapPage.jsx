@@ -264,7 +264,7 @@ const sortedRatedWineList = useMemo(() => {
       }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
-      getSize: is3D ? 2.0 : 16, // ✅ 3Dのサイズを見やすく統一
+      getSize: is3D ? 0.5 : 16, // ✅ 3Dのサイズを見やすく統一
       sizeUnits: is3D ? "meters" : "pixels",
       getColor: [50, 50, 50, 200],
       getTextAnchor: "middle",
