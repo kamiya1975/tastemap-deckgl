@@ -672,7 +672,7 @@ function App() {
       nearestPoints={nearestPoints}
       userRatings={userRatings}
     />
-
+    
   </div> 
   );
 } // ← App関数の閉じ
