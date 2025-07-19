@@ -251,27 +251,29 @@ const sortedRatedWineList = useMemo(() => {
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 }, [userRatings, data]);
 
-  const ratingDateLayer = (is3D && showRatingDates && sortedRatedWineList.length > 0)
+  const ratingDateLayer = (showRatingDates && sortedRatedWineList.length > 0)
   ? new TextLayer({
       id: "rating-index-labels",
       data: sortedRatedWineList.map((item, idx, arr) => {
         const total = arr.length;
+        const y = is3D ? item.SweetAxis : -item.SweetAxis; // ← 修正ポイント①
+        const z = is3D ? (Number(item[zMetric]) || 0) + 0.1 : 0.01; // ← 修正ポイント②
         return {
-          position: [item.BodyAxis, -item.SweetAxis, 0.1],
-          text: `${total - idx}`,
+          position: [item.BodyAxis, y, z],
+          text: `${total - idx}`, // 新しいものほど若い番号
         };
       }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
-      getSize: 16,
-      sizeUnits: "pixels",
+      getSize: is3D ? 0.1 : 16,
+      sizeUnits: is3D ? "meters" : "pixels",
       getColor: [50, 50, 50, 200],
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
       fontFamily: "Helvetica Neue, Arial, sans-serif",
       parameters: {
-        depthTest: false 
-      }
+        depthTest: false,
+      },
     })
   : null;
 
