@@ -798,6 +798,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
 function RatedWinePanel({ isOpen, onClose, userRatings, data }) {
   const ratedWineList = useMemo(() => {
     return Object.entries(userRatings)
+      .filter(([_, rating]) => rating.rating != null)
       .map(([jan, rating]) => {
         const matched = data.find((d) => String(d.JAN) === String(jan));
         if (!matched) return null;
