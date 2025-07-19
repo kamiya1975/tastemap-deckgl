@@ -304,10 +304,10 @@ const sortedRatedWineList = useMemo(() => {
         getColor: [0, 0, 0],
         getTextAnchor: "middle",
         getAlignmentBaseline: "center",
-        fontFamily: '"Helvetica Neue", Arial, sans-serif'
+        fontFamily: '"Helvetica Neue", Arial, sans-serif',
         parameters: {
           depthTest: false,
-         },
+        }
       })
     : null;
 
