@@ -678,7 +678,10 @@ const sortedRatedWineList = useMemo(() => {
               ? blendF.BodyAxis - ((50 - body) / 50) * (blendF.BodyAxis - minBody)
               : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
 
-          const coords = [bodyValue, -sweetValue];
+          const coords = [
+            bodyValue,
+            is3D ? sweetValue : -sweetValue,
+          ];
           setSliderMarkCoords(coords);
           setIsSliderOpen(false);
           setViewState((prev) => ({
