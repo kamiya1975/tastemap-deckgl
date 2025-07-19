@@ -251,11 +251,11 @@ const sortedRatedWineList = useMemo(() => {
         ...item,
         index: idx + 1,
       })),
-      getPosition: (d) => [d.BodyAxis, -d.SweetAxis, is3D ? 0.1 : 0],
+      getPosition: (d) => [d.BodyAxis, -d.SweetAxis, is3D ? 0.1 : 0.05],
       getText: (d) => String(d.index),
       getSize: 12,
       sizeUnits: "pixels",
-      getColor: [50, 50, 50, 200],
+      getColor: [0, 0, 0, 255],
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
     })
@@ -901,7 +901,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                       style={{
                         display: "inline-block",
                         color: "rgb(50, 50, 50)",
-                        fontSize: "15px",
+                        fontSize: "16px",
                         fontWeight: "bold",
                         marginRight: "4px",
                         fontFamily: '"Helvetica Neue", Arial, sans-serif',
@@ -909,7 +909,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                     >
                       {item.displayIndex}.
                     </strong>
-                    <span style={{ fontSize: "15px", color: "#555" }}>
+                    <span style={{ fontSize: "16px", color: "#555" }}>
                        {item.date ? new Date(item.date).toLocaleDateString() : "（日付不明）"}
                     </span>
                     <br />
