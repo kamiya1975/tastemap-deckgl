@@ -308,7 +308,7 @@ function App() {
             fontFamily: "Helvetica Neue, Arial, sans-serif",
           }}>↑ Sweet</div>
           <div style={{
-            position: "absolute", top: "55px", left: "50%",
+            position: "absolute", bottom: "150px", left: "50%",
             transform: "translateX(-50%)",
             zIndex: 2, background: "rgba(255,255,255,0.85)",
             padding: "4px 8px", borderRadius: "4px",
