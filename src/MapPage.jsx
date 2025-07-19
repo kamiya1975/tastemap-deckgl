@@ -250,7 +250,7 @@ const sortedRatedWineList = useMemo(() => {
       data: sortedRatedWineList.map((item, idx, arr) => {
         const total = arr.length;
         return {
-          position: [item.BodyAxis, -item.SweetAxis, is3D ? 0.1 : 0.05],
+          position: [item.BodyAxis, -item.SweetAxis, is3D ? 0.1 : 0.1],
           text: `${total - idx}`,
         };
       }),
@@ -283,7 +283,7 @@ const sortedRatedWineList = useMemo(() => {
           position: [
             d.BodyAxis,
             -d.SweetAxis,
-            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0,
+            is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0.1,
           ],
           text: String(i + 1),
         })),
