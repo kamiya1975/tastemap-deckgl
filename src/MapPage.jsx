@@ -11,6 +11,8 @@ import {
 } from "@deck.gl/layers";
 import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function App() {
   const location = useLocation();
@@ -665,95 +667,96 @@ function App() {
   </button>
 </Drawer>
 
-{/* 打点に近いワイン表示パネル（Drawerの代替） */}
-{isDrawerOpen && nearestPoints.length > 0 && (
-  <div
-    style={{
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      width: "100%",
-      height: "550px", // 必要に応じて調整
-      background: "#fff",
-      borderTop: "1px solid #ccc",
-      boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
-      zIndex: 10,
-      display: "flex",
-      flexDirection: "column",
-      pointerEvents: "auto",
-    }}
-  >
-    {/* 固定ヘッダー */}
-    <div
-      style={{
-        padding: "8px 16px",
-        borderBottom: "1px solid #ddd",
-        background: "#f9f9f9",
-        flexShrink: 0,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <h3 style={{ margin: 0 }}>打点に近いワイン</h3>
-      <button
-        onClick={() => {
-          setIsDrawerOpen(false);
-          setUserPinCoords(null);
-          setNearestPoints([]);
-        }}
-        style={{
-          background: "#eee",
-          border: "1px solid #ccc",
-          padding: "6px 10px",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        閉じる
-      </button>
-    </div>
-
-    {/* スクロールリスト */}
-    <div
-      style={{
-        flex: 1,
-        overflowY: "auto",
-        padding: "8px 16px",
-      }}
-    >
-      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-        {nearestPoints.map((item, idx) => (
-          <li
-            key={idx}
-            onClick={() => {
-              const newWin = window.open(`/products/${item.JAN}`, "_blank");
-              setProductWindow(newWin);
-            }}
+function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "100%" }}
+          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "600px",
+            backgroundColor: "#fff",
+            boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
+            zIndex: 1000,
+            borderTopLeftRadius: "12px",
+            borderTopRightRadius: "12px",
+            display: "flex",
+            flexDirection: "column",
+            fontFamily:
+              '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          }}
+        >
+          {/* 固定ヘッダー */}
+          <div
             style={{
-              padding: "8px 0",
-              borderBottom: "1px solid #eee",
-              cursor: "pointer",
+              padding: "12px 16px",
+              borderBottom: "1px solid #ddd",
+              background: "#f9f9f9",
+              flexShrink: 0,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-            <br />
-            <small>
-              Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)} /
-              希望小売価格: {item.希望小売価格 ? `¥${item.希望小売価格.toLocaleString()}` : "不明"}
-              <br />
-              Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)},
-              星評価: {userRatings[item.JAN]?.rating ?? "なし"}
-            </small>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </div>
-)}
+            <h3 style={{ margin: 0 }}>打点に近いワイン</h3>
+            <button
+              onClick={onClose}
+              style={{
+                background: "#eee",
+                border: "1px solid #ccc",
+                padding: "6px 10px",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              閉じる
+            </button>
+          </div>
 
-</div> 
-);
+          {/* スクロールエリア */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "12px 16px",
+              backgroundColor: "#fff",
+            }}
+          >
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {nearestPoints.map((item, idx) => (
+                <li
+                  key={idx}
+                  onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
+                  style={{
+                    padding: "10px 0",
+                    borderBottom: "1px solid #eee",
+                    cursor: "pointer",
+                  }}
+                >
+                  <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+                  <br />
+                  <small>
+                    Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)} /{" "}
+                    価格: {item.希望小売価格 ? `¥${item.希望小売価格.toLocaleString()}` : "不明"}
+                    <br />
+                    Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)} /{" "}
+                    星評価: {userRatings[item.JAN]?.rating ?? "なし"}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }
 
 export default App;
