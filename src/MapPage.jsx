@@ -668,7 +668,11 @@ function App() {
     {/* ✅ NearestWinePanel をここで使用 */}
     <NearestWinePanel
       isOpen={isDrawerOpen}
-      onClose={() => setIsDrawerOpen(false)}
+       onClose={() => {
+        setIsDrawerOpen(false);
+        setNearestPoints([]);
+        setUserPinCoords(null);
+      }}
       nearestPoints={nearestPoints}
       userRatings={userRatings}
     />
