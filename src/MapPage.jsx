@@ -240,8 +240,12 @@ const sortedRatedWineList = useMemo(() => {
         rating: rating.rating,
       };
     })
-    .filter(Boolean)
-    .sort((a, b) => new Date(a.date) - new Date(b.date)); // 古い順
+    .filter((item) =>
+      item &&
+      typeof item.BodyAxis === "number" &&
+      typeof item.SweetAxis === "number"
+    )
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 }, [userRatings, data]);
 
   const ratingDateLayer = showRatingDates && sortedRatedWineList.length > 0
@@ -512,7 +516,7 @@ const sortedRatedWineList = useMemo(() => {
   </>
 )}
 
-    {/* 評価日表示切替 ●ボタン */}
+    {/* 評価切替 ★ボタン */}
     {!is3D && (
     <button
      onClick={() => {
