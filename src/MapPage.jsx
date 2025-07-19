@@ -41,7 +41,6 @@ function App() {
   const [showRatingDates, setShowRatingDates] = useState(false);
   const [isRatingListOpen, setIsRatingListOpen] = useState(false);
 
-
   const sortedRatedWineList = useMemo(() => {
   return Object.entries(userRatings)
     .filter(([_, rating]) => rating.rating != null)
