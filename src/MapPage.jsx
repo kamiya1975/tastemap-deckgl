@@ -211,10 +211,10 @@ function App() {
   const ratingLayer = new ScatterplotLayer({
   id: "rating-bubbles",
   data: data.filter((d) => userRatings[d.JAN]),
-  getPosition: (d) => [
-    is3D ? d.SweetAxis : -d.SweetAxis, 
-    0
-  ],
+  getPosition: (d) => {
+  console.log(d.BodyAxis, d.SweetAxis); // デバッグ用
+  return [d.BodyAxis, is3D ? d.SweetAxis : -d.SweetAxis, 0];
+},
   getFillColor: [255, 165, 0, 100], // 色調整
   getRadius: (d) => {
     const rating = userRatings[d.JAN]?.rating;
