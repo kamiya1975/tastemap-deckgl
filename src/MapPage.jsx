@@ -668,102 +668,99 @@ function App() {
 
 function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
   return (
-    <>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "100%" }}
+          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "600px",
+            backgroundColor: "#fff",
+            boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
+            zIndex: 1000,
+            borderTopLeftRadius: "12px",
+            borderTopRightRadius: "12px",
+            display: "flex",
+            flexDirection: "column",
+            fontFamily:
+              '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          }}
+        >
+          {/* 固定ヘッダー */}
+          <div
             style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: "600px",
-              backgroundColor: "#fff",
-              boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
-              zIndex: 1000,
-              borderTopLeftRadius: "12px",
-              borderTopRightRadius: "12px",
+              padding: "12px 16px",
+              borderBottom: "1px solid #ddd",
+              background: "#f9f9f9",
+              flexShrink: 0,
               display: "flex",
-              flexDirection: "column",
-              fontFamily:
-                '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            {/* 固定ヘッダー */}
-            <div
+            <h3 style={{ margin: 0 }}>打点に近いワイン</h3>
+            <button
+              onClick={onClose}
               style={{
-                padding: "12px 16px",
-                borderBottom: "1px solid #ddd",
-                background: "#f9f9f9",
-                flexShrink: 0,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                background: "#eee",
+                border: "1px solid #ccc",
+                padding: "6px 10px",
+                borderRadius: "4px",
+                cursor: "pointer",
               }}
             >
-              <h3 style={{ margin: 0 }}>打点に近いワイン</h3>
-              <button
-                onClick={onClose}
-                style={{
-                  background: "#eee",
-                  border: "1px solid #ccc",
-                  padding: "6px 10px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                閉じる
-              </button>
-            </div>
+              閉じる
+            </button>
+          </div>
 
-            {/* スクロールエリア */}
-            <div
-              style={{
-                flex: 1,
-                overflowY: "auto",
-                padding: "12px 16px",
-                backgroundColor: "#fff",
-              }}
-            >
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {nearestPoints.map((item, idx) => (
-                  <li
-                    key={idx}
-                    onClick={() =>
-                      window.open(`/products/${item.JAN}`, "_blank")
-                    }
-                    style={{
-                      padding: "10px 0",
-                      borderBottom: "1px solid #eee",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+          {/* スクロールエリア */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "12px 16px",
+              backgroundColor: "#fff",
+            }}
+          >
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {nearestPoints.map((item, idx) => (
+                <li
+                  key={idx}
+                  onClick={() =>
+                    window.open(`/products/${item.JAN}`, "_blank")
+                  }
+                  style={{
+                    padding: "10px 0",
+                    borderBottom: "1px solid #eee",
+                    cursor: "pointer",
+                  }}
+                >
+                  <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+                  <br />
+                  <small>
+                    Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)} / 価格:{" "}
+                    {item.希望小売価格
+                      ? `¥${item.希望小売価格.toLocaleString()}`
+                      : "不明"}
                     <br />
-                    <small>
-                      Type: {item.Type || "不明"} / 距離:{" "}
-                      {item.distance?.toFixed(2)} / 価格:{" "}
-                      {item.希望小売価格
-                        ? `¥${item.希望小売価格.toLocaleString()}`
-                        : "不明"}
-                      <br />
-                      Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
-                      {item.SweetAxis?.toFixed(2)} / 星評価:{" "}
-                      {userRatings[item.JAN]?.rating ?? "なし"}
-                    </small>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+                    Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
+                    {item.SweetAxis?.toFixed(2)} / 星評価:{" "}
+                    {userRatings[item.JAN]?.rating ?? "なし"}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
-export default App;
+export default NearestWinePanel;
