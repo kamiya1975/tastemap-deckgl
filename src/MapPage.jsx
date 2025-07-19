@@ -897,11 +897,22 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                   }}
                 >
                   <div>
-                    <strong>
-                      {item.displayIndex}、{item.date
-                        ? new Date(item.date).toLocaleDateString()
-                        : "（日付不明）"}
+                    <strong
+                      style={{
+                        display: "inline-block",
+                        color: "rgb(50, 50, 50)",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        marginRight: "4px",
+                        fontFamily: '"Helvetica Neue", Arial, sans-serif',
+                      }}
+                    >
+                      {item.displayIndex}.
                     </strong>
+                    <span style={{ fontSize: "12px", color: "#555" }}>
+                       {item.date ? new Date(item.date).toLocaleDateString() : "（日付不明）"}
+                    </span>
+
                     <br />
                     {item.商品名 || "（名称不明）"}
                   </div>
