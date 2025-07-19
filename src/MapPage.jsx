@@ -511,6 +511,7 @@ const sortedRatedWineList = useMemo(() => {
     </button>
 
     {/* 評価日表示切替 ●ボタン */}
+    {is3D && (
     <button
      onClick={() => {
        const next = !showRatingDates;
@@ -537,7 +538,6 @@ const sortedRatedWineList = useMemo(() => {
     >
       ★
     </button>
-  </>
 )} 
 
 <Drawer
