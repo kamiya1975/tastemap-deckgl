@@ -309,16 +309,20 @@ const sortedRatedWineList = useMemo(() => {
     : null;
 
   const sliderMarkLayer = sliderMarkCoords
-    ? new ScatterplotLayer({
-        id: "slider-mark",
-        data: [sliderMarkCoords],
-        getPosition: (d) => d,
-        getFillColor: [255, 0, 0, 180], // 赤色
-        getRadius: 0.25,
-        radiusUnits: "meters", // DeckGL座標系に合わせる
-        pickable: false,
-      })
-    : null;
+  ? new ScatterplotLayer({
+      id: "slider-mark",
+      data: [sliderMarkCoords],
+      getPosition: (d) => [
+        d[0],
+        is3D ? -d[1] : d[1],  // ← ここで3D時のみY軸を反転
+        0,
+      ],
+      getFillColor: [255, 0, 0, 180],
+      getRadius: 0.25,
+      radiusUnits: "meters",
+      pickable: false,
+    })
+  : null;
 
   return (
     <div style={{ 
@@ -678,10 +682,7 @@ const sortedRatedWineList = useMemo(() => {
               ? blendF.BodyAxis - ((50 - body) / 50) * (blendF.BodyAxis - minBody)
               : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
 
-          const coords = [
-            bodyValue,
-            is3D ? sweetValue : -sweetValue,
-          ];
+          const coords = [bodyValue, -sweetValue];
           setSliderMarkCoords(coords);
           setIsSliderOpen(false);
           setViewState((prev) => ({
