@@ -616,56 +616,68 @@ function App() {
     />
   </div>
 
-  {/* 地図生成ボタン */}
-  <button
-    onClick={() => {
-      const blendF = data.find((d) => d.JAN === "blendF");
-      if (!blendF) return;
+        {/* 地図生成ボタン */}
+      <button
+        onClick={() => {
+          const blendF = data.find((d) => d.JAN === "blendF");
+          if (!blendF) return;
 
-      const sweetValues = data.map((d) => d.SweetAxis);
-      const bodyValues = data.map((d) => d.BodyAxis);
-      const minSweet = Math.min(...sweetValues);
-      const maxSweet = Math.max(...sweetValues);
-      const minBody = Math.min(...bodyValues);
-      const maxBody = Math.max(...bodyValues);
+          const sweetValues = data.map((d) => d.SweetAxis);
+          const bodyValues = data.map((d) => d.BodyAxis);
+          const minSweet = Math.min(...sweetValues);
+          const maxSweet = Math.max(...sweetValues);
+          const minBody = Math.min(...bodyValues);
+          const maxBody = Math.max(...bodyValues);
 
-      const sweetValue =
-        sweetness <= 50
-          ? blendF.SweetAxis - ((50 - sweetness) / 50) * (blendF.SweetAxis - minSweet)
-          : blendF.SweetAxis + ((sweetness - 50) / 50) * (maxSweet - blendF.SweetAxis);
+          const sweetValue =
+            sweetness <= 50
+              ? blendF.SweetAxis - ((50 - sweetness) / 50) * (blendF.SweetAxis - minSweet)
+              : blendF.SweetAxis + ((sweetness - 50) / 50) * (maxSweet - blendF.SweetAxis);
 
-      const bodyValue =
-        body <= 50
-          ? blendF.BodyAxis - ((50 - body) / 50) * (blendF.BodyAxis - minBody)
-          : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
+          const bodyValue =
+            body <= 50
+              ? blendF.BodyAxis - ((50 - body) / 50) * (blendF.BodyAxis - minBody)
+              : blendF.BodyAxis + ((body - 50) / 50) * (maxBody - blendF.BodyAxis);
 
-      const coords = [bodyValue, -sweetValue];
-      setSliderMarkCoords(coords); // ⭐新しい目印だけを残す
-      setIsSliderOpen(false);
-      setViewState((prev) => ({
-      ...prev,
-      target: [coords[0], coords[1]+5.0, 0],
-      zoom: 4.5  // ← ズーム指定
-    }));
-  }}
+          const coords = [bodyValue, -sweetValue];
+          setSliderMarkCoords(coords);
+          setIsSliderOpen(false);
+          setViewState((prev) => ({
+            ...prev,
+            target: [coords[0], coords[1] + 5.0, 0],
+            zoom: 4.5
+          }));
+        }}
+        style={{
+          background: "#fff",
+          color: "#007bff",
+          padding: "14px 30px",
+          fontSize: "16px",
+          fontWeight: "bold",
+          border: "2px solid #007bff",
+          borderRadius: "6px",
+          cursor: "pointer",
+          display: "block",
+          margin: "0 auto",
+        }}
+      >
+        あなたの好みをMapに表示
+      </button>
+    </Drawer>
 
-    style={{
-      background: "#fff",
-      color: "#007bff",
-      padding: "14px 30px",
-      fontSize: "16px",
-      fontWeight: "bold",
-      border: "2px solid #007bff",
-      borderRadius: "6px",
-      cursor: "pointer",
-      display: "block",
-      margin: "0 auto",
-    }}
-  >
-    あなたの好みをMapに表示
-  </button>
-</Drawer>
+    {/* ✅ NearestWinePanel をここで使用 */}
+    <NearestWinePanel
+      isOpen={isDrawerOpen}
+      onClose={() => setIsDrawerOpen(false)}
+      nearestPoints={nearestPoints}
+      userRatings={userRatings}
+    />
 
+  </div>  {/* Appコンポーネントのreturnの閉じタグ */}
+  );
+} // ← App関数の閉じ
+
+// ✅ JSXの外で定義！
 function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
   return (
     <AnimatePresence>
@@ -763,4 +775,4 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
   );
 }
 
-export default NearestWinePanel;
+export default App;
