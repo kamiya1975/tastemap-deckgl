@@ -259,12 +259,23 @@ const sortedRatedWineList = useMemo(() => {
         const z = is3D ? (Number(item[zMetric]) || 0) + 0.1 : 0.01;
         return {
           position: [item.BodyAxis, y, z],
-          text: `${idx + 1}`, // ✅ 昇順に変更：新しい評価ほど番号が大きい
+          text: `${idx + 1}`,
         };
       }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
-      getSize: is3D ? 0.5 : 16, // ✅ 3Dのサイズを見やすく統一
+
+      // ✅ ズームに応じて調整する getSize（関数）
+      getSize: ({ viewport }) => {
+        if (is3D) {
+          return 1.2; // 3Dでは控えめな固定値（meters）
+        } else {
+          const zoom = viewport.zoom;
+          const baseSize = 24;
+          return baseSize * Math.pow(2, zoom - 5); // ← 拡大時にサイズ維持
+        }
+      },
+
       sizeUnits: is3D ? "meters" : "pixels",
       getColor: [50, 50, 50, 200],
       getTextAnchor: "middle",
