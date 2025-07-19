@@ -39,6 +39,7 @@ function App() {
   const [hasConfirmedSlider, setHasConfirmedSlider] = useState(false);
   const [sliderMarkCoords, setSliderMarkCoords] = useState(null);
   const [showRatingDates, setShowRatingDates] = useState(false);
+  const [isRatingListOpen, setIsRatingListOpen] = useState(false);
 
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -489,7 +490,11 @@ function App() {
 
     {/* 評価日表示切替 ●ボタン */}
     <button
-      onClick={() => setShowRatingDates(!showRatingDates)}
+     onClick={() => {
+       const next = !showRatingDates;
+       setShowRatingDates(next);
+       setIsRatingListOpen(next);
+    }}
       style={{
         position: "absolute",
         top: "120px", // ← ★ボタンより下
@@ -677,9 +682,20 @@ function App() {
       userRatings={userRatings}
     />
 
+    <RatedWinePanel
+      isOpen={isRatingListOpen}
+      onClose={() => {
+       setIsRatingListOpen(false);
+       setShowRatingDates(false);
+      }}
+      userRatings={userRatings}
+      data={data}
+    />
+
   </div> 
   );
 } // ← App関数の閉じ
+
 
 // ✅ JSXの外で定義！
 function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
@@ -778,5 +794,121 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
     </AnimatePresence>
   );
 }
+
+function RatedWinePanel({ isOpen, onClose, userRatings, data }) {
+  const ratedWineList = useMemo(() => {
+    return Object.entries(userRatings)
+      .map(([jan, rating]) => {
+        const matched = data.find((d) => String(d.JAN) === String(jan));
+        if (!matched) return null;
+        return {
+          ...matched,
+          date: rating.date || null,
+          rating: rating.rating || null,
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [userRatings, data]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "100%" }}
+          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "500px",
+            backgroundColor: "#fff",
+            boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
+            zIndex: 1000,
+            borderTopLeftRadius: "12px",
+            borderTopRightRadius: "12px",
+            display: "flex",
+            flexDirection: "column",
+            fontFamily:
+              '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          }}
+        >
+          {/* 固定ヘッダー */}
+          <div
+            style={{
+              padding: "12px 16px",
+              borderBottom: "1px solid #ddd",
+              background: "#f9f9f9",
+              flexShrink: 0,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <h3 style={{ margin: 0 }}>あなたが評価したワイン</h3>
+            <button
+              onClick={() => {
+                onClose();
+              }}
+              style={{
+                background: "#eee",
+                border: "1px solid #ccc",
+                padding: "6px 10px",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              閉じる
+            </button>
+          </div>
+
+          {/* スクロールエリア */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "12px 16px",
+              backgroundColor: "#fff",
+            }}
+          >
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {ratedWineList.map((item, idx) => (
+                <li
+                  key={idx}
+                  onClick={() =>
+                    window.open(`/products/${item.JAN}`, "_blank")
+                  }
+                  style={{
+                    padding: "10px 0",
+                    borderBottom: "1px solid #eee",
+                    cursor: "pointer",
+                  }}
+                >
+                  <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+                  <br />
+                  <small>
+                    Type: {item.Type || "不明"} / 評価日:{" "}
+                    {item.date ? new Date(item.date).toLocaleDateString() : "不明"} / 価格:{" "}
+                    {item.希望小売価格
+                      ? `¥${item.希望小売価格.toLocaleString()}`
+                      : "不明"}
+                    <br />
+                    Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
+                    {item.SweetAxis?.toFixed(2)} / 星評価:{" "}
+                    {item.rating ?? "なし"}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 
 export default App;
