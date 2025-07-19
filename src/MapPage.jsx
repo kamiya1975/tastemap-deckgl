@@ -265,14 +265,11 @@ const sortedRatedWineList = useMemo(() => {
       getPosition: (d) => d.position,
       getText: (d) => d.text,
 
-      getSize: ({ viewport }) => {
-        if (is3D) {
-          return 0.6; // 小さめmeters
-        } else {
-          const zoom = viewport.zoom || 5;
-          const baseSize = 20;
-          return baseSize * Math.pow(2, 5 - zoom);
-        }
+      // ✅ 安定化：viewport null でも落ちないように
+      getSize: (d, { viewport }) => {
+        const zoom = viewport?.zoom ?? 5;
+        const baseSize = 20;
+        return is3D ? 0.6 : baseSize * Math.pow(2, 5 - zoom);
       },
       sizeUnits: is3D ? "meters" : "pixels",
 
