@@ -194,6 +194,7 @@ function App() {
       });
     }
   }, [data, is3D, zMetric]);
+
   //ブロック
   const gridCellLayer = new GridCellLayer({
     id: "grid-cells",
@@ -226,15 +227,31 @@ function App() {
   pickable: false,
 });
 
+const sortedRatedWineList = useMemo(() => {
+  return Object.entries(userRatings)
+    .filter(([_, rating]) => rating.rating != null)
+    .map(([jan, rating]) => {
+      const matched = data.find((d) => String(d.JAN) === String(jan));
+      if (!matched) return null;
+      return {
+        ...matched,
+        date: rating.date,
+        rating: rating.rating,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.date) - new Date(b.date)); // 古い順
+}, [userRatings, data]);
+
   const ratingDateLayer = showRatingDates
   ? new TextLayer({
-      id: "rating-dates",
-      data: data.filter((d) => userRatings[d.JAN]),
+      id: "rating-index-labels",
+      data: sortedRatedWineList.map((item, idx) => ({
+        ...item,
+        index: idx + 1,
+      })),
       getPosition: (d) => [d.BodyAxis, -d.SweetAxis, is3D ? 0.1 : 0],
-      getText: (d) => {
-        const dateStr = userRatings[d.JAN]?.date;
-        return dateStr ? new Date(dateStr).toLocaleDateString() : "";
-      },
+      getText: (d) => String(d.index),
       getSize: 12,
       sizeUnits: "pixels",
       getColor: [50, 50, 50, 200],
@@ -876,40 +893,45 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data }) {
             }}
           >
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {ratedWineList.map((item, idx) => (
-                <li
-                  key={idx}
-                  onClick={() =>
-                    window.open(`/products/${item.JAN}`, "_blank")
-                  }
-                  style={{
-                    padding: "10px 0",
-                    borderBottom: "1px solid #eee",
-                    cursor: "pointer",
-                  }}
-                >
-                  <div>
-                  <strong>
-                    {item.date
-                     ? new Date(item.date).toLocaleDateString()
-                     : "（日付不明）"}
-                   </strong>{" "}
-                   <br />
-                    {item.商品名 || "（名称不明）"}
-                    </div>
-                    <small>
-                     Type: {item.Type || "不明"} / 価格:{" "}
-                     {item.希望小売価格
-                      ? `¥${item.希望小売価格.toLocaleString()}`
-                      : "不明"}
+              {[...sortedRatedWineList] // 新しい順にするため reverse()
+                .map((item, idx, arr) => {
+                  const total = arr.length;
+                  const indexFromOldest = total - idx;
+                  return { ...item, displayIndex: indexFromOldest };
+                })
+                .map((item, idx) => (
+                  <li
+                     key={idx}
+                     onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
+                     style={{
+                       padding: "10px 0",
+                       borderBottom: "1px solid #eee",
+                       cursor: "pointer",
+                   }}
+                  >
+                   <div>
+                     <strong>
+                       {item.displayIndex}、{item.date
+                          ? new Date(item.date).toLocaleDateString()
+                          : "（日付不明）"}
+                    </strong>
+                    <br />
+                     {item.商品名 || "（名称不明）"}
+                  </div>
+                  <small>
+                    Type: {item.Type || "不明"} / 価格:{" "}
+                    {item.希望小売価格
+                     ? `¥${item.希望小売価格.toLocaleString()}`
+                     : "不明"}
                     <br />
                     Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
                     {item.SweetAxis?.toFixed(2)} / 星評価:{" "}
                     {item.rating ?? "なし"}
                   </small>
                 </li>
-              ))}
-            </ul>
+             ))}
+          </ul>
+
           </div>
         </motion.div>
       )}
