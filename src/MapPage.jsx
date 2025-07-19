@@ -672,7 +672,7 @@ function App() {
       nearestPoints={nearestPoints}
       userRatings={userRatings}
     />
-    
+
   </div> 
   );
 } // ← App関数の閉じ
@@ -692,7 +692,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
             bottom: 0,
             left: 0,
             right: 0,
-            height: "600px",
+            height: "550px",
             backgroundColor: "#fff",
             boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
             zIndex: 1000,
