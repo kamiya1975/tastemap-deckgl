@@ -644,7 +644,7 @@ function App() {
           setIsSliderOpen(false);
           setViewState((prev) => ({
             ...prev,
-            target: [coords[0], coords[1] + 6.0, 0],
+            target: [coords[0], coords[1] + 5.5, 0],
             zoom: 4.5
           }));
         }}
