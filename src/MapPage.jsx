@@ -253,9 +253,9 @@ const sortedRatedWineList = useMemo(() => {
       })),
       getPosition: (d) => [d.BodyAxis, -d.SweetAxis, is3D ? 0.1 : 0.05],
       getText: (d) => String(d.index),
-      getSize: 12,
+      getSize: 16,
       sizeUnits: "pixels",
-      getColor: [0, 0, 0, 255],
+      getColor: [50, 50, 50, 200],
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
     })
