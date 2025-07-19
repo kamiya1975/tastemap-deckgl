@@ -297,6 +297,9 @@ const sortedRatedWineList = useMemo(() => {
         ffontFamily: "Helvetica Neue, sans-serif",
         sizeMinPixels: 10,
         sizeMaxPixels: 32,
+        background: true,
+        backgroundPadding: [2, 1],
+        backgroundColor: [255, 255, 255, 200],
       })
     : null;
 
