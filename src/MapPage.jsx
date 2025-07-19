@@ -169,7 +169,7 @@ function App() {
         radius: 0.05,
         extruded: true,
         elevationScale: 2,
-        getPosition: (d) => [d.BodyAxis, -d.SweetAxis],
+        getPosition: (d) => [d.BodyAxis, d.SweetAxis],
         getElevation: (d) => (zMetric ? Number(d[zMetric]) || 0 : 0),
         getFillColor: (d) => typeColorMap[d.Type] || typeColorMap.Other,
         pickable: true,
@@ -211,7 +211,7 @@ function App() {
   const ratingLayer = new ScatterplotLayer({
   id: "rating-bubbles",
   data: data.filter((d) => userRatings[d.JAN]),
-  getPosition: (d) => [d.BodyAxis, -d.SweetAxis, 0],
+  getPosition: (d) => [d.BodyAxis, d.SweetAxis, 0],
   getFillColor: [255, 165, 0, 100], // 色調整
   getRadius: (d) => {
     const rating = userRatings[d.JAN]?.rating;
