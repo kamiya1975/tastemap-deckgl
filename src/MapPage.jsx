@@ -247,10 +247,13 @@ const sortedRatedWineList = useMemo(() => {
   const ratingDateLayer = showRatingDates && sortedRatedWineList.length > 0
   ? new TextLayer({
       id: "rating-index-labels",
-      data: sortedRatedWineList.map((item, idx) => ({
-        position: [item.BodyAxis, -item.SweetAxis, is3D ? 0.1 : 0.05],
-        text: `${total - idx}`, 
-      })),
+      data: sortedRatedWineList.map((item, idx, arr) => {
+        const total = arr.length;
+        return {
+          position: [item.BodyAxis, -item.SweetAxis, is3D ? 0.1 : 0.05],
+          text: `${total - idx}`,
+        };
+      }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
       getSize: 16,
