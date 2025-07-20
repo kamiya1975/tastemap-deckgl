@@ -40,6 +40,7 @@ function App() {
   const [sliderMarkCoords, setSliderMarkCoords] = useState(null);
   const [showRatingDates, setShowRatingDates] = useState(false);
   const [isRatingListOpen, setIsRatingListOpen] = useState(false);
+  const ZOOM_LIMITS = { minZoom: 4.0, maxZoom: 10.0 };
   
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -179,6 +180,7 @@ function App() {
             setViewState((prev) => ({
               ...prev,
               target: [BodyAxis, SweetAxis, 0],
+              ...ZOOM_LIMITS,
             }));
           }
         },
@@ -406,6 +408,12 @@ const sortedRatedWineList = useMemo(() => {
 
             setNearestPoints(nearest);
             setIsDrawerOpen(true);
+
+            setViewState((prev) => ({
+              ...prev,
+              target: [x, y, 0],
+              ...ZOOM_LIMITS, 
+            }));
           }
         }}
         layers={[
@@ -475,6 +483,7 @@ const sortedRatedWineList = useMemo(() => {
         ...viewState,
         rotationX: 45,
         rotationOrbit: 0,
+        ...ZOOM_LIMITS,
       });
     } else {
       // 2D用に戻す
@@ -482,6 +491,7 @@ const sortedRatedWineList = useMemo(() => {
         ...saved2DViewState,
         rotationX: undefined,
         rotationOrbit: undefined,
+        ...ZOOM_LIMITS,
       });
     }
   }}
@@ -695,7 +705,8 @@ const sortedRatedWineList = useMemo(() => {
           setViewState((prev) => ({
             ...prev,
             target: [coords[0], coords[1] + 5.5, 0],
-            zoom: 4.5
+            zoom: 4.5,
+            ...ZOOM_LIMITS,
           }));
         }}
         style={{
