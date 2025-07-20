@@ -266,7 +266,7 @@ const sortedRatedWineList = useMemo(() => {
       }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
-      getSize: 0.3,
+      getSize: 0.4,
       sizeUnits: "meters",
       sizeMinPixels: 12,
       sizeMaxPixels: 64,
@@ -298,7 +298,7 @@ const sortedRatedWineList = useMemo(() => {
       id: "nearest-labels",
       data: nearestPoints.map((d, i) => {
         const y = is3D ? d.SweetAxis : -d.SweetAxis; // ← 修正ポイント
-        const z = is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0.01; // ← 2Dでも地面から少し浮かせる
+        const z = is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0; // ← 2Dでも地面から少し浮かせる
         return {
           position: [d.BodyAxis, y, z],
           text: String(i + 1),
@@ -306,7 +306,7 @@ const sortedRatedWineList = useMemo(() => {
       }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
-      getSize: 0.3,
+      getSize: 0.4,
       sizeUnits: "meters",
       sizeMinPixels: 12,
       sizeMaxPixels: 64,
@@ -387,7 +387,7 @@ const sortedRatedWineList = useMemo(() => {
         views={
           is3D
             ? new OrbitView({ near: 0.1, far: 1000 })
-            : new OrthographicView({ near: 0.1, far: 1000 })
+            : new OrthographicView({ near: -1, far: 1 })
         }
         viewState={viewState}
         onViewStateChange={({ viewState: vs }) => {
