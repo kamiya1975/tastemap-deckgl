@@ -311,14 +311,12 @@ const sortedRatedWineList = useMemo(() => {
       sizeMinPixels: 12,
       sizeMaxPixels: 64,
       billboard: true,
+      characterSet: "0123456789",
       getColor: [0, 0, 0],
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
       fontFamily: '"Helvetica Neue", Arial, sans-serif',
-      characterSet: "0123456789",
-      parameters: {
-        depthTest: false, // 他オブジェクトの裏に隠れないように
-      },
+      parameters: { depthTest: false },
     })
   : null;
 
