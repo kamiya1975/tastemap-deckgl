@@ -266,15 +266,16 @@ const sortedRatedWineList = useMemo(() => {
       }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
-
-      // ✅ 安定化：viewport null でも落ちないように
-      getSize: 1.5,
+      getSize: 0.5,
       sizeUnits: "meters",
-
+      sizeMinPixels: 12,
+      sizeMaxPixels: 64,
+      billboard: true,
       getColor: [50, 50, 50, 200],
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
       fontFamily: '"Helvetica Neue", Arial, sans-serif',
+      characterSet: "0123456789",
       parameters: {
         depthTest: false,
       },
@@ -305,12 +306,16 @@ const sortedRatedWineList = useMemo(() => {
       }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
-      getSize: 1.5,
+      getSize: 0.5,
       sizeUnits: "meters",
+      sizeMinPixels: 12,
+      sizeMaxPixels: 64,
+      billboard: true,
       getColor: [0, 0, 0],
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
       fontFamily: '"Helvetica Neue", Arial, sans-serif',
+      characterSet: "0123456789",
       parameters: {
         depthTest: false, // 他オブジェクトの裏に隠れないように
       },
