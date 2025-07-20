@@ -385,8 +385,8 @@ const sortedRatedWineList = useMemo(() => {
         viewState={viewState}
         onViewStateChange={({ viewState: vs }) => {
           const limitedTarget = [
-            Math.max(-8, Math.min(8, vs.target[0])),  // ← 横方向（Body軸）
-            Math.max(-8, Math.min(8, vs.target[1])),  // ← 縦方向（Sweet軸）
+            Math.max(-15, Math.min(15, vs.target[0])),  // ← 横方向（Body軸）
+            Math.max(-15, Math.min(15, vs.target[1])),  // ← 縦方向（Sweet軸）
             vs.target[2],                            // ← Z軸そのまま
           ];
 
