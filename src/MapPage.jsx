@@ -318,15 +318,19 @@ const sortedRatedWineList = useMemo(() => {
     })
   : null;
 
-  const pinLayer = new ScatterplotLayer({
-    id: "user-pin",
-    data: [{ position: [x, y, 0.01] }],
-    getPosition: (d) => d.position,
-    getRadius: 12,
-    getFillColor: [0, 255, 0, 180], // 緑色
-    pickable: false,
-    parameters: { depthTest: false }, // ← 他のレイヤーに埋もれないように
-  });
+  const pinLayer = userPinCoords
+  ? new ScatterplotLayer({
+      id: "user-pin",
+      data: [{
+        position: [userPinCoords[0], userPinCoords[1], 0.01], 
+      }],
+      getPosition: (d) => d.position,
+      getRadius: 12,
+      getFillColor: [0, 255, 0, 180], // 緑色
+      pickable: false,
+      parameters: { depthTest: false },
+    })
+  : null;
 
   const sliderMarkLayer = sliderMarkCoords
   ? new ScatterplotLayer({
