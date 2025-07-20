@@ -258,7 +258,7 @@ const sortedRatedWineList = useMemo(() => {
       id: "rating-index-labels",
       data: sortedRatedWineList.map((item, idx) => {
         const y = is3D ? item.SweetAxis : -item.SweetAxis;
-        const z = is3D ? (Number(item[zMetric]) || 0) + 0.1 : 1;
+        const z = is3D ? (Number(item[zMetric]) || 0) + 0.1 : 0;
         return {
           position: [item.BodyAxis, y, z],
           text: `${idx + 1}`,
