@@ -400,8 +400,8 @@ const sortedRatedWineList = useMemo(() => {
           dragRotate: true,
           minRotationX: 5,
           maxRotationX: 90,
-          minZoom: 5.0,
-          maxZoom: 10.0,
+          minZoom: 4.0,
+          maxZoom: 8.0,
         }}
         onClick={(info) => {
           if (is3D) return;
