@@ -322,7 +322,11 @@ const sortedRatedWineList = useMemo(() => {
   ? new ScatterplotLayer({
       id: "user-pin",
       data: [{
-        position: [userPinCoords[0], userPinCoords[1], 0], 
+        position: [
+          userPinCoords[0], 
+          is3D ? userPinCoords[1] : -userPinCoords[1],
+          is3D ? 0.01 : 0,
+        ],
       }],
       getPosition: (d) => d.position,
       getRadius: 0.4,
