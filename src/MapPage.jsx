@@ -258,7 +258,7 @@ const sortedRatedWineList = useMemo(() => {
       id: "rating-index-labels",
       data: sortedRatedWineList.map((item, idx) => {
         const y = is3D ? item.SweetAxis : -item.SweetAxis;
-        const z = is3D ? (Number(item[zMetric]) || 0) + 0.1 : 0.01;
+        const z = is3D ? (Number(item[zMetric]) || 0) + 0.1 : 1;
         return {
           position: [item.BodyAxis, y, z],
           text: `${idx + 1}`,
@@ -276,9 +276,7 @@ const sortedRatedWineList = useMemo(() => {
       getAlignmentBaseline: "center",
       fontFamily: '"Helvetica Neue", Arial, sans-serif',
       characterSet: "0123456789",
-      parameters: {
-        depthTest: false,
-      },
+      parameters: { depthTest: false },
     })
   : null;
 
@@ -298,7 +296,7 @@ const sortedRatedWineList = useMemo(() => {
       id: "nearest-labels",
       data: nearestPoints.map((d, i) => {
         const y = is3D ? d.SweetAxis : -d.SweetAxis; // ← 修正ポイント
-        const z = is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0; // ← 2Dでも地面から少し浮かせる
+        const z = is3D ? (Number(d[zMetric]) || 0) + 0.05 : 0;
         return {
           position: [d.BodyAxis, y, z],
           text: String(i + 1),
