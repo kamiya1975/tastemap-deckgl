@@ -324,7 +324,7 @@ const sortedRatedWineList = useMemo(() => {
       data: [{
         position: [
           userPinCoords[0], 
-          userPinCoords[1],
+          is3D ? -userPinCoords[1] : userPinCoords[1],
           is3D ? 0.01 : 0,
         ],
       }],
