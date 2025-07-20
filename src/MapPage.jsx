@@ -280,17 +280,6 @@ const sortedRatedWineList = useMemo(() => {
     })
   : null;
 
-  const userPinLayer = userPinCoords
-    ? new ScatterplotLayer({
-        id: "user-pin",
-        data: [userPinCoords],
-        getPosition: (d) => [d[0], d[1], -0.01],
-        getFillColor: [0, 255, 0, 200],
-        getRadius: 0.3,
-        pickable: false,
-      })
-    : null;
-
   const textLayer = nearestPoints.length
   ? new TextLayer({
       id: "nearest-labels",
