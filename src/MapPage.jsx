@@ -266,12 +266,8 @@ const sortedRatedWineList = useMemo(() => {
       getText: (d) => d.text,
 
       // ✅ 安定化：viewport null でも落ちないように
-      getSize: (d, { viewport }) => {
-        const zoom = viewport?.zoom ?? 5;
-        const baseSize = 20;
-        return is3D ? 0.6 : baseSize * Math.pow(2, 5 - zoom);
-      },
-      sizeUnits: is3D ? "meters" : "pixels",
+      getSize: 16,
+      sizeUnits: "pixels",
 
       getColor: [50, 50, 50, 200],
       getTextAnchor: "middle",
@@ -307,8 +303,8 @@ const sortedRatedWineList = useMemo(() => {
       }),
       getPosition: (d) => d.position,
       getText: (d) => d.text,
-      getSize: is3D ? 0.1 : 16,
-      sizeUnits: is3D ? "meters" : "pixels",
+      getSize: 16,
+      sizeUnits: "pixels",
       getColor: [0, 0, 0],
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
