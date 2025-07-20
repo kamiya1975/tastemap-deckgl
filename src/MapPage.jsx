@@ -383,7 +383,18 @@ const sortedRatedWineList = useMemo(() => {
       <DeckGL
         views={is3D ? new OrbitView() : new OrthographicView()}
         viewState={viewState}
-        onViewStateChange={({ viewState: vs }) => setViewState(vs)}
+        onViewStateChange={({ viewState: vs }) => {
+          const limitedTarget = [
+            Math.max(-5, Math.min(5, vs.target[0])), // ← 横方向（Body軸）の制限
+            vs.target[1],                            // ← 縦方向は制限しない
+            vs.target[2],                            // ← Z軸そのまま
+          ];
+
+          setViewState({
+             ...vs,
+             target: limitedTarget,
+          });
+        }}
         controller={{
           dragPan: true,
           dragRotate: true,
