@@ -325,7 +325,7 @@ const sortedRatedWineList = useMemo(() => {
         position: [userPinCoords[0], userPinCoords[1], 0.01], 
       }],
       getPosition: (d) => d.position,
-      getRadius: 12,
+      getRadius: 3,
       getFillColor: [0, 255, 0, 180], // 緑色
       pickable: false,
       parameters: { depthTest: false },
