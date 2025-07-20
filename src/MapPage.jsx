@@ -269,7 +269,7 @@ const sortedRatedWineList = useMemo(() => {
 
       // ✅ 安定化：viewport null でも落ちないように
       getSize: 16,
-      sizeUnits: "pixels",
+      sizeUnits: "meters",
 
       getColor: [50, 50, 50, 200],
       getTextAnchor: "middle",
@@ -306,7 +306,7 @@ const sortedRatedWineList = useMemo(() => {
       getPosition: (d) => d.position,
       getText: (d) => d.text,
       getSize: 16,
-      sizeUnits: "pixels",
+      sizeUnits: "meters",
       getColor: [0, 0, 0],
       getTextAnchor: "middle",
       getAlignmentBaseline: "center",
