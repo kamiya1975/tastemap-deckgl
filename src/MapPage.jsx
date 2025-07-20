@@ -420,9 +420,10 @@ const sortedRatedWineList = useMemo(() => {
             setNearestPoints(nearest);
             setIsDrawerOpen(true);
 
+            const offset = 5.5; // ← 画面中心より上に移動させる量
             setViewState((prev) => ({
               ...prev,
-              target: [x, y, 0],
+              target: [x, y + offset, 0], 
               ...ZOOM_LIMITS, 
             }));
           }
