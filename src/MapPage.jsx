@@ -384,7 +384,11 @@ const sortedRatedWineList = useMemo(() => {
       )}
 
       <DeckGL
-        views={is3D ? new OrbitView() : new OrthographicView()}
+        views={
+          is3D
+            ? new OrbitView({ near: 0.1, far: 1000 })
+            : new OrthographicView({ near: 0.1, far: 1000 })
+        }
         viewState={viewState}
         onViewStateChange={({ viewState: vs }) => {
           const limitedTarget = [
