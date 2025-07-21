@@ -499,18 +499,22 @@ const sortedRatedWineList = useMemo(() => {
     setIs3D(nextIs3D);
 
     if (nextIs3D) {
-      // 2Dの位置を保存
+      // 2D → 3D
       setSaved2DViewState(viewState);
 
-      // 3D用
+      // 中心点として優先するのは打点 → 評価打点 → 初期値
+      const targetX = userPinCoords?.[0] ?? sliderMarkCoords?.[0] ?? viewState.target[0];
+      const targetY = userPinCoords?.[1] ?? sliderMarkCoords?.[1] ?? viewState.target[1];
+
       setViewState({
-        ...viewState,
+        target: [targetX, targetY, 0],
+        zoom: viewState.zoom,
         rotationX: 45,
         rotationOrbit: 0,
         ...ZOOM_LIMITS,
       });
     } else {
-      // 2D用に戻す
+      // 3D → 2D に戻す
       setViewState({
         ...saved2DViewState,
         rotationX: undefined,
@@ -532,7 +536,7 @@ const sortedRatedWineList = useMemo(() => {
     cursor: "pointer",
   }}
 >
-    {is3D ? "2D" : "3D"}
+  {is3D ? "2D" : "3D"}
 </button>
 
 {/* 2Dモード時のボタンたち */}
