@@ -418,22 +418,28 @@ const sortedRatedWineList = useMemo(() => {
         onClick={(info) => {
           if (is3D) return;
           if (info && info.coordinate) {
+            // 評価一覧が開いていれば閉じる
+            if (isRatingListOpen) {
+               setIsRatingListOpen(false);
+               setShowRatingDates(false);
+            }
+
             const [x, y] = info.coordinate;
             setUserPinCoords([x, y]);
 
             const nearest = data
               .map((d) => ({
-                ...d,
-                distance: Math.hypot(d.BodyAxis - x, -d.SweetAxis - y),
+               ...d,
+               distance: Math.hypot(d.BodyAxis - x, -d.SweetAxis - y),
               }))
               .sort((a, b) => a.distance - b.distance)
               .slice(0, 10);
 
             setNearestPoints(nearest);
             setIsDrawerOpen(true);
-
           }
         }}
+
         layers={[
           ratingLayer,
           gridCellLayer,
@@ -565,6 +571,11 @@ const sortedRatedWineList = useMemo(() => {
     {!is3D && (
     <button
      onClick={() => {
+      if (isDrawerOpen) {
+        setIsDrawerOpen(false);
+        setNearestPoints([]);
+        setUserPinCoords(null);
+      }
        const next = !showRatingDates;
        setShowRatingDates(next);
        setIsRatingListOpen(next);
