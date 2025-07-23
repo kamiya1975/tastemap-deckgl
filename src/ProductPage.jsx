@@ -9,7 +9,7 @@ function ProductPage() {
   const [rating, setRating] = useState("4");
   const [submitMessage, setSubmitMessage] = useState("");
 
-  const API_URL = "https://9da0ec8c7bdd.ngrok-free.app";
+  const API_URL = "https://a7402b7f2d09.ngrok-free.app";
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
