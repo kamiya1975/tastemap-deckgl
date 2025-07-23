@@ -6,7 +6,7 @@ function ProductPage() {
   const { janCode } = useParams();
   const [dishName, setDishName] = useState("");
   const [dishImage, setDishImage] = useState(null);
-  const [rating, setRating] = useState("4");
+  const [rating, setRating] = useState("3");
   const [submitMessage, setSubmitMessage] = useState("");
 
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
@@ -37,9 +37,6 @@ function ProductPage() {
         },
       });
       setSubmitMessage("送信が完了しました！");
-      setDishName("");
-      setDishImage(null);
-      setRating("4");
     } catch (error) {
       console.error("評価送信エラー:", error);
       setSubmitMessage("送信に失敗しました。");
@@ -51,13 +48,12 @@ function ProductPage() {
       <h2>商品評価ページ</h2>
       <p>JANコード: {janCode}</p>
 
-      <div style={{ marginBottom: "1rem" }}>
+      <div>
         <label>料理名：</label>
         <input
           type="text"
           value={dishName}
           onChange={(e) => setDishName(e.target.value)}
-          style={{ marginLeft: "1rem" }}
         />
       </div>
 
@@ -98,7 +94,7 @@ function ProductPage() {
         </select>
       </div>
 
-      <button onClick={handleSubmit} style={{ padding: "0.5rem 1rem", backgroundColor: "green", color: "white", border: "none", borderRadius: "5px" }}>
+      <button onClick={handleSubmit} style={{ marginTop: "1rem" }}>
         評価を送信
       </button>
 
