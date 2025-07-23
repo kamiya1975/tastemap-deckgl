@@ -27,8 +27,8 @@ function ProductPage() {
     const formData = new FormData();
     formData.append("wine_jan", janCode);
     formData.append("dish_name", dishName);
-    formData.append("rating", rating);
     formData.append("score", rating);
+    formData.append("image", dishImage);
 
     try {
       await axios.post(`${API_URL}/api/evaluate`, formData, {
