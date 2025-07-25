@@ -1,172 +1,81 @@
-import React, { useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 function ProductPage() {
-  const { janCode } = useParams();
-  const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [rating, setRating] = useState(0);
 
-  const [dishName, setDishName] = useState("");
-  const [dishImage, setDishImage] = useState(null);
-  const [rating, setRating] = useState("4");
-  const [submitMessage, setSubmitMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // JANコードをURLから取得
+  const jan = window.location.pathname.split("/").pop();
 
-  const fileInputRef = useRef();
+  useEffect(() => {
+    // umapDataをlocalStorageから取得
+    const data = JSON.parse(localStorage.getItem("umapData") || "[]");
+    const found = data.find((d) => d.JAN === jan);
+    setProduct(found);
 
-  const API_URL = "https://05b6654fc72e.ngrok-free.app";
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setDishImage(file);
+    // 既存評価を読み込み
+    const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
+    if (ratings[jan]) {
+      setRating(ratings[jan].rating);
     }
-  };
+  }, [jan]);
 
-  const handleSubmit = async () => {
-    if (!dishName || !dishImage || !rating) {
-      setSubmitMessage("すべての項目を入力してください。");
-      return;
-    }
+  const handleRatingChange = (e) => {
+    const newRating = Number(e.target.value);
+    setRating(newRating);
 
-    if (dishImage.size > 5 * 1024 * 1024) {
-      setSubmitMessage("画像サイズは5MB以下にしてください。");
-      return;
-    }
+    const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
 
-    const formData = new FormData();
-    formData.append("wine_jan", janCode);
-    formData.append("dish_name", dishName);
-    formData.append("score", parseInt(rating));
-    formData.append("image", dishImage);
-
-    try {
-      setIsSubmitting(true);
-      await axios.post(`${API_URL}/api/evaluate`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      setSubmitMessage("送信が完了しました！");
-      setDishName("");
-      setDishImage(null);
-      setRating("4");
-      fileInputRef.current.value = "";
-    } catch (error) {
-      console.error("評価送信エラー:", error);
-      if (error.response?.data?.detail) {
-        setSubmitMessage(`送信に失敗しました: ${error.response.data.detail}`);
-      } else {
-        setSubmitMessage("送信に失敗しました。");
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
+    if (newRating === 0) {
+      // 未評価に戻す → 削除
+      delete ratings[jan];
     } else {
-      navigate("/products"); // 一覧ページのパスが異なる場合はここを変更
+      // 評価する
+      ratings[jan] = {
+        rating: newRating,
+        date: new Date().toISOString(),
+      };
     }
+
+    localStorage.setItem("userRatings", JSON.stringify(ratings));
   };
+
+  if (!product) return <div>商品が見つかりませんでした。</div>;
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>商品評価ページ</h2>
-      <p>JANコード: {janCode}</p>
-
-      <div style={{ marginBottom: "1rem" }}>
-        <label>料理名：</label>
-        <input
-          type="text"
-          value={dishName}
-          onChange={(e) => setDishName(e.target.value)}
-          style={{ marginLeft: "1rem" }}
-        />
-      </div>
-
-      <div style={{ marginBottom: "1rem" }}>
-        <label>料理画像：</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          ref={fileInputRef}
-          style={{ marginLeft: "1rem" }}
-        />
-        {dishImage && (
-          <div style={{ marginTop: "0.5rem" }}>
-            <p>{dishImage.name}</p>
-            <img
-              src={URL.createObjectURL(dishImage)}
-              alt="料理プレビュー"
-              style={{ maxWidth: "200px", marginTop: "10px" }}
-            />
-          </div>
-        )}
-      </div>
-
-      <div style={{ marginBottom: "1rem" }}>
-        <label>評価：</label>
+    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
+      <h2>{product.商品名 || "（名称不明）"}</h2>
+      <p>JANコード: {product.JAN}</p>
+      <p>タイプ: {product.Type || "不明"}</p>
+      <label>
+        評価:
         <select
           value={rating}
-          onChange={(e) => setRating(e.target.value)}
-          style={{ marginLeft: "1rem" }}
+          onChange={handleRatingChange}
+          style={{ marginLeft: "8px" }}
         >
-          <option value="1">★☆☆☆☆☆☆</option>
-          <option value="2">★★☆☆☆☆☆</option>
-          <option value="3">★★★☆☆☆☆</option>
-          <option value="4">★★★★☆☆☆</option>
-          <option value="5">★★★★★☆☆</option>
-          <option value="6">★★★★★★☆</option>
-          <option value="7">★★★★★★★</option>
+          <option value={0}>未評価</option>
+          <option value={1}>★</option>
+          <option value={2}>★★</option>
+          <option value={3}>★★★</option>
+          <option value={4}>★★★★</option>
+          <option value={5}>★★★★★</option>
         </select>
-      </div>
-
-      <div style={{ marginBottom: "1rem" }}>
-        <button
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          style={{
-            padding: "0.5rem 1rem",
-            backgroundColor: isSubmitting ? "gray" : "green",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            marginRight: "1rem",
-          }}
-        >
-          {isSubmitting ? "送信中..." : "評価を送信"}
-        </button>
-
-        <button
-          onClick={() => {
-            if (window.history.length > 1) {
-                navigate(-1);
-            } else {
-              navigate("/store"); // ← 一覧ページは /store
-            }
-          }}
-          style={{
-            padding: "0.5rem 1rem",
-            backgroundColor: "#555",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-          }}
-        >
-          ⬅ 一覧に戻る
-        </button>
-
-      </div>
-
-      {submitMessage && (
-        <p style={{ marginTop: "1rem", color: submitMessage.includes("失敗") ? "red" : "green" }}>
-          {submitMessage}
-        </p>
-      )}
+      </label>
+      <br />
+      <button
+        onClick={() => window.close()}
+        style={{
+          marginTop: "16px",
+          padding: "8px 12px",
+          background: "#eee",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+      >
+        閉じる
+      </button>
     </div>
   );
 }
