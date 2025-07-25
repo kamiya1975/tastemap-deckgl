@@ -64,6 +64,14 @@ function ProductPage() {
     }
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/products"); // 一覧ページのパスが異なる場合はここを変更
+    }
+  };
+
   return (
     <div style={{ padding: "2rem" }}>
       <h2>商品評価ページ</h2>
@@ -117,33 +125,35 @@ function ProductPage() {
         </select>
       </div>
 
-      <button
-        onClick={handleSubmit}
-        disabled={isSubmitting}
-        style={{
-          padding: "0.5rem 1rem",
-          backgroundColor: isSubmitting ? "gray" : "green",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          marginRight: "1rem",
-        }}
-      >
-        {isSubmitting ? "送信中..." : "評価を送信"}
-      </button>
+      <div style={{ marginBottom: "1rem" }}>
+        <button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: isSubmitting ? "gray" : "green",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            marginRight: "1rem",
+          }}
+        >
+          {isSubmitting ? "送信中..." : "評価を送信"}
+        </button>
 
-      <button
-        onClick={() => navigate(-1)}
-        style={{
-          padding: "0.5rem 1rem",
-          backgroundColor: "#555",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-        }}
-      >
-        ⬅ 一覧に戻る
-      </button>
+        <button
+          onClick={handleBack}
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "#555",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+          }}
+        >
+          ⬅ 一覧に戻る
+        </button>
+      </div>
 
       {submitMessage && (
         <p style={{ marginTop: "1rem", color: submitMessage.includes("失敗") ? "red" : "green" }}>
