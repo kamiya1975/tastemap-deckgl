@@ -41,6 +41,7 @@ function App() {
   const [showRatingDates, setShowRatingDates] = useState(false);
   const [isRatingListOpen, setIsRatingListOpen] = useState(false);
   const ZOOM_LIMITS = { minZoom: 4.0, maxZoom: 10.0 };
+  const nearestPanelRef = useRef(null);
   
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -437,6 +438,10 @@ const sortedRatedWineList = useMemo(() => {
 
             setNearestPoints(nearest);
             setIsDrawerOpen(true);
+
+            if (nearestPanelRef.current) {
+              nearestPanelRef.current.scrollTop = 0;
+            }
           }
         }}
 
@@ -769,6 +774,7 @@ const sortedRatedWineList = useMemo(() => {
       }}
       nearestPoints={nearestPoints}
       userRatings={userRatings}
+      scrollRef={nearestPanelRef}
     />
 
     <RatedWinePanel
@@ -788,7 +794,7 @@ const sortedRatedWineList = useMemo(() => {
 
 
 // ✅ JSXの外で定義！
-function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
+function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollRef }) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -843,6 +849,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings }) {
 
           {/* スクロールエリア */}
           <div
+            ref={scrollRef}
             style={{
               flex: 1,
               overflowY: "auto",
