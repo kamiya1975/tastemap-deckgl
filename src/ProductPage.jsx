@@ -142,7 +142,13 @@ function ProductPage() {
         </button>
 
         <button
-          onClick={handleBack}
+          onClick={() => {
+            if (window.history.length > 1) {
+                navigate(-1);
+            } else {
+              navigate("/store"); // ← 一覧ページは /store
+            }
+          }}
           style={{
             padding: "0.5rem 1rem",
             backgroundColor: "#555",
@@ -153,6 +159,7 @@ function ProductPage() {
         >
           ⬅ 一覧に戻る
         </button>
+
       </div>
 
       {submitMessage && (
