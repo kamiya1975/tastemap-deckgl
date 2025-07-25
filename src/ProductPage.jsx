@@ -1,13 +1,18 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function ProductPage() {
   const { janCode } = useParams();
+  const navigate = useNavigate();
+
   const [dishName, setDishName] = useState("");
   const [dishImage, setDishImage] = useState(null);
   const [rating, setRating] = useState("4");
   const [submitMessage, setSubmitMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const fileInputRef = useRef();
 
   const API_URL = "https://05b6654fc72e.ngrok-free.app";
 
@@ -24,13 +29,19 @@ function ProductPage() {
       return;
     }
 
+    if (dishImage.size > 5 * 1024 * 1024) {
+      setSubmitMessage("画像サイズは5MB以下にしてください。");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("wine_jan", janCode);
     formData.append("dish_name", dishName);
-    formData.append("score", rating);
+    formData.append("score", parseInt(rating));
     formData.append("image", dishImage);
 
     try {
+      setIsSubmitting(true);
       await axios.post(`${API_URL}/api/evaluate`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -40,9 +51,16 @@ function ProductPage() {
       setDishName("");
       setDishImage(null);
       setRating("4");
+      fileInputRef.current.value = "";
     } catch (error) {
       console.error("評価送信エラー:", error);
-      setSubmitMessage("送信に失敗しました。");
+      if (error.response?.data?.detail) {
+        setSubmitMessage(`送信に失敗しました: ${error.response.data.detail}`);
+      } else {
+        setSubmitMessage("送信に失敗しました。");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -67,6 +85,7 @@ function ProductPage() {
           type="file"
           accept="image/*"
           onChange={handleImageChange}
+          ref={fileInputRef}
           style={{ marginLeft: "1rem" }}
         />
         {dishImage && (
@@ -98,8 +117,32 @@ function ProductPage() {
         </select>
       </div>
 
-      <button onClick={handleSubmit} style={{ padding: "0.5rem 1rem", backgroundColor: "green", color: "white", border: "none", borderRadius: "5px" }}>
-        評価を送信
+      <button
+        onClick={handleSubmit}
+        disabled={isSubmitting}
+        style={{
+          padding: "0.5rem 1rem",
+          backgroundColor: isSubmitting ? "gray" : "green",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          marginRight: "1rem",
+        }}
+      >
+        {isSubmitting ? "送信中..." : "評価を送信"}
+      </button>
+
+      <button
+        onClick={() => navigate(-1)}
+        style={{
+          padding: "0.5rem 1rem",
+          backgroundColor: "#555",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+        }}
+      >
+        ⬅ 一覧に戻る
       </button>
 
       {submitMessage && (
