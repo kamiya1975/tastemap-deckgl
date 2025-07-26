@@ -273,7 +273,7 @@ const sortedRatedWineList = useMemo(() => {
         const z = is3D ? (Number(item[zMetric]) || 0) + 0.1 : 0;
         return {
           position: [item.BodyAxis, y, z],
-         text: String(displayIndexMap[item.JAN] ?? "?"),
+          text: String(displayIndexMap[item.JAN] ?? "?")
         };
       }),
       getPosition: (d) => d.position,
