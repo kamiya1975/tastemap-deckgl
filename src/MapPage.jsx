@@ -198,16 +198,6 @@ function App() {
     }
   }, [data, is3D, zMetric]);
 
-  // App関数の中で useMemo で定義
-  const displayIndexMap = useMemo(() => {
-    const map = {};
-    const total = sortedRatedWineList.length;
-    sortedRatedWineList.forEach((item, idx) => {
-      map[item.JAN] = total - idx; // 新しいほど大きな番号
-    });
-    return map;
-  }, [sortedRatedWineList]);
-
   //ブロック
   const gridCellLayer = new GridCellLayer({
     id: "grid-cells",
@@ -264,6 +254,16 @@ const sortedRatedWineList = useMemo(() => {
     .filter((d) => d)
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 }, [userRatings, data]);
+
+  // App関数の中で useMemo で定義
+  const displayIndexMap = useMemo(() => {
+    const map = {};
+    const total = sortedRatedWineList.length;
+    sortedRatedWineList.forEach((item, idx) => {
+      map[item.JAN] = total - idx; // 新しいほど大きな番号
+    });
+    return map;
+  }, [sortedRatedWineList]);
 
   const ratingDateLayer = (showRatingDates && sortedRatedWineList.length > 0)
   ? new TextLayer({
