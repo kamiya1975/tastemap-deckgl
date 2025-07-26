@@ -235,13 +235,13 @@ const ratingCircleLayers = useMemo(() => {
       path.push(path[0]); // 閉じる
 
       return new PathLayer({
-        id: `ring-${jan}-${i}-r${radiusBase}`,
+        id: `ring-${jan}-${i}-${lineColor.join("-")}`, // 色に応じてid変化
         data: [{ path }],
         getPath: (d) => d.path,
         getLineColor: lineColor,
         getWidth: 1, // 細く
         widthUnits: "pixels", // ピクセル単位でズームしても太さ固定
-        parameters: { depthTest: false },
+        //parameters: { depthTest: false },
         pickable: false,
       });
     });
