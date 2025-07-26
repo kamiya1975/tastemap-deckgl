@@ -898,7 +898,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
        if (!Array.isArray(sortedRatedWineList)) return [];
        return sortedRatedWineList.map((item, idx) => ({
          ...item,
-         displayIndex: idx - 1,  // ✅ シンプルに「上から1番、2番…」とする
+         displayIndex: idx - idx, // ✅ 新しいものに大きな番号を振る
        }));
      }, [sortedRatedWineList]);
 
