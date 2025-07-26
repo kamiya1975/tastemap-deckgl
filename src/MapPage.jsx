@@ -198,6 +198,16 @@ function App() {
     }
   }, [data, is3D, zMetric]);
 
+  // App関数の中で useMemo で定義
+  const displayIndexMap = useMemo(() => {
+    const map = {};
+    const total = sortedRatedWineList.length;
+    sortedRatedWineList.forEach((item, idx) => {
+      map[item.JAN] = total - idx; // 新しいほど大きな番号
+    });
+    return map;
+  }, [sortedRatedWineList]);
+
   //ブロック
   const gridCellLayer = new GridCellLayer({
     id: "grid-cells",
@@ -263,7 +273,7 @@ const sortedRatedWineList = useMemo(() => {
         const z = is3D ? (Number(item[zMetric]) || 0) + 0.1 : 0;
         return {
           position: [item.BodyAxis, y, z],
-          text: `${idx + 1}`,
+         text: String(displayIndexMap[item.JAN] ?? "?"),
         };
       }),
       getPosition: (d) => d.position,
@@ -897,7 +907,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
      const displayList = useMemo(() => {
        if (!Array.isArray(sortedRatedWineList)) return [];
        const total = sortedRatedWineList.length;
-       
+
        return sortedRatedWineList.map((item, idx) => ({
          ...item,
          displayIndex: total - idx, // ✅ 新しいものに大きな番号を振る
