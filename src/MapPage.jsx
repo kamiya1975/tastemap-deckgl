@@ -211,6 +211,7 @@ function App() {
     pickable: false,
   });
 
+  //評価サークル
   const ratingCircleLayers = useMemo(() => {
   return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
     const item = data.find((d) => String(d.JAN) === String(jan));
@@ -229,6 +230,7 @@ function App() {
         return [x, y];
       });
 
+      path.push(path[0]);
       return new PathLayer({
         id: `ring-${jan}-${i}`,
         data: [{ path }],
