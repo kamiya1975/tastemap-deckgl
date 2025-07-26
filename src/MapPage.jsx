@@ -49,18 +49,6 @@ function App() {
     }
   }, [location.state]);
 
-  useEffect(() => {
-  if (score === null) return;
-  setUserRatings((prev) => ({
-    ...prev,
-    [jan]: {
-      ...prev[jan],
-      rating: score,
-      date: new Date().toISOString(), // ⭐️ 評価時に日付を更新
-    },
-  }));
-}, [score]);
-
   // PCA + UMAPをマージして読み込み
   useEffect(() => {
     Promise.all([
