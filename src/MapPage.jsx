@@ -235,7 +235,7 @@ function App() {
         id: `ring-${jan}-${i}`,
         data: [{ path }],
         getPath: d => d.path,
-        getLineColor: [50, 50, 50, 180], // 濃いグレー
+        getLineColor: [200, 200, 200, 160], // 濃いグレー
         getWidth: 1.5,
         widthUnits: "pixels",
         parameters: { depthTest: false },
