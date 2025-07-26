@@ -49,6 +49,18 @@ function App() {
     }
   }, [location.state]);
 
+  useEffect(() => {
+  if (score === null) return;
+  setUserRatings((prev) => ({
+    ...prev,
+    [jan]: {
+      ...prev[jan],
+      rating: score,
+      date: new Date().toISOString(), // ⭐️ 評価時に日付を更新
+    },
+  }));
+}, [score]);
+
   // PCA + UMAPをマージして読み込み
   useEffect(() => {
     Promise.all([
@@ -251,7 +263,7 @@ const sortedRatedWineList = useMemo(() => {
       typeof item.BodyAxis === "number" &&
       typeof item.SweetAxis === "number"
     )
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 }, [userRatings, data]);
 
   const ratingDateLayer = (showRatingDates && sortedRatedWineList.length > 0)
@@ -893,14 +905,13 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
 }
 
 function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineList }) {
-  const displayList = useMemo(() => {
-    if (!Array.isArray(sortedRatedWineList)) return [];
-    return [...sortedRatedWineList].map((item, idx, arr) => {
-      const total = arr.length;
-      const indexFromOldest = total - idx;
-      return { ...item, displayIndex: indexFromOldest };
-    });
-  }, [sortedRatedWineList]);
+     const displayList = useMemo(() => {
+       if (!Array.isArray(sortedRatedWineList)) return [];
+       return sortedRatedWineList.map((item, idx) => ({
+         ...item,
+         displayIndex: idx + 1,  // ✅ シンプルに「上から1番、2番…」とする
+       }));
+     }, [sortedRatedWineList]);
 
   return (
     <AnimatePresence>
