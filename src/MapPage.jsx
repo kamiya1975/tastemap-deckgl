@@ -218,7 +218,7 @@ function App() {
     if (!item || !item.BodyAxis || !item.SweetAxis) return [];
 
     const count = Math.min(ratingObj.rating, 5); // 最大5重円
-    const radiusBase = 0.12;
+    const radiusBase = 0.10;
 
     return Array.from({ length: count }).map((_, i) => {
       const angleSteps = 40;
@@ -235,7 +235,7 @@ function App() {
         id: `ring-${jan}-${i}`,
         data: [{ path }],
         getPath: d => d.path,
-        getLineColor: [200, 200, 200, 160], // 濃いグレー
+        getLineColor: [220, 220, 220, 120], // 薄いグレー
         getWidth: 1.5,
         widthUnits: "pixels",
         parameters: { depthTest: false },
