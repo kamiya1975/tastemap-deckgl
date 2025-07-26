@@ -212,31 +212,42 @@ function App() {
   });
 
 // 評価サークル
-const lineColor = [255, 165, 0, 100]; // ソフトオレンジ
+const ratingCircleLayers = useMemo(() => {
+  const lineColor = [255, 165, 0, 150]; // ソフトオレンジ（やや濃く）
 
-return Array.from({ length: count }).map((_, i) => {
-  const angleSteps = 40;
-  const path = Array.from({ length: angleSteps }, (_, j) => {
-    const angle = (j / angleSteps) * 2 * Math.PI;
-    const radius = radiusBase * (i + 1);
-    const x = item.BodyAxis + Math.cos(angle) * radius;
-    const y = (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius;
-    return [x, y];
+  return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
+    const item = data.find((d) => String(d.JAN) === String(jan));
+    if (!item || !item.BodyAxis || !item.SweetAxis) return [];
+
+    const count = Math.min(ratingObj.rating, 5); // 最大5重円
+    const radiusBase = 0.10;
+
+    return Array.from({ length: count }).map((_, i) => {
+      const angleSteps = 40;
+      const path = Array.from({ length: angleSteps }, (_, j) => {
+        const angle = (j / angleSteps) * 2 * Math.PI;
+        const radius = radiusBase * (i + 1);
+        const x = item.BodyAxis + Math.cos(angle) * radius;
+        const y =
+          (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius;
+        return [x, y];
+      });
+
+      path.push(path[0]); // 閉じる
+
+      return new PathLayer({
+        id: `ring-${jan}-${i}-${lineColor.join("-")}`, // 再描画されやすくする
+        data: [{ path }],
+        getPath: (d) => d.path,
+        getLineColor: lineColor,
+        getWidth: 1.2,
+        widthUnits: "pixels",
+        parameters: { depthTest: false },
+        pickable: false,
+      });
+    });
   });
-
-  path.push(path[0]);
-
-  return new PathLayer({
-    id: `ring-${jan}-${i}-${lineColor.join("-")}`, // 色変更でidも変化
-    data: [{ path }],
-    getPath: d => d.path,
-    getLineColor: lineColor,
-    getWidth: 1.2,
-    widthUnits: "pixels",
-    // parameters: { depthTest: false }, // コメントアウトして確認
-    pickable: false,
-  });
-});
+}, [data, userRatings, is3D]);
 
   const sortedRatedWineList = useMemo(() => {
   if (!Array.isArray(data)) return [];
