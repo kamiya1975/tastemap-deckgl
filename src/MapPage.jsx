@@ -213,7 +213,6 @@ function App() {
 
 // 評価サークル
 const ratingCircleLayers = useMemo(() => {
-  // 🔧 色をuseMemo内に定義（これが重要）
   const lineColor = [255, 165, 0, 150]; // ← 好きな色に変更可能
 
   return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
@@ -248,7 +247,7 @@ const ratingCircleLayers = useMemo(() => {
       });
     });
   });
-}, [data, userRatings, is3D]); // 🔁 lineColorが内部定義なのでこれでOK
+}, [data, userRatings, is3D]); 
 
   const sortedRatedWineList = useMemo(() => {
   if (!Array.isArray(data)) return [];
@@ -474,7 +473,6 @@ const ratingCircleLayers = useMemo(() => {
         }}
 
         layers={[
-          ...ratingCircleLayers,
           gridCellLayer,
           new LineLayer({
             id: "grid-lines-thin",//細い線
@@ -501,6 +499,7 @@ const ratingCircleLayers = useMemo(() => {
           ratingDateLayer,
           textLayer,
           pinLayer,
+          ...ratingCircleLayers,
         ]}
       />
 
