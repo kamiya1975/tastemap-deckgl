@@ -211,42 +211,32 @@ function App() {
     pickable: false,
   });
 
-  // 評価サークル設定
 // 評価サークル
-const radiusBase = 0.10; // より小さく
-const lineColor = [255, 180, 80, 50]; // 薄く
+const lineColor = [255, 165, 0, 100]; // ソフトオレンジ
 
-const ratingCircleLayers = useMemo(() => {
-  return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
-    const item = data.find((d) => String(d.JAN) === String(jan));
-    if (!item || !item.BodyAxis || !item.SweetAxis) return [];
-
-    const count = Math.min(ratingObj.rating, 5); // 最大5重円
-    const angleSteps = 40;
-
-    return Array.from({ length: count }).map((_, i) => {
-      const path = Array.from({ length: angleSteps }, (_, j) => {
-        const angle = (j / angleSteps) * 2 * Math.PI;
-        const radius = radiusBase * (i + 1);
-        const x = item.BodyAxis + Math.cos(angle) * radius;
-        const y = (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius;
-        return [x, y];
-      });
-      path.push(path[0]); // 閉じる
-
-      return new PathLayer({
-        id: `ring-${jan}-${i}-${lineColor.join("-")}`, // 色に応じてid変化
-        data: [{ path }],
-        getPath: (d) => d.path,
-        getLineColor: lineColor,
-        getWidth: 1, // 細く
-        widthUnits: "pixels", // ピクセル単位でズームしても太さ固定
-        //parameters: { depthTest: false },
-        pickable: false,
-      });
-    });
+return Array.from({ length: count }).map((_, i) => {
+  const angleSteps = 40;
+  const path = Array.from({ length: angleSteps }, (_, j) => {
+    const angle = (j / angleSteps) * 2 * Math.PI;
+    const radius = radiusBase * (i + 1);
+    const x = item.BodyAxis + Math.cos(angle) * radius;
+    const y = (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius;
+    return [x, y];
   });
-}, [data, userRatings, is3D]);
+
+  path.push(path[0]);
+
+  return new PathLayer({
+    id: `ring-${jan}-${i}-${lineColor.join("-")}`, // 色変更でidも変化
+    data: [{ path }],
+    getPath: d => d.path,
+    getLineColor: lineColor,
+    getWidth: 1.2,
+    widthUnits: "pixels",
+    // parameters: { depthTest: false }, // コメントアウトして確認
+    pickable: false,
+  });
+});
 
   const sortedRatedWineList = useMemo(() => {
   if (!Array.isArray(data)) return [];
