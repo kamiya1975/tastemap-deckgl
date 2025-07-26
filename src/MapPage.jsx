@@ -473,6 +473,7 @@ const ratingCircleLayers = useMemo(() => {
         }}
 
         layers={[
+          ...ratingCircleLayers,
           gridCellLayer,
           new LineLayer({
             id: "grid-lines-thin",//細い線
@@ -496,10 +497,9 @@ const ratingCircleLayers = useMemo(() => {
           }),
           mainLayer,
           sliderMarkLayer,
-          ratingDateLayer,
+          //ratingDateLayer,
           textLayer,
           pinLayer,
-          ...ratingCircleLayers,
         ]}
       />
 
