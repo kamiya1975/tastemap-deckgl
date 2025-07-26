@@ -239,7 +239,7 @@ const ratingCircleLayers = useMemo(() => {
         id: `ring-${jan}-${i}`,
         data: [{ path }],
         getPath: (d) => d.path,
-        getLineColor: () => lineColor
+        getLineColor: d => lineColor,
         getWidth: 0.3,
         widthUnits: "pixels",
         parameters: { depthTest: false },
