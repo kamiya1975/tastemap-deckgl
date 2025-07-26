@@ -212,6 +212,8 @@ function App() {
   });
 
   //評価サークル
+  const radiusBase = 0.10;
+  const lineColor = [220, 220, 220, 120];// 薄いグレー
   const ratingCircleLayers = useMemo(() => {
   return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
     const item = data.find((d) => String(d.JAN) === String(jan));
