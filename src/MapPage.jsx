@@ -489,6 +489,7 @@ const sortedRatedWineList = useMemo(() => {
             widthUnits: "pixels",
             pickable: false,
           }),
+          ...ratingCircleLayers,
           mainLayer,
           sliderMarkLayer,
           ratingDateLayer,
