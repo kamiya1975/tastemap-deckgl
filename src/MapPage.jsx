@@ -497,7 +497,7 @@ const ratingCircleLayers = useMemo(() => {
           }),
           mainLayer,
           sliderMarkLayer,
-          //ratingDateLayer,
+          ratingDateLayer,
           textLayer,
           pinLayer,
         ]}
