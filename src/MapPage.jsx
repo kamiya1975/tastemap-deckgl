@@ -251,7 +251,8 @@ const sortedRatedWineList = useMemo(() => {
       typeof item.BodyAxis === "number" &&
       typeof item.SweetAxis === "number"
     )
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
+    .filter((d) => d)
+    .sort((a, b) => a.date - b.date);
 }, [userRatings, data]);
 
   const ratingDateLayer = (showRatingDates && sortedRatedWineList.length > 0)
@@ -467,6 +468,16 @@ const sortedRatedWineList = useMemo(() => {
             getWidth: 1.25,
             widthUnits: "pixels",
             pickable: false,
+          }),
+            new TextLayer({
+              id: "rating-text",
+              data: sortedRatedWineList,
+              getPosition: (item) => [item.BodyAxis, -item.SweetAxis, 0],
+              getText: (item) => `${item.displayIndex}`,
+              getSize: 18,
+              getColor: [0, 0, 0, 255],
+              sizeUnits: "pixels",
+              pickable: false,
           }),
           mainLayer,
           sliderMarkLayer,
