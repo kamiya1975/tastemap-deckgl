@@ -236,7 +236,7 @@ const ratingCircleLayers = useMemo(() => {
       path.push(path[0]); // 閉じる
 
       return new PathLayer({
-        //id: `ring-${jan}-${i}-${lineColor.join("-")}`,
+        id: `ring-${jan}-${i}`,
         data: [{ path }],
         getPath: (d) => d.path,
         getLineColor: d => lineColor,
