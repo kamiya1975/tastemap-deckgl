@@ -218,7 +218,7 @@ function App() {
     if (!item || !item.BodyAxis || !item.SweetAxis) return [];
 
     const count = Math.min(ratingObj.rating, 5); // 最大5重円
-    const radiusBase = 0.18;
+    const radiusBase = 0.12;
 
     return Array.from({ length: count }).map((_, i) => {
       const angleSteps = 40;
