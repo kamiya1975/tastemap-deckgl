@@ -213,8 +213,8 @@ function App() {
 
   // 評価サークル設定
 // 評価サークル
-const radiusBase = 0.15; // より小さく
-const lineColor = [200, 200, 200, 10]; // 薄く
+const radiusBase = 0.10; // より小さく
+const lineColor = [255, 180, 80, 50]; // 薄く
 
 const ratingCircleLayers = useMemo(() => {
   return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
