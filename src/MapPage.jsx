@@ -896,6 +896,8 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
 function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineList }) {
      const displayList = useMemo(() => {
        if (!Array.isArray(sortedRatedWineList)) return [];
+       const total = sortedRatedWineList.length;
+       
        return sortedRatedWineList.map((item, idx) => ({
          ...item,
          displayIndex: total - idx, // ✅ 新しいものに大きな番号を振る
