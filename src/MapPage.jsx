@@ -212,41 +212,41 @@ function App() {
   });
 
   // 評価サークル設定
-  const radiusBase = 0.10;
-  const lineColor = [220, 220, 220, 120]; // 薄いグレー
+// 評価サークル
+const radiusBase = 0.06; // より小さく
+const lineColor = [200, 200, 200, 40]; // 薄く
 
-  const ratingCircleLayers = useMemo(() => {
-    return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
-      const item = data.find((d) => String(d.JAN) === String(jan));
-      if (!item || !item.BodyAxis || !item.SweetAxis) return [];
+const ratingCircleLayers = useMemo(() => {
+  return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
+    const item = data.find((d) => String(d.JAN) === String(jan));
+    if (!item || !item.BodyAxis || !item.SweetAxis) return [];
 
-      const count = Math.min(ratingObj.rating, 5); // 最大5重円
+    const count = Math.min(ratingObj.rating, 5); // 最大5重円
+    const angleSteps = 40;
 
-      return Array.from({ length: count }).map((_, i) => {
-        const angleSteps = 40;
+    return Array.from({ length: count }).map((_, i) => {
+      const path = Array.from({ length: angleSteps }, (_, j) => {
+        const angle = (j / angleSteps) * 2 * Math.PI;
         const radius = radiusBase * (i + 1);
-        const path = Array.from({ length: angleSteps }, (_, j) => {
-          const angle = (j / angleSteps) * 2 * Math.PI;
-          const x = item.BodyAxis + Math.cos(angle) * radius;
-          const y = (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius;
-          return [x, y];
-        });
+        const x = item.BodyAxis + Math.cos(angle) * radius;
+        const y = (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius;
+        return [x, y];
+      });
+      path.push(path[0]); // 閉じる
 
-        path.push(path[0]);
-
-        return new PathLayer({
-          id: `ring-${jan}-${i}-r${radiusBase.toFixed(3)}`,
-          data: [{ path }],
-          getPath: (d) => d.path,
-          getLineColor: lineColor,
-          getWidth: 1.5,
-          widthUnits: "pixels",
-          parameters: { depthTest: false },
-          pickable: false,
-        });
+      return new PathLayer({
+        id: `ring-${jan}-${i}-r${radiusBase}`,
+        data: [{ path }],
+        getPath: (d) => d.path,
+        getLineColor: lineColor,
+        getWidth: 1, // 細く
+        widthUnits: "pixels", // ピクセル単位でズームしても太さ固定
+        parameters: { depthTest: false },
+        pickable: false,
       });
     });
-}, [data, userRatings, is3D, radiusBase, lineColor]);
+  });
+}, [data, userRatings, is3D]);
 
   const sortedRatedWineList = useMemo(() => {
   if (!Array.isArray(data)) return [];
