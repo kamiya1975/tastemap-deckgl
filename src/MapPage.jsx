@@ -213,7 +213,8 @@ function App() {
 
 // 評価サークル
 const ratingCircleLayers = useMemo(() => {
-  const lineColor = [255, 165, 0, 150]; // ソフトオレンジ（やや濃く）
+  // 🔧 色をuseMemo内に定義（これが重要）
+  const lineColor = [255, 165, 0, 150]; // ← 好きな色に変更可能
 
   return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
     const item = data.find((d) => String(d.JAN) === String(jan));
@@ -236,7 +237,7 @@ const ratingCircleLayers = useMemo(() => {
       path.push(path[0]); // 閉じる
 
       return new PathLayer({
-        id: `ring-${jan}-${i}-${lineColor.join("-")}`, // 再描画されやすくする
+        id: `ring-${jan}-${i}-${lineColor.join("-")}`, // 再描画を確実にする
         data: [{ path }],
         getPath: (d) => d.path,
         getLineColor: () => lineColor,
@@ -247,7 +248,7 @@ const ratingCircleLayers = useMemo(() => {
       });
     });
   });
-}, [data, userRatings, is3D]);
+}, [data, userRatings, is3D]); // 🔁 lineColorが内部定義なのでこれでOK
 
   const sortedRatedWineList = useMemo(() => {
   if (!Array.isArray(data)) return [];
