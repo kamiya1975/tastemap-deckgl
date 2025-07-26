@@ -252,7 +252,7 @@ const sortedRatedWineList = useMemo(() => {
       typeof item.SweetAxis === "number"
     )
     .filter((d) => d)
-    .sort((a, b) => a.date - b.date);
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 }, [userRatings, data]);
 
   const ratingDateLayer = (showRatingDates && sortedRatedWineList.length > 0)
