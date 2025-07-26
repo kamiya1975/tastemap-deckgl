@@ -235,7 +235,7 @@ function App() {
         path.push(path[0]);
 
         return new PathLayer({
-          id: `ring-${jan}-${i}-r${radiusBase}`, // ← id にradiusBaseを加えるのも有効
+          id: `ring-${jan}-${i}-r${radiusBase.toFixed(3)}`,
           data: [{ path }],
           getPath: (d) => d.path,
           getLineColor: lineColor,
@@ -248,7 +248,7 @@ function App() {
     });
 }, [data, userRatings, is3D, radiusBase, lineColor]);
 
-const sortedRatedWineList = useMemo(() => {
+  const sortedRatedWineList = useMemo(() => {
   if (!Array.isArray(data)) return [];
   return Object.entries(userRatings)
     .filter(([_, rating]) => rating.rating != null)
@@ -268,9 +268,9 @@ const sortedRatedWineList = useMemo(() => {
     )
     .filter((d) => d)
     .sort((a, b) => new Date(b.date) - new Date(a.date));
-}, [userRatings, data]);
+  }, [userRatings, data]);
 
-  // App関数の中で useMemo で定義
+    // App関数の中で useMemo で定義
   const displayIndexMap = useMemo(() => {
     const map = {};
     const total = sortedRatedWineList.length;
