@@ -252,7 +252,7 @@ const sortedRatedWineList = useMemo(() => {
       typeof item.SweetAxis === "number"
     )
     .filter((d) => d)
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 }, [userRatings, data]);
 
   const ratingDateLayer = (showRatingDates && sortedRatedWineList.length > 0)
@@ -898,7 +898,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
        if (!Array.isArray(sortedRatedWineList)) return [];
        return sortedRatedWineList.map((item, idx) => ({
          ...item,
-         displayIndex: idx + 1,  // ✅ シンプルに「上から1番、2番…」とする
+         displayIndex: idx - 1,  // ✅ シンプルに「上から1番、2番…」とする
        }));
      }, [sortedRatedWineList]);
 
