@@ -12,6 +12,7 @@ import {
 import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { PathLayer } from "@deck.gl/layers";
 
 function App() {
   const location = useLocation();
@@ -336,6 +337,38 @@ const sortedRatedWineList = useMemo(() => {
       parameters: { depthTest: false },
     })
   : null;
+
+  const ratingCircleLayers = useMemo(() => {
+  return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
+    const item = data.find((d) => String(d.JAN) === String(jan));
+    if (!item || !item.BodyAxis || !item.SweetAxis) return [];
+
+    const count = Math.min(ratingObj.rating, 5); // 最大5重円
+    const radiusBase = 0.18;
+
+    return Array.from({ length: count }).map((_, i) => {
+      const angleSteps = 40;
+      const path = Array.from({ length: angleSteps }, (_, j) => {
+        const angle = (j / angleSteps) * 2 * Math.PI;
+        const radius = radiusBase * (i + 1); // 半径を少しずつ広げる
+        const x = item.BodyAxis + Math.cos(angle) * radius;
+        const y = (is3D ? item.SweetAxis : -item.SweetAxis) + Math.sin(angle) * radius;
+        return [x, y];
+      });
+
+      return new PathLayer({
+        id: `ring-${jan}-${i}`,
+        data: [{ path }],
+        getPath: d => d.path,
+        getLineColor: [50, 50, 50, 180], // 濃いグレー
+        getWidth: 1.5,
+        widthUnits: "pixels",
+        parameters: { depthTest: false },
+        pickable: false,
+      });
+    });
+  });
+}, [data, userRatings, is3D]);
 
   const sliderMarkLayer = sliderMarkCoords
   ? new ScatterplotLayer({
