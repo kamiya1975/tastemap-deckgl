@@ -213,7 +213,7 @@ function App() {
 
 // 評価サークル
 const ratingCircleLayers = useMemo(() => {
-  //const lineColor = [255, 165, 0, 150]; // ← 好きな色に変更可能
+  const lineColor = [255, 165, 0, 150]; // ← 好きな色に変更可能
 
   return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
     const item = data.find((d) => String(d.JAN) === String(jan));
@@ -236,10 +236,10 @@ const ratingCircleLayers = useMemo(() => {
       path.push(path[0]); // 閉じる
 
       return new PathLayer({
-        id: `ring-${jan}-${i}-${lineColor.join("-")}`, // 再描画を確実にする
+        //id: `ring-${jan}-${i}-${lineColor.join("-")}`,
         data: [{ path }],
         getPath: (d) => d.path,
-        getLineColor: d => [255, 0, 0, 255], // 赤くなるか試してみてください
+        getLineColor: d => lineColor,
         getWidth: 1.2,
         widthUnits: "pixels",
         parameters: { depthTest: false },
