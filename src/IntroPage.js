@@ -39,7 +39,7 @@ export default function IntroPage() {
       gender,
     };
     console.log('登録データ:', submitted);
-    navigate('/map');
+    navigate('/store');
   };
 
   const allSlides = slides(formData, setFormData, handleChange, handleSubmit, navigate);
