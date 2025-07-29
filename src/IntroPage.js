@@ -144,31 +144,32 @@ function slides(formData, setFormData, handleChange, handleSubmit, navigate) {
                 {formData.showPassword ? '●' : '-'}
               </span>
             </div>
+          <div>
+          <label style={styles.label}>生まれた年</label>
+          <select value={formData.birthYear} onChange={handleChange('birthYear')} style={styles.input}>
+            {Array.from({ length: 80 }, (_, i) => (2025 - i).toString()).map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
 
-<label style={styles.label}>生まれた年</label>
-<select value={formData.birthYear} onChange={handleChange('birthYear')} style={styles.input}>
-  {Array.from({ length: 80 }, (_, i) => (2025 - i).toString()).map((year) => (
-    <option key={year} value={year}>
-      {year}
-    </option>
-  ))}
-</select>
+          <label style={styles.label}>生まれた月</label>
+          <select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.input}>
+            {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).map((month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+          </div>
 
-<label style={styles.label}>生まれた月</label>
-<select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.input}>
-  {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).map((month) => (
-    <option key={month} value={month}>
-      {month}
-    </option>
-  ))}
-</select>
-
-<label style={styles.label}>性別</label>
-<select value={formData.gender} onChange={handleChange('gender')} style={styles.input}>
-  <option value="男性">男性</option>
-  <option value="女性">女性</option>
-  <option value="その他">その他</option>
-</select>
+          <label style={styles.label}>性別</label>
+          <select value={formData.gender} onChange={handleChange('gender')} style={styles.input}>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+            <option value="その他">その他</option>
+          </select>
 
             <div style={{ textAlign: 'center', margin: '20px 0' }}>
               <input
