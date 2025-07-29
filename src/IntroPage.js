@@ -117,7 +117,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
     },
     {
       id: 3,
-      color: '#f8f8f8',
+      color: 'white',
       content: (
         <>
           <p style={{ marginBottom: '20px', fontSize: '16px' }}>
@@ -212,19 +212,26 @@ const styles = {
 };
 
 const buttonStyle = {
-  padding: '10px 20px',
+  padding: '12px',
   fontSize: '16px',
-  backgroundColor: '#28a745',
-  color: '#fff',
+  backgroundColor: '#e5e3db', // やや温かみのあるグレー
+  color: '#000',
   border: 'none',
-  borderRadius: '8px',
+  borderRadius: '10px',
   cursor: 'pointer',
   marginTop: '20px',
   width: '100%',
 };
 
 const secondaryButtonStyle = {
-  ...buttonStyle,
-  backgroundColor: '#aaa',
+  padding: '12px',
+  fontSize: '14px',
+  backgroundColor: '#bbb',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '10px',
+  cursor: 'pointer',
   marginTop: '10px',
+  width: '100%',
+  opacity: 0.8,
 };
