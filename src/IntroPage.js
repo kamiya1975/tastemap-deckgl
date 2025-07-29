@@ -123,7 +123,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
           style={{ 
             maxWidth: '60%', 
             marginBottom: '20px',
-            margin: '40px auto 30px auto'  // 上下に余白、中央寄せ
+            margin: '80px auto 30px auto'  // 上下に余白、中央寄せ
             }} />
           <p style={{ lineHeight: '1.8em' }}>
             コンパスである基準のワインから発見した<br />
@@ -138,7 +138,11 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       color: 'white',
       content: (
         <>
-          <p style={{ marginBottom: '20px', fontSize: '16px' }}>
+          <p style={{ 
+            marginBottom: '20px', 
+            fontSize: '16px',
+            margin: '80px auto 30px auto'
+            }}>
             あなただけの地図を作るには、登録が必要です。
           </p>
 
