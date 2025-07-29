@@ -213,7 +213,7 @@ function App() {
 
 // 評価サークル
 const ratingCircleLayers = useMemo(() => {
-  const lineColor = [255, 0, 0, 255]; // ← 好きな色に変更可能
+  const lineColor = [255, 0, 0, 255]; // ← 効いていない（課題）
 
   return Object.entries(userRatings).flatMap(([jan, ratingObj]) => {
     const item = data.find((d) => String(d.JAN) === String(jan));
