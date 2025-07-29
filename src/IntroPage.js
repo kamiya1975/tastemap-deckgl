@@ -149,13 +149,13 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
             <label style={styles.label}>年齢確認</label>
             <div style={{ display: 'flex', gap: '10px' }}>
               <select value={formData.birthYear} onChange={handleChange('birthYear')} style={styles.input}>
-                <option value="">年を選択</option>
-                {Array.from({ length: 80 }, (_, i) => 2025 - i).map((year) => (
+                <option value="">西暦</option>
+                {Array.from({ length: 80 }, (_, i) => 2015 - i).map((year) => (
                   <option key={year} value={year}>{year}年</option>
                 ))}
               </select>
               <select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.input}>
-                <option value="">西暦</option>
+                <option value="">生まれ月</option>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                   <option key={month} value={month}>{month}月</option>
                 ))}
