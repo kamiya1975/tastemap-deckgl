@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
+import Picker from 'react-mobile-picker';
 
 export default function IntroPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -15,6 +16,16 @@ export default function IntroPage() {
     gender: '',
     agreed: false,
   });
+
+  // 🎯 Picker の初期値を formData に反映
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      birthYear: '1990',
+      birthMonth: '1',
+      gender: '男性',
+    }));
+  }, []);
 
   const handleScroll = (e) => {
     const index = Math.round(e.target.scrollLeft / window.innerWidth);
@@ -33,13 +44,11 @@ export default function IntroPage() {
       return;
     }
 
-    // パスワード長さチェック（4〜20文字）
     if (password.length < 4 || password.length > 20) {
       alert('パスワードは4文字以上20文字以内で入力してください');
       return;
     }
 
-    // 登録処理と遷移
     const submitted = {
       nickname,
       password,
@@ -48,21 +57,6 @@ export default function IntroPage() {
     };
     console.log('登録データ:', submitted);
     navigate('/store');
-  };
-
-  const styles = {
-  input: {
-    padding: '10px',
-    fontSize: '16px',
-    width: '100%',
-    border: '1px solid #ccc',
-    borderRadius: '10px',  // ← ここを追加！
-    appearance: 'none',    // iOSの矢印を制御したい場合（任意）
-    WebkitAppearance: 'none',
-    MozAppearance: 'none',
-    backgroundColor: '#fff',
-    backgroundImage: 'none',
-    },
   };
 
   const allSlides = slides(formData, setFormData, handleChange, handleSubmit, navigate);
@@ -113,11 +107,10 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       color: 'white',
       content: (
         <>
-          <img src="/img/slide1.png" alt="基準のワイン" 
-          style={{ 
-            maxWidth: '60%', 
-            marginBottom: '20px',
-            margin: '80px auto 30px auto' // 上下に余白、中央寄せ
+          <img src="/img/slide1.png" alt="基準のワイン"
+            style={{
+              maxWidth: '60%',
+              margin: '80px auto 30px auto'
             }} />
           <p style={{ lineHeight: '1.8em' }}>
             ワインの真ん中の味である<br />
@@ -134,11 +127,10 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       color: 'white',
       content: (
         <>
-          <img src="/img/slide2.png" alt="TasteMap" 
-          style={{ 
-            maxWidth: '60%', 
-            marginBottom: '20px',
-            margin: '80px auto 30px auto'  // 上下に余白、中央寄せ
+          <img src="/img/slide2.png" alt="TasteMap"
+            style={{
+              maxWidth: '60%',
+              margin: '80px auto 30px auto'
             }} />
           <p style={{ lineHeight: '1.8em' }}>
             コンパスである基準のワインから発見した<br />
@@ -153,11 +145,11 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       color: 'white',
       content: (
         <>
-          <p style={{ 
-            marginBottom: '20px', 
+          <p style={{
+            marginBottom: '20px',
             fontSize: '16px',
             margin: '80px auto 30px auto'
-            }}>
+          }}>
             あなたの地図を作り始めるには、まず登録から。
           </p>
 
@@ -183,43 +175,19 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
               </span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
-              {/* 西暦 */}
-              <select
-                value={formData.birthYear}
-                onChange={handleChange('birthYear')}
-                style={{ ...styles.input, flex: 1 }}
-              >
-                <option value="">西暦</option>
-                {Array.from({ length: 80 }, (_, i) => 2015 - i).map((year) => (
-                  <option key={year} value={year}>{year}年</option>
-                ))}
-              </select>
-
-              {/* 生まれ月 */}
-              <select
-                value={formData.birthMonth}
-                onChange={handleChange('birthMonth')}
-                style={{ ...styles.input, flex: 1 }}
-              >
-                <option value="">生まれ月</option>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                  <option key={month} value={month}>{month}月</option>
-                ))}
-              </select>
-
-              {/* 性別 */}
-              <select
-                value={formData.gender}
-                onChange={handleChange('gender')}
-                style={{ ...styles.input, flex: 1 }}
-              >
-                <option value="">性別</option>
-                <option value="男性">男性</option>
-                <option value="女性">女性</option>
-                <option value="その他">その他</option>
-                </select>
-              </div>
+            <Picker
+              optionGroups={{
+                birthYear: Array.from({ length: 80 }, (_, i) => (2025 - i).toString()),
+                birthMonth: Array.from({ length: 12 }, (_, i) => (i + 1).toString()),
+                gender: ['男性', '女性', 'その他'],
+              }}
+              valueGroups={{
+                birthYear: formData.birthYear,
+                birthMonth: formData.birthMonth,
+                gender: formData.gender,
+              }}
+              onChange={(name, value) => setFormData((prev) => ({ ...prev, [name]: value }))}
+            />
 
             <div style={{ textAlign: 'center', margin: '20px 0' }}>
               <input
@@ -237,16 +205,16 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
               </label>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               style={{ ...buttonStyle, opacity: formData.agreed ? 1 : 0.5 }}
               disabled={!formData.agreed}
             >
               登録してはじめる
             </button>
 
-            <button 
-              type="button" 
+            <button
+              type="button"
               style={{ ...secondaryButtonStyle, opacity: formData.agreed ? 1 : 0.5 }}
               disabled={!formData.agreed}
               onClick={() => navigate('/store')}
@@ -265,6 +233,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
   ];
 }
 
+// ✅ スタイル定義は1箇所に集約
 const styles = {
   label: {
     fontWeight: 'bold',
@@ -275,6 +244,13 @@ const styles = {
     padding: '10px',
     fontSize: '16px',
     width: '100%',
+    border: '1px solid #ccc',
+    borderRadius: '10px',
+    appearance: 'none',
+    WebkitAppearance: 'none',
+    MozAppearance: 'none',
+    backgroundColor: '#fff',
+    backgroundImage: 'none',
     boxSizing: 'border-box',
     marginBottom: '10px',
   },
@@ -290,7 +266,7 @@ const styles = {
 const buttonStyle = {
   padding: '12px',
   fontSize: '16px',
-  backgroundColor: '#e5e3db', // やや温かみのあるグレー
+  backgroundColor: '#e5e3db',
   color: '#000',
   border: 'none',
   borderRadius: '10px',
