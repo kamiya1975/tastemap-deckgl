@@ -146,7 +146,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
                 value={formData.password}
                 onChange={handleChange('password')}
                 style={styles.input}
-                placeholder="パスワード"
+                placeholder="パスワードは4文字以上20文字以内"
               />
               <span style={styles.eyeIcon} onClick={togglePassword}>
                 {formData.showPassword ? '●' : '_'}
