@@ -169,7 +169,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
             </select>
 
             <button type="submit" style={buttonStyle}>登録してはじめる</button>
-            <button type="button" style={secondaryButtonStyle} onClick={() => navigate('./StorePage')}>
+            <button type="button" style={secondaryButtonStyle} onClick={() => navigate('/store')}>
               登録せずに試してみる
             </button>
           </form>
