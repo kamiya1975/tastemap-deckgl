@@ -52,12 +52,6 @@ export default function IntroPage() {
           />
         ))}
       </div>
-
-      <div className="footer-button">
-        {currentIndex < slides.length - 1 ? (
-          <button onClick={handleSkip}>スキップ</button>
-        ) : null}
-      </div>
     </div>
   );
 }
@@ -95,7 +89,6 @@ function getSlides(navigate) {
             alt="TasteMap"
             style={{ maxWidth: '60%', marginBottom: '20px' }}
           />
-          <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>TasteMap</h2>
           <p style={{ lineHeight: '1.8em' }}>
             コンパスである基準のワインから発見した<br />
             あなたの好みに近いワインを飲んで評価し、<br />
