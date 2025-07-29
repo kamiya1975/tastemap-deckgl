@@ -13,6 +13,7 @@ export default function IntroPage() {
     birthYear: '',
     birthMonth: '',
     gender: '',
+    agreed: false,
   });
 
   const handleScroll = (e) => {
@@ -177,8 +178,36 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
               <option value="その他">回答しない</option>
             </select>
 
-            <button type="submit" style={buttonStyle}>登録してはじめる</button>
-            <button type="button" style={secondaryButtonStyle} onClick={() => navigate('/store')}>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '16px' }}>
+              <input
+                type="checkbox"
+                id="agree"
+                checked={formData.agreed}
+                onChange={(e) => setFormData((prev) => ({ ...prev, agreed: e.target.checked }))}
+                style={{ marginRight: '8px' }}
+              />
+              <label htmlFor="agree" style={{ fontSize: '14px', color: '#333' }}>
+                <a href="/terms" style={{ color: '#007bff' }} target="_blank" rel="noopener noreferrer">
+                  利用規約
+                </a>
+                に同意します
+              </label>
+            </div>
+
+            <button 
+              type="submit" 
+              style={{ ...buttonStyle, opacity: formData.agreed ? 1 : 0.5 }}
+              disabled={!formData.agreed}
+            >
+              登録してはじめる
+            </button>
+
+            <button 
+              type="button" 
+              style={{ ...secondaryButtonStyle, opacity: formData.agreed ? 1 : 0.5 }}
+              disabled={!formData.agreed}
+              onClick={() => navigate('/store')}
+            >
               ゲストとして試す（記録は保存されません）
             </button>
           </form>
