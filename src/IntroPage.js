@@ -58,7 +58,10 @@ export default function IntroPage() {
     border: '1px solid #ccc',
     borderRadius: '5px',  // ← ここを追加！
     appearance: 'none',    // iOSの矢印を制御したい場合（任意）
+    WebkitAppearance: 'none',
+    MozAppearance: 'none',
     backgroundColor: '#fff',
+    backgroundImage: 'none',
   },
   // 他のスタイル...
 };
