@@ -56,7 +56,7 @@ export default function IntroPage() {
     fontSize: '16px',
     width: '100%',
     border: '1px solid #ccc',
-    borderRadius: '5px',  // ← ここを追加！
+    borderRadius: '10px',  // ← ここを追加！
     appearance: 'none',    // iOSの矢印を制御したい場合（任意）
     WebkitAppearance: 'none',
     MozAppearance: 'none',
@@ -219,8 +219,10 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
                <option value="">生まれ月</option>
                 {/* options */}
               </select>
+            </div>
 
             <label style={styles.label}>性別</label>
+            <div>
               <select value={formData.gender} onChange={handleChange('gender')} style={styles.select}>
                 <option value="">選択してください</option>
                 <option value="男性">男性</option>
