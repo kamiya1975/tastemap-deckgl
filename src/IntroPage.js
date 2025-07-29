@@ -145,7 +145,7 @@ function slides(formData, setFormData, handleChange, handleSubmit, navigate) {
               </span>
             </div>
 
-            <Picker
+            {/*<Picker
               optionGroups={{
                 birthYear: Array.from({ length: 80 }, (_, i) => (2025 - i).toString()),
                 birthMonth: Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')),
@@ -157,7 +157,7 @@ function slides(formData, setFormData, handleChange, handleSubmit, navigate) {
                 gender: formData.gender,
               }}
               onChange={(name, value) => setFormData((prev) => ({ ...prev, [name]: value }))}
-            />
+            />*/}
 
             <div style={{ textAlign: 'center', margin: '20px 0' }}>
               <input
