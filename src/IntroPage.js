@@ -32,6 +32,13 @@ export default function IntroPage() {
       return;
     }
 
+    // パスワード長さチェック（4〜20文字）
+    if (password.length < 4 || password.length > 20) {
+      alert('パスワードは4文字以上20文字以内で入力してください');
+      return;
+    }
+
+    // 登録処理と遷移
     const submitted = {
       nickname,
       password,
