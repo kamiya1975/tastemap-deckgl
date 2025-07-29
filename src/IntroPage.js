@@ -6,12 +6,55 @@ export default function IntroPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
+  // 登録フォームの状態管理（Hookはここで定義）
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [birthYear, setBirthYear] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
+  const [gender, setGender] = useState('');
+
   const handleScroll = (e) => {
     const index = Math.round(e.target.scrollLeft / window.innerWidth);
     setCurrentIndex(index);
   };
 
-  const slides = getSlides(navigate);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!nickname || !password || !birthYear || !birthMonth || !gender) {
+      alert('すべての項目を入力してください');
+      return;
+    }
+    const formData = {
+      nickname,
+      password,
+      birth: `${birthYear}-${birthMonth}`,
+      gender,
+    };
+    console.log('登録データ:', formData);
+    navigate('/map');
+  };
+
+  const slides = getSlides(
+    navigate,
+    {
+      nickname,
+      password,
+      showPassword,
+      birthYear,
+      birthMonth,
+      gender,
+    },
+    {
+      setNickname,
+      setPassword,
+      setShowPassword,
+      setBirthYear,
+      setBirthMonth,
+      setGender,
+    },
+    handleSubmit
+  );
 
   return (
     <div className="intro-wrapper">
@@ -52,32 +95,24 @@ export default function IntroPage() {
   );
 }
 
-function getSlides(navigate) {
-  // 登録フォーム状態管理
-  const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [birthYear, setBirthYear] = useState('');
-  const [birthMonth, setBirthMonth] = useState('');
-  const [gender, setGender] = useState('');
+function getSlides(navigate, state, setters, handleSubmit) {
+  const {
+    nickname,
+    password,
+    showPassword,
+    birthYear,
+    birthMonth,
+    gender,
+  } = state;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!nickname || !password || !birthYear || !birthMonth || !gender) {
-      alert('すべての項目を入力してください');
-      return;
-    }
-
-    const formData = {
-      nickname,
-      password,
-      birth: `${birthYear}-${birthMonth}`,
-      gender,
-    };
-
-    console.log('登録データ:', formData);
-    navigate('/map'); // 仮の遷移先
-  };
+  const {
+    setNickname,
+    setPassword,
+    setShowPassword,
+    setBirthYear,
+    setBirthMonth,
+    setGender,
+  } = setters;
 
   return [
     {
@@ -85,11 +120,7 @@ function getSlides(navigate) {
       color: 'white',
       content: (
         <>
-          <img
-            src="/img/slide1.png"
-            alt="基準のワイン"
-            style={{ maxWidth: '60%', marginBottom: '20px' }}
-          />
+          <img src="/img/slide1.png" alt="基準のワイン" style={{ maxWidth: '60%', marginBottom: '20px' }} />
           <p style={{ lineHeight: '1.8em' }}>
             ワインの真ん中の味である<br />
             基準のワインを飲み<br />
@@ -105,11 +136,7 @@ function getSlides(navigate) {
       color: 'white',
       content: (
         <>
-          <img
-            src="/img/slide2.png"
-            alt="TasteMap"
-            style={{ maxWidth: '60%', marginBottom: '20px' }}
-          />
+          <img src="/img/slide2.png" alt="TasteMap" style={{ maxWidth: '60%', marginBottom: '20px' }} />
           <p style={{ lineHeight: '1.8em' }}>
             コンパスである基準のワインから発見した<br />
             あなたの好みに近いワインを飲んで評価し、<br />
@@ -185,14 +212,8 @@ function getSlides(navigate) {
               ))}
             </div>
 
-            <button type="submit" style={buttonStyle}>
-              登録してはじめる
-            </button>
-            <button
-              type="button"
-              style={secondaryButtonStyle}
-              onClick={() => navigate('/map')}
-            >
+            <button type="submit" style={buttonStyle}>登録してはじめる</button>
+            <button type="button" style={secondaryButtonStyle} onClick={() => navigate('/map')}>
               登録せずに試してみる
             </button>
           </form>
