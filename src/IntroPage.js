@@ -183,7 +183,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
             fontSize: '16px',
             margin: '80px auto 30px auto'
             }}>
-            あなただけの地図を作るには、登録が必要です。
+            あなたの地図を作り始めるには、まず登録から。
           </p>
 
           <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
