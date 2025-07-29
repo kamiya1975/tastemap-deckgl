@@ -192,7 +192,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
               <option value="その他">回答しない</option>
             </select>
 
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '16px' }}>
+            <div style={{ textAlign: 'center', margin: '20px 0' }}>
               <input
                 type="checkbox"
                 id="agree"
