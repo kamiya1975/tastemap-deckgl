@@ -63,7 +63,7 @@ export default function IntroPage() {
               backgroundColor: slide.color,
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
               alignItems: 'center',
               width: '100vw',
               height: '100vh',
@@ -123,7 +123,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
           style={{ 
             maxWidth: '60%', 
             marginBottom: '20px',
-            margin: '0px auto 30px auto'  // 上下に余白、中央寄せ
+            margin: '40px auto 30px auto'  // 上下に余白、中央寄せ
             }} />
           <p style={{ lineHeight: '1.8em' }}>
             コンパスである基準のワインから発見した<br />
@@ -139,7 +139,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       content: (
         <>
           <p style={{ marginBottom: '20px', fontSize: '16px' }}>
-            あなただけの地図を作るには、ログイン登録が必要です。
+            あなただけの地図を作るには、登録が必要です。
           </p>
 
           <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
