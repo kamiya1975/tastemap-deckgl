@@ -217,7 +217,6 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
             ニックネーム変更や利用店舗の追加ができます。
           </p>
           <p style={{ fontSize: '12px', color: '#666', marginTop: '8px', textAlign: 'center' }}>
-            <a href="/terms" style={{ color: '#007bff' }}>利用規約</a>
           </p>
         </>
       ),
