@@ -75,7 +75,6 @@ function getSlides(navigate) {
             alt="基準のワイン"
             style={{ maxWidth: '60%', marginBottom: '20px' }}
           />
-          <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>基準のワイン</h2>
           <p style={{ lineHeight: '1.8em' }}>
             ワインの真ん中の味である<br />
             基準のワインを飲み<br />
