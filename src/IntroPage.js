@@ -98,7 +98,12 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       color: 'white',
       content: (
         <>
-          <img src="/img/slide1.png" alt="基準のワイン" style={{ maxWidth: '60%', marginBottom: '20px' }} />
+          <img src="/img/slide1.png" alt="基準のワイン" 
+          style={{ 
+            maxWidth: '60%', 
+            marginBottom: '20px',
+            margin: '40px auto 30px auto' // 上下に余白、中央寄せ
+            }} />
           <p style={{ lineHeight: '1.8em' }}>
             ワインの真ん中の味である<br />
             基準のワインを飲み<br />
@@ -114,7 +119,12 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       color: 'white',
       content: (
         <>
-          <img src="/img/slide2.png" alt="TasteMap" style={{ maxWidth: '60%', marginBottom: '20px' }} />
+          <img src="/img/slide2.png" alt="TasteMap" 
+          style={{ 
+            maxWidth: '60%', 
+            marginBottom: '20px',
+            margin: '40px auto 30px auto'  // 上下に余白、中央寄せ
+            }} />
           <p style={{ lineHeight: '1.8em' }}>
             コンパスである基準のワインから発見した<br />
             あなたの好みに近いワインを飲んで評価し、<br />
@@ -215,8 +225,6 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
           <p style={{ fontSize: '12px', marginTop: '16px', color: '#666', textAlign: 'center' }}>
             登録後は、設定画面からいつでも<br />
             ニックネーム変更や利用店舗の追加ができます。
-          </p>
-          <p style={{ fontSize: '12px', color: '#666', marginTop: '8px', textAlign: 'center' }}>
           </p>
         </>
       ),
