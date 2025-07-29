@@ -102,7 +102,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
           style={{ 
             maxWidth: '60%', 
             marginBottom: '20px',
-            margin: '40px auto 30px auto' // 上下に余白、中央寄せ
+            margin: '80px auto 30px auto' // 上下に余白、中央寄せ
             }} />
           <p style={{ lineHeight: '1.8em' }}>
             ワインの真ん中の味である<br />
