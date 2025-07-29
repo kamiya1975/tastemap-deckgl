@@ -123,7 +123,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
           style={{ 
             maxWidth: '60%', 
             marginBottom: '20px',
-            margin: '40px auto 30px auto'  // 上下に余白、中央寄せ
+            margin: '20px auto 30px auto'  // 上下に余白、中央寄せ
             }} />
           <p style={{ lineHeight: '1.8em' }}>
             コンパスである基準のワインから発見した<br />
@@ -160,7 +160,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
                 placeholder="パスワードは4文字以上20文字以内"
               />
               <span style={styles.eyeIcon} onClick={togglePassword}>
-                {formData.showPassword ? '●' : '_'}
+                {formData.showPassword ? '●' : '-'}
               </span>
             </div>
 
