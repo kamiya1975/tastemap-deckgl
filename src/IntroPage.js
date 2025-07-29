@@ -145,43 +145,42 @@ function slides(formData, setFormData, handleChange, handleSubmit, navigate) {
               </span>
             </div>
 
-{/* 横並びラッパー */}
-<div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-  {/* 生まれた年 */}
-  <div style={{ flex: '1 1 30%' }}>
-    <label style={styles.label}>生まれた年</label>
-    <select value={formData.birthYear} onChange={handleChange('birthYear')} style={styles.input}>
-      {Array.from({ length: 80 }, (_, i) => (2025 - i).toString()).map((year) => (
-        <option key={year} value={year}>
-          {year}
-        </option>
-      ))}
-    </select>
-  </div>
+            {/* 横並びラッパー */}
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {/* 生まれた年 */}
+              <div style={{ flex: '1 1 30%' }}>
+                <label style={styles.label}>生まれた年</label>
+                <select value={formData.birthYear} onChange={handleChange('birthYear')} style={styles.input}>
+                  {Array.from({ length: 80 }, (_, i) => (2025 - i).toString()).map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-  {/* 生まれた月 */}
-  <div style={{ flex: '1 1 30%' }}>
-    <label style={styles.label}>生まれた月</label>
-    <select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.input}>
-      {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).map((month) => (
-        <option key={month} value={month}>
-          {month}
-        </option>
-      ))}
-    </select>
-  </div>
+             {/* 生まれた月 */}
+             <div style={{ flex: '1 1 30%' }}>
+               <label style={styles.label}>生まれた月</label>
+               <select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.input}>
+                 {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).map((month) => (
+                   <option key={month} value={month}>
+                    {month}
+                   </option>
+                 ))}
+               </select>
+             </div>
 
-  {/* 性別 */}
-  <div style={{ flex: '1 1 30%' }}>
-    <label style={styles.label}>性別</label>
-    <select value={formData.gender} onChange={handleChange('gender')} style={styles.input}>
-      <option value="男性">男性</option>
-      <option value="女性">女性</option>
-      <option value="その他">その他</option>
-    </select>
-  </div>
-</div>
-
+             {/* 性別 */}
+             <div style={{ flex: '1 1 30%' }}>
+               <label style={styles.label}>性別</label>
+               <select value={formData.gender} onChange={handleChange('gender')} style={styles.input}>
+                  <option value="男性">男性</option>
+                  <option value="女性">女性</option>
+                  <option value="その他">その他</option>
+                 </select>
+               </div>
+            </div>
 
             <div style={{ textAlign: 'center', margin: '20px 0' }}>
               <input
