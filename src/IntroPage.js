@@ -168,7 +168,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
               </span>
             </div>
 
-            <label style={styles.label}>年齢確認</label>
+            <label style={styles.label}>年齢確認（お酒は20歳から）</label>
             <div style={{ display: 'flex', gap: '10px' }}>
               <select value={formData.birthYear} onChange={handleChange('birthYear')} style={styles.input}>
                 <option value="">西暦</option>
