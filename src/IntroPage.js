@@ -152,71 +152,85 @@ function getSlides(navigate, state, setters, handleSubmit) {
         <>
           <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>味覚マップを保存しよう</h2>
           <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
-            <label style={styles.label}>ニックネーム</label>
-            <input
-              type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              style={styles.input}
-              placeholder="例：ワイン好き太郎"
-            />
+  {/* ニックネーム */}
+  <label style={styles.label}>ニックネーム</label>
+  <input
+    type="text"
+    value={nickname}
+    onChange={(e) => setNickname(e.target.value)}
+    style={styles.input}
+    placeholder="例：ワイン好き太郎"
+  />
 
-            <label style={styles.label}>パスワード</label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={styles.input}
-                placeholder="●●●●●●"
-              />
-              <span
-                style={styles.eyeIcon}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? '🙈' : '👁️'}
-              </span>
-            </div>
+  {/* パスワード */}
+  <label style={styles.label}>パスワード</label>
+  <div style={{ position: 'relative' }}>
+    <input
+      type={showPassword ? 'text' : 'password'}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      style={styles.input}
+      placeholder="●●●●●●"
+    />
+    <span
+      style={styles.eyeIcon}
+      onClick={() => setShowPassword(!showPassword)}
+    >
+      {showPassword ? '🙈' : '👁️'}
+    </span>
+  </div>
 
-            <label style={styles.label}>生年月（年・月）</label>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <input
-                type="number"
-                value={birthYear}
-                onChange={(e) => setBirthYear(e.target.value)}
-                placeholder="1990"
-                style={styles.input}
-              />
-              <input
-                type="number"
-                value={birthMonth}
-                onChange={(e) => setBirthMonth(e.target.value)}
-                placeholder="1〜12"
-                style={styles.input}
-              />
-            </div>
+  {/* 生年月 */}
+  <label style={styles.label}>生年月（年・月）</label>
+  <div style={{ display: 'flex', gap: '10px' }}>
+    <select
+      value={birthYear}
+      onChange={(e) => setBirthYear(e.target.value)}
+      style={styles.input}
+    >
+      <option value="">年を選択</option>
+      {Array.from({ length: 80 }, (_, i) => 2025 - i).map((year) => (
+        <option key={year} value={year}>{year}年</option>
+      ))}
+    </select>
 
-            <label style={styles.label}>性別</label>
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '10px' }}>
-              {['男性', '女性', 'その他'].map((opt) => (
-                <label key={opt}>
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={opt}
-                    checked={gender === opt}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                  {opt}
-                </label>
-              ))}
-            </div>
+    <select
+      value={birthMonth}
+      onChange={(e) => setBirthMonth(e.target.value)}
+      style={styles.input}
+    >
+      <option value="">月を選択</option>
+      {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+        <option key={month} value={month}>{month}月</option>
+      ))}
+    </select>
+  </div>
 
-            <button type="submit" style={buttonStyle}>登録してはじめる</button>
-            <button type="button" style={secondaryButtonStyle} onClick={() => navigate('/map')}>
-              登録せずに試してみる
-            </button>
-          </form>
+  {/* 性別 */}
+  <label style={styles.label}>性別</label>
+  <select
+    value={gender}
+    onChange={(e) => setGender(e.target.value)}
+    style={styles.input}
+  >
+    <option value="">選択してください</option>
+    <option value="男性">男性</option>
+    <option value="女性">女性</option>
+    <option value="その他">その他</option>
+  </select>
+
+  {/* 登録ボタン */}
+  <button type="submit" style={buttonStyle}>
+    登録してはじめる
+  </button>
+  <button
+    type="button"
+    style={secondaryButtonStyle}
+    onClick={() => navigate('/map')}
+  >
+    登録せずに試してみる
+  </button>
+</form>
         </>
       ),
     },
