@@ -66,6 +66,28 @@ export default function IntroPage() {
     },
   };
 
+  const optionGroups = {
+  birthYear: Array.from({ length: 80 }, (_, i) => (2025 - i).toString()),
+  birthMonth: Array.from({ length: 12 }, (_, i) => (i + 1).toString()),
+  gender: ['男性', '女性', 'その他']
+};
+
+const [valueGroups, setValueGroups] = useState({
+  birthYear: '1990',
+  birthMonth: '1',
+  gender: '男性'
+});
+
+return (
+  <Picker
+    optionGroups={optionGroups}
+    valueGroups={valueGroups}
+    onChange={(name, value) =>
+      setValueGroups({ ...valueGroups, [name]: value })
+    }
+  />
+);
+
   const allSlides = slides(formData, setFormData, handleChange, handleSubmit, navigate);
 
   return (
