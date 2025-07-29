@@ -42,10 +42,12 @@ export default function IntroPage() {
     navigate('/map');
   };
 
+  const allSlides = slides(formData, setFormData, handleChange, handleSubmit, navigate);
+
   return (
     <div className="intro-wrapper">
       <div className="slides-container" onScroll={handleScroll}>
-        {slides(formData, setFormData, handleChange, handleSubmit, navigate).map((slide) => (
+        {allSlides.map((slide) => (
           <div
             key={slide.id}
             className="slide"
@@ -70,7 +72,7 @@ export default function IntroPage() {
       </div>
 
       <div className="indicator">
-        {slides().map((_, index) => (
+        {allSlides.map((_, index) => (
           <div key={index} className={`dot ${index === currentIndex ? 'active' : ''}`} />
         ))}
       </div>
@@ -118,25 +120,30 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       color: '#f8f8f8',
       content: (
         <>
-          <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>味覚マップを保存しよう</h2>
+          <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>
+            ワインの評価を記録すると、<br />
+            あなた専用の味覚地図が完成していきます。
+          </h2>
+          <p style={{ marginBottom: '20px', fontSize: '16px' }}>
+            地図や履歴を保存するには、ログイン登録が必要です。
+          </p>
+
           <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
-            <label style={styles.label}>ニックネーム</label>
+            <label style={styles.label}>ニックネームとパスワードで登録（メールは不要）</label>
             <input
               type="text"
               value={formData.nickname}
               onChange={handleChange('nickname')}
               style={styles.input}
-              placeholder="例：ワイン好き太郎"
+              placeholder="ニックネーム"
             />
-
-            <label style={styles.label}>パスワード</label>
             <div style={{ position: 'relative' }}>
               <input
                 type={formData.showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleChange('password')}
                 style={styles.input}
-                placeholder="●●●●●●"
+                placeholder="パスワード"
               />
               <span style={styles.eyeIcon} onClick={togglePassword}>
                 {formData.showPassword ? '🙈' : '👁️'}
@@ -151,7 +158,6 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
                   <option key={year} value={year}>{year}年</option>
                 ))}
               </select>
-
               <select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.input}>
                 <option value="">月を選択</option>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
@@ -170,9 +176,17 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
 
             <button type="submit" style={buttonStyle}>登録してはじめる</button>
             <button type="button" style={secondaryButtonStyle} onClick={() => navigate('/store')}>
-              登録せずに試してみる
+              ゲストとして試す（記録は保存されません）
             </button>
           </form>
+
+          <p style={{ fontSize: '12px', marginTop: '16px', color: '#666', textAlign: 'center' }}>
+            登録後は、設定画面からいつでも<br />
+            ニックネーム変更や利用店舗の追加ができます。
+          </p>
+          <p style={{ fontSize: '12px', color: '#666', marginTop: '8px', textAlign: 'center' }}>
+            <a href="/terms" style={{ color: '#007bff' }}>利用規約</a>
+          </p>
         </>
       ),
     },
