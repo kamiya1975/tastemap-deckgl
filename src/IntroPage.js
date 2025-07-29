@@ -142,7 +142,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
                 placeholder="パスワード"
               />
               <span style={styles.eyeIcon} onClick={togglePassword}>
-                {formData.showPassword ? '🙈' : '👁️'}
+                {formData.showPassword ? '🙈' : '●'}
               </span>
             </div>
 
