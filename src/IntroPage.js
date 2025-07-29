@@ -63,7 +63,31 @@ export default function IntroPage() {
     backgroundColor: '#fff',
     backgroundImage: 'none',
   },
-  // 他のスタイル...
+  select: {
+    padding: '10px',
+    fontSize: '16px',
+    width: '100%',
+    border: '1px solid #ccc',
+    borderRadius: '10px',
+    backgroundColor: '#fff',
+    appearance: 'none',
+    WebkitAppearance: 'none',
+    MozAppearance: 'none',
+  },
+  label: {
+    marginTop: '20px',
+    marginBottom: '8px',
+    display: 'block',
+    fontWeight: 'bold',
+    fontSize: '14px',
+  },
+  eyeIcon: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    cursor: 'pointer',
+    fontSize: '18px',
+  },
 };
 
   const allSlides = slides(formData, setFormData, handleChange, handleSubmit, navigate);
@@ -188,25 +212,22 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
             <div style={{ display: 'flex', gap: '10px' }}>
               <select value={formData.birthYear} onChange={handleChange('birthYear')} style={styles.input}>
                 <option value="">西暦</option>
-                {Array.from({ length: 80 }, (_, i) => 2015 - i).map((year) => (
-                  <option key={year} value={year}>{year}年</option>
-                ))}
+                {/* options */}
               </select>
-              <select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.input}>
-                <option value="">生まれ月</option>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                  <option key={month} value={month}>{month}月</option>
-                ))}
+
+              <select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.select}>
+               <option value="">生まれ月</option>
+                {/* options */}
               </select>
-            </div>
 
             <label style={styles.label}>性別</label>
-            <select value={formData.gender} onChange={handleChange('gender')} style={styles.input}>
-              <option value="">選択してください</option>
-              <option value="男性">男性</option>
-              <option value="女性">女性</option>
-              <option value="その他">回答しない</option>
-            </select>
+              <select value={formData.gender} onChange={handleChange('gender')} style={styles.select}>
+                <option value="">選択してください</option>
+                <option value="男性">男性</option>
+                <option value="女性">女性</option>
+                <option value="その他">回答しない</option>
+              </select>
+            </div>
 
             <div style={{ textAlign: 'center', margin: '20px 0' }}>
               <input
