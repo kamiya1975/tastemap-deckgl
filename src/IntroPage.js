@@ -50,6 +50,19 @@ export default function IntroPage() {
     navigate('/store');
   };
 
+  const styles = {
+  input: {
+    padding: '10px',
+    fontSize: '16px',
+    width: '100%',
+    border: '1px solid #ccc',
+    borderRadius: '12px',  // ← ここを追加！
+    appearance: 'none',    // iOSの矢印を制御したい場合（任意）
+    backgroundColor: '#fff',
+  },
+  // 他のスタイル...
+};
+
   const allSlides = slides(formData, setFormData, handleChange, handleSubmit, navigate);
 
   return (
