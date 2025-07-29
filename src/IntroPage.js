@@ -4,18 +4,13 @@ import './App.css';
 
 export default function IntroPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const navigate = useNavigate(); // ← これが必要
+  const navigate = useNavigate();
 
   const handleScroll = (e) => {
     const index = Math.round(e.target.scrollLeft / window.innerWidth);
     setCurrentIndex(index);
   };
 
-  const handleSkip = () => {
-    navigate('/map');
-  };
-
-  // ✅ navigateを関数に渡してスライドを生成
   const slides = getSlides(navigate);
 
   return (
@@ -37,6 +32,7 @@ export default function IntroPage() {
               boxSizing: 'border-box',
               scrollSnapAlign: 'start',
               flexShrink: 0,
+              overflowY: 'auto',
             }}
           >
             {slide.content}
@@ -56,8 +52,33 @@ export default function IntroPage() {
   );
 }
 
-// ✅ navigateを引数で受け取り、スライドを返す
 function getSlides(navigate) {
+  // 登録フォーム状態管理
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [birthYear, setBirthYear] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
+  const [gender, setGender] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!nickname || !password || !birthYear || !birthMonth || !gender) {
+      alert('すべての項目を入力してください');
+      return;
+    }
+
+    const formData = {
+      nickname,
+      password,
+      birth: `${birthYear}-${birthMonth}`,
+      gender,
+    };
+
+    console.log('登録データ:', formData);
+    navigate('/map'); // 仮の遷移先
+  };
+
   return [
     {
       id: 1,
@@ -103,40 +124,121 @@ function getSlides(navigate) {
       content: (
         <>
           <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>味覚マップを保存しよう</h2>
-          <p style={{ lineHeight: '1.8em' }}>
-            ワインの評価を記録すると、<br />
-            あなた専用の味覚地図が育っていきます。
-          </p>
-          <p style={{ marginTop: '10px' }}>
-            登録すれば、いつでもどこでも地図を再開できます。
-          </p>
-          <div style={{ marginTop: '20px' }}>
-            <button style={buttonStyle} onClick={() => navigate('/register')}>
+          <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
+            <label style={styles.label}>ニックネーム</label>
+            <input
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              style={styles.input}
+              placeholder="例：ワイン好き太郎"
+            />
+
+            <label style={styles.label}>パスワード</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={styles.input}
+                placeholder="●●●●●●"
+              />
+              <span
+                style={styles.eyeIcon}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? '🙈' : '👁️'}
+              </span>
+            </div>
+
+            <label style={styles.label}>生年月（年・月）</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="number"
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value)}
+                placeholder="1990"
+                style={styles.input}
+              />
+              <input
+                type="number"
+                value={birthMonth}
+                onChange={(e) => setBirthMonth(e.target.value)}
+                placeholder="1〜12"
+                style={styles.input}
+              />
+            </div>
+
+            <label style={styles.label}>性別</label>
+            <div style={{ display: 'flex', gap: '20px', marginBottom: '10px' }}>
+              {['男性', '女性', 'その他'].map((opt) => (
+                <label key={opt}>
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={opt}
+                    checked={gender === opt}
+                    onChange={(e) => setGender(e.target.value)}
+                  />
+                  {opt}
+                </label>
+              ))}
+            </div>
+
+            <button type="submit" style={buttonStyle}>
               登録してはじめる
             </button>
-            <button style={secondaryButtonStyle} onClick={() => navigate('/map')}>
-              ゲストとして試す
+            <button
+              type="button"
+              style={secondaryButtonStyle}
+              onClick={() => navigate('/map')}
+            >
+              登録せずに試してみる
             </button>
-          </div>
+          </form>
         </>
       ),
     },
   ];
 }
 
-// スタイル
+// 共通スタイル
+const styles = {
+  label: {
+    fontWeight: 'bold',
+    marginTop: '10px',
+    display: 'block',
+  },
+  input: {
+    padding: '10px',
+    fontSize: '16px',
+    width: '100%',
+    boxSizing: 'border-box',
+    marginBottom: '10px',
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: '10px',
+    top: '12px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  },
+};
+
 const buttonStyle = {
   padding: '10px 20px',
   fontSize: '16px',
-  backgroundColor: '#333',
+  backgroundColor: '#28a745',
   color: '#fff',
   border: 'none',
   borderRadius: '8px',
   cursor: 'pointer',
-  margin: '10px',
+  marginTop: '20px',
+  width: '100%',
 };
 
 const secondaryButtonStyle = {
   ...buttonStyle,
   backgroundColor: '#aaa',
+  marginTop: '10px',
 };
