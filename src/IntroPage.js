@@ -120,16 +120,12 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
       color: '#f8f8f8',
       content: (
         <>
-          <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>
-            ワインの評価を記録すると、<br />
-            あなた専用の味覚地図が完成していきます。
-          </h2>
           <p style={{ marginBottom: '20px', fontSize: '16px' }}>
             地図や履歴を保存するには、ログイン登録が必要です。
           </p>
 
           <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
-            <label style={styles.label}>ニックネームとパスワードで登録（メールは不要）</label>
+            <label style={styles.label}>ニックネームとパスワードを登録</label>
             <input
               type="text"
               value={formData.nickname}
@@ -150,7 +146,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
               </span>
             </div>
 
-            <label style={styles.label}>生年月（年・月）</label>
+            <label style={styles.label}>年齢確認</label>
             <div style={{ display: 'flex', gap: '10px' }}>
               <select value={formData.birthYear} onChange={handleChange('birthYear')} style={styles.input}>
                 <option value="">年を選択</option>
@@ -159,7 +155,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
                 ))}
               </select>
               <select value={formData.birthMonth} onChange={handleChange('birthMonth')} style={styles.input}>
-                <option value="">月を選択</option>
+                <option value="">西暦</option>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                   <option key={month} value={month}>{month}月</option>
                 ))}
@@ -171,7 +167,7 @@ function slides(formData = {}, setFormData = () => {}, handleChange = () => {}, 
               <option value="">選択してください</option>
               <option value="男性">男性</option>
               <option value="女性">女性</option>
-              <option value="その他">その他</option>
+              <option value="その他">回答しない</option>
             </select>
 
             <button type="submit" style={buttonStyle}>登録してはじめる</button>
