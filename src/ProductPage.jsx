@@ -172,8 +172,14 @@ export default function ProductPage() {
           >
             評価
             </div>
-            
-        <div style={{ display: "flex", justifyContent: "center" }}>
+
+        <div style={{ 
+          display: "flex",
+          justifyContent: "center",
+          gap: "6px",
+          marginTop: "2px", // 👈 上に少し補正（調整可）
+           }}
+           >
           {[1, 2, 3, 4, 5].map((v) => (
             <CircleRating
               key={v}
