@@ -2,17 +2,22 @@ import React, { useEffect, useState } from "react";
 
 // ✅ 美しい均衡な円の評価コンポーネント
 const CircleRating = ({ value, currentRating, onClick }) => {
-  const baseSize = 36;
-  const ringGap = 4;
+  const baseSize = 24;
+  const ringGap = 2;
+
+  const totalSize = baseSize + ringGap * 2 * (value - 1);
 
   return (
     <div
       onClick={() => onClick(value)}
       style={{
         position: "relative",
-        width: `${baseSize + ringGap * 2 * (value - 1)}px`,
-        height: `${baseSize + ringGap * 2 * (value - 1)}px`,
+        width: `${totalSize}px`,
+        height: `${totalSize}px`,
         margin: "4px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         cursor: "pointer",
       }}
     >
@@ -23,12 +28,8 @@ const CircleRating = ({ value, currentRating, onClick }) => {
             key={i}
             style={{
               position: "absolute",
-              top: "50%",
-              left: "50%",
               width: `${size}px`,
               height: `${size}px`,
-              marginLeft: `-${size / 2}px`,
-              marginTop: `-${size / 2}px`,
               border: `1.5px solid ${value === currentRating ? "#000" : "#bbb"}`,
               borderRadius: "50%",
               boxSizing: "border-box",
