@@ -159,14 +159,14 @@ export default function ProductPage() {
           display: "flex",               // ← 横並び
           justifyContent: "space-between",     // ← 左右に分ける
           alignItems: "center",         // ← ベースラインで整列
-          gap: "12px",                  // ← 評価と◎の間隔
+          gap: "40px",                  // ← 評価と◎の間隔
           padding: "16px 0",                // 👈 横の余白
         }}
       >
         <div style={{ 
           fontWeight: "bold",
           fontSize: "16px",
-          width: "60px", // ← 固定幅にして左揃え
+          width: "40px", // ← 固定幅にして左揃え
           }}
           >
             評価
