@@ -85,8 +85,14 @@ export default function ProductPage() {
         margin: "0 auto",
         padding: "16px",
         border: "2px solid #ccc",
-        borderRadius: "16px",
-        position: "relative",
+        borderTopLeftRadius: "0px",   // 👈 上側は直線に
+        borderTopRightRadius: "0px",
+        borderBottomLeftRadius: "0px", // 👈 下側も直線に
+        borderBottomRightRadius: "0px",
+        borderLeft: "none",            // 👈 必要に応じて線も外せる
+        borderRight: "none",
+        borderTop: "none",
+        borderBottom: "none",
       }}
     >
       {/* 閉じるボタン */}
