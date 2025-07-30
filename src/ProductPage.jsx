@@ -166,7 +166,7 @@ export default function ProductPage() {
         <div style={{ 
           fontWeight: "bold",
           fontSize: "16px",
-          width: "60px", // ← 固定幅にして左揃え
+          width: "30px", // ← 固定幅にして左揃え
           }}
           >
             評価
