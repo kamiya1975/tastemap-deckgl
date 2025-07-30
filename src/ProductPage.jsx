@@ -167,7 +167,9 @@ export default function ProductPage() {
         <div style={{ 
           fontWeight: "bold",
           fontSize: "16px",
-          lineHeight: "1", // 👈 上下のズレ防止
+          display: "flex",          // ← 縦揃えのため追加
+          alignItems: "center",     // ← 高さ中央揃えに！
+          height: "48px",           // ← CircleRatingと揃える高さ
           }}
           >
             評価
