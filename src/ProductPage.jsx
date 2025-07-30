@@ -159,8 +159,10 @@ export default function ProductPage() {
           display: "flex",               // ← 横並び
           justifyContent: "space-between",     // ← 左右に分ける
           alignItems: "center",         // ← ベースラインで整列
+          paddingLeft: "24px",   // ✅ 左に余白
+          paddingRight: "24px",  // ✅ 右に余白
           gap: "20px",                  // ← 評価と◎の間隔
-          padding: "16px 0",                // 👈 横の余白
+          //padding: "16px 0",                // 👈 横の余白
         }}
       >
         <div style={{ 
@@ -192,6 +194,9 @@ export default function ProductPage() {
 
       {/* 解説文 */}
       <div style={{ marginTop: "20px", fontSize: "14px", lineHeight: "1.6" }}>
+        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
+        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
+        昨今では、世界標準の飲み物と言えるまでになっています。
         ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
         また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
         昨今では、世界標準の飲み物と言えるまでになっています。
