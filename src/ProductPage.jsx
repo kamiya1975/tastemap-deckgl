@@ -176,7 +176,7 @@ export default function ProductPage() {
 
         <div style={{ 
           display: "flex",
-          gap: "2px",  //◎の間隔を調整
+          //gap: "2px",  //◎の間隔を調整
           flexShrink: 0,
            }}
            >
