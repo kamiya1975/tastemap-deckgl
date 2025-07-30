@@ -645,7 +645,7 @@ const ratingCircleLayers = useMemo(() => {
   onClick={() => setIsSettingsOpen(true)}
   style={{
     position: "absolute",
-    bottom: "20px",
+    bottom: "40px",
     left: "20px",
     zIndex: 1,
     width: "40px",
