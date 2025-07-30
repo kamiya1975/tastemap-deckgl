@@ -645,8 +645,8 @@ const ratingCircleLayers = useMemo(() => {
   onClick={() => setIsSettingsOpen(true)}
   style={{
     position: "absolute",
-    bottom: "10px",
-    left: "10px",
+    bottom: "20px",
+    left: "20px",
     zIndex: 1,
     width: "40px",
     height: "40px",
@@ -661,7 +661,7 @@ const ratingCircleLayers = useMemo(() => {
     fontSize: "18px",
   }}
 >
-  ⚙
+  ◼︎
 </button>
 
 <Drawer
