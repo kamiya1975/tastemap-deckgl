@@ -369,6 +369,8 @@ const ratingCircleLayers = useMemo(() => {
     })
   : null;
 
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   return (
     <div style={{ 
       position: "absolute", 
@@ -638,6 +640,30 @@ const ratingCircleLayers = useMemo(() => {
     </button>
 )} 
 
+{/* 設定（⚙）ボタン */}
+<button
+  onClick={() => setIsSettingsOpen(true)}
+  style={{
+    position: "absolute",
+    bottom: "10px",
+    left: "10px",
+    zIndex: 1,
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
+    background: "#eee",
+    border: "1px solid #ccc",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+    fontSize: "18px",
+  }}
+>
+  ⚙
+</button>
+
 <Drawer
   anchor="bottom"
   open={isSliderOpen}
@@ -790,6 +816,72 @@ const ratingCircleLayers = useMemo(() => {
         あなたの好みをMapに表示
       </button>
     </Drawer>
+
+    <Drawer
+  anchor="left"
+  open={isSettingsOpen}
+  onClose={() => setIsSettingsOpen(false)}
+  PaperProps={{
+    style: {
+      width: "300px",
+      padding: "20px",
+      boxSizing: "border-box",
+    },
+  }}
+>
+  <h3 style={{ marginTop: 0 }}>ユーザー設定</h3>
+
+  <div style={{ marginBottom: "20px" }}>
+    <button
+      onClick={() => alert("ニックネーム変更画面へ")}
+      style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+    >
+      ニックネーム変更
+    </button>
+
+    <button
+      onClick={() => alert("パスワード変更画面へ")}
+      style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+    >
+      パスワード変更
+    </button>
+
+    <button
+      onClick={() => alert("お気に入り店舗設定へ")}
+      style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+    >
+      お気に入り店舗管理
+    </button>
+
+    <button
+      onClick={() => alert("利用規約を表示")}
+      style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+    >
+      利用規約・プライバシーポリシー
+    </button>
+
+    <button
+      onClick={() => alert("アプリの使い方説明を表示")}
+      style={{ width: "100%", padding: "10px" }}
+    >
+      アプリの使い方
+    </button>
+  </div>
+
+  <button
+    onClick={() => setIsSettingsOpen(false)}
+    style={{
+      background: "#eee",
+      border: "1px solid #ccc",
+      padding: "6px 10px",
+      borderRadius: "4px",
+      cursor: "pointer",
+      width: "100%",
+    }}
+  >
+    閉じる
+  </button>
+</Drawer>
 
     {/* ✅ NearestWinePanel をここで使用 */}
     <NearestWinePanel
