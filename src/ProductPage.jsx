@@ -1,15 +1,45 @@
 import React, { useEffect, useState } from "react";
 
-const circleStyle = (selected, index, rating) => ({
-  width: "20px",
-  height: "20px",
-  borderRadius: "50%",
-  border: "2px solid #555",
-  margin: "4px",
-  backgroundColor: index <= rating ? "#555" : "transparent",
-  cursor: "pointer",
-  transition: "background-color 0.2s",
-});
+// 🔵 重丸評価コンポーネント
+const CircleRating = ({ value, currentRating, onClick }) => {
+  const sizeBase = 40;
+  const spacing = 2;
+
+  return (
+    <div
+      onClick={() => onClick(value)}
+      style={{
+        position: "relative",
+        width: `${sizeBase + spacing * (value - 1) * 2}px`,
+        height: `${sizeBase + spacing * (value - 1) * 2}px`,
+        margin: "4px",
+        cursor: "pointer",
+      }}
+    >
+      {[...Array(value)].map((_, i) => {
+        const radius = sizeBase / 2 + spacing * i;
+        return (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: `${radius * 2}px`,
+              height: `${radius * 2}px`,
+              marginTop: `-${radius}px`,
+              marginLeft: `-${radius}px`,
+              border: `1.5px solid ${value === currentRating ? "#000" : "#999"}`,
+              borderRadius: "50%",
+              boxSizing: "border-box",
+              backgroundColor: "transparent",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
 export default function ProductPage() {
   const [product, setProduct] = useState(null);
@@ -75,7 +105,7 @@ export default function ProductPage() {
       {/* 商品画像 */}
       <div style={{ textAlign: "center", marginBottom: "16px" }}>
         <img
-          src={`/img/${jan}.png`} // 例: public/images/4935919044714.png
+          src={`/images/${jan}.png`}
           alt="商品画像"
           style={{ maxHeight: "300px", objectFit: "contain" }}
         />
@@ -84,7 +114,15 @@ export default function ProductPage() {
       {/* 商品名・価格 */}
       <h2 style={{ margin: "8px 0" }}>{product.商品名 || "（名称不明）"}</h2>
       <p style={{ display: "flex", alignItems: "center", margin: "4px 0" }}>
-        <span style={{ width: "16px", height: "16px", backgroundColor: "#651E3E", borderRadius: "4px", marginRight: "8px" }} />
+        <span
+          style={{
+            width: "16px",
+            height: "16px",
+            backgroundColor: "#651E3E",
+            borderRadius: "4px",
+            marginRight: "8px",
+          }}
+        />
         ¥{product.価格 || 1800}
       </p>
 
@@ -95,17 +133,26 @@ export default function ProductPage() {
       </p>
 
       {/* 原産地・年 */}
-      <p style={{ margin: "4px 0" }}>{product.生産地 || "リオハ, スペイン"} / {product.収穫年 || "1996"}</p>
+      <p style={{ margin: "4px 0" }}>
+        {product.生産地 || "リオハ, スペイン"} / {product.収穫年 || "1996"}
+      </p>
 
       {/* 評価 */}
       <div style={{ marginTop: "16px" }}>
-        <p style={{ marginBottom: "4px" }}>評価</p>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <p style={{ fontWeight: "bold", marginBottom: "4px" }}>評価</p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           {[1, 2, 3, 4, 5].map((v) => (
-            <div
+            <CircleRating
               key={v}
-              style={circleStyle(true, v, rating)}
-              onClick={() => handleCircleClick(v)}
+              value={v}
+              currentRating={rating}
+              onClick={handleCircleClick}
             />
           ))}
         </div>
