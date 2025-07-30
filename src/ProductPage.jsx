@@ -5,15 +5,15 @@ const CircleRating = ({ value, currentRating, onClick }) => {
   const baseSize = 12;
   const ringGap = 4;
 
-  const totalSize = baseSize + ringGap * 2 * (value - 1);
+  const outerSize = baseSize + ringGap * 2 * 4; // 最大サイズを基準に（5重円を想定）
 
   return (
     <div
       onClick={() => onClick(value)}
       style={{
         position: "relative",
-        width: `${baseSize + ringGap * 2 * (value - 1)}px`,
-        height: `${baseSize + ringGap * 2 * (value - 1)}px`,
+        width: `${outerSize}px`,
+        height: `${outerSize}px`,
         margin: "6px",
         cursor: "pointer",
         display: "flex",
