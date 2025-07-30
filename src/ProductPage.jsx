@@ -101,8 +101,8 @@ export default function ProductPage() {
         style={{
           position: "absolute",
           top: "12px",
-          right: "12px",
-          fontSize: "24px",
+          right: "20px",
+          fontSize: "36px",
           cursor: "pointer",
         }}
       >
