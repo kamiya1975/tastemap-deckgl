@@ -156,10 +156,11 @@ export default function ProductPage() {
      >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "4px",
+          display: "flex",               // ← 横並び
+          justifyContent: "center",     // ← 中央揃え
+          alignItems: "center",         // ← 垂直位置も整列
+          gap: "12px",                  // ← 評価と◎の間隔
+          flexWrap: "wrap",             // ← モバイルで折り返し防止
         }}
       >
         <div style={{ fontWeight: "bold" }}>評価</div>
