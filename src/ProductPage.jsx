@@ -157,9 +157,10 @@ export default function ProductPage() {
       <div
         style={{
           display: "flex",               // ← 横並び
-          justifyContent: "center",     // ← 中央揃え
+          justifyContent: "space-between",     // ← 左右に分ける
           alignItems: "center",         // ← 垂直位置も整列
           gap: "12px",                  // ← 評価と◎の間隔
+          padding: "0 16px",                // 👈 横の余白
           flexWrap: "wrap",             // ← モバイルで折り返し防止
         }}
       >
