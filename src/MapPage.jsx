@@ -661,7 +661,7 @@ const ratingCircleLayers = useMemo(() => {
     fontSize: "18px",
   }}
 >
-  ◼︎
+  ⚙
 </button>
 
 <Drawer
