@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 
 // ✅ 美しい均衡な円の評価コンポーネント
 const CircleRating = ({ value, currentRating, onClick }) => {
-  const baseSize = 12;
-  const ringGap = 4;
+  const baseSize = 10;
+  const ringGap = 3;
 
   const outerSize = baseSize + ringGap * 2 * 4; // 最大サイズを基準に（5重円を想定）
 
@@ -14,7 +14,7 @@ const CircleRating = ({ value, currentRating, onClick }) => {
         position: "relative",
         width: `${outerSize}px`,
         height: `${outerSize}px`,
-        margin: "6px",
+        margin: "2px",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
