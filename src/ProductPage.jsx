@@ -177,7 +177,7 @@ export default function ProductPage() {
           display: "flex",
           justifyContent: "center",
           gap: "6px",
-          marginTop: "2px", // 👈 上に少し補正（調整可）
+          //marginTop: "2px", // 👈 上に少し補正（調整可）
            }}
            >
           {[1, 2, 3, 4, 5].map((v) => (
