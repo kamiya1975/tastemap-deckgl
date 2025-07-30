@@ -172,13 +172,37 @@ export default function ProductPage() {
             評価
             </div>
 
-        <div style={{ 
-          display: "flex",
-          //gap: "2px",  //◎の間隔を調整
-          flexShrink: 0,
-           }}
-           >
-          {[1, 2, 3, 4, 5].map((v) => (
+        <div
+          style={{
+            display: "flex",
+            gap: "6px",
+           flexShrink: 0,
+            alignItems: "center",
+         }}
+        >
+          {[0, 1, 2, 3, 4, 5].map((v) => 
+            v === 0 ? (
+              <div
+                key="none"
+                onClick={() => handleCircleClick(0)}
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1.5px solid #bbb",
+                  borderRadius: "50%",
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  color: rating === 0 ? "#000" : "#bbb",
+                  cursor: "pointer",
+                }}
+              >
+                ー
+              </div>
+            ) : (
+
             <CircleRating
               key={v}
               value={v}
