@@ -75,7 +75,7 @@ export default function ProductPage() {
       {/* 商品画像 */}
       <div style={{ textAlign: "center", marginBottom: "16px" }}>
         <img
-          src={`/images/${jan}.png`} // 例: public/images/4935919044714.png
+          src={`/img/${jan}.png`} // 例: public/images/4935919044714.png
           alt="商品画像"
           style={{ maxHeight: "300px", objectFit: "contain" }}
         />
