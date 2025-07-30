@@ -186,17 +186,13 @@ export default function ProductPage() {
                 key="none"
                 onClick={() => handleCircleClick(0)}
                 style={{
-                  width: "44px",
-                  height: "44px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "1.5px solid #bbb",
-                  borderRadius: "50%",
-                  fontSize: "20px",
+                  fontSize: "24px",
                   fontWeight: "bold",
                   color: rating === 0 ? "#000" : "#bbb",
                   cursor: "pointer",
+                  width: "28px",        // 適度な幅
+                  textAlign: "center",
+                  lineHeight: "1",
                 }}
               >
                 ー
