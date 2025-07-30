@@ -159,18 +159,14 @@ export default function ProductPage() {
           display: "flex",               // ← 横並び
           justifyContent: "space-between",     // ← 左右に分ける
           alignItems: "center",         // ← ベースラインで整列
-          gap: "12px",                  // ← 評価と◎の間隔
-          padding: "0 16px",                // 👈 横の余白
-          flexWrap: "wrap",             // ← モバイルで折り返し防止
+          gap: "16px",                  // ← 評価と◎の間隔
+          padding: "16px 0",                // 👈 横の余白
         }}
       >
         <div style={{ 
           fontWeight: "bold",
           fontSize: "16px",
-          display: "flex",          // ← 縦揃えのため追加
-          alignItems: "center",     // ← 高さ中央揃えに！
-          height: "48px",           // ← CircleRatingと揃える高さ
-          height: "44px",    // ⬅︎ CircleRatingと同じ高さに
+          width: "60px", // ← 固定幅にして左揃え
           }}
           >
             評価
@@ -178,9 +174,8 @@ export default function ProductPage() {
 
         <div style={{ 
           display: "flex",
-          justifyContent: "center",
           gap: "6px",
-          //marginTop: "2px", // 👈 上に少し補正（調整可）
+          flexShrink: 0,
            }}
            >
           {[1, 2, 3, 4, 5].map((v) => (
