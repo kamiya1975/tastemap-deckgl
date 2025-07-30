@@ -166,7 +166,8 @@ export default function ProductPage() {
         <div style={{ 
           fontWeight: "bold",
           fontSize: "16px",
-          width: "30px", // ← 固定幅にして左揃え
+          minWidth: "48px",      // ✅ 横並びを維持できる幅に調整
+          whiteSpace: "nowrap",  // ✅ 強制的に折り返さない
           }}
           >
             評価
