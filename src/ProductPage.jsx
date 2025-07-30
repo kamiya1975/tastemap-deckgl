@@ -158,13 +158,21 @@ export default function ProductPage() {
         style={{
           display: "flex",               // ← 横並び
           justifyContent: "space-between",     // ← 左右に分ける
-          alignItems: "center",         // ← 垂直位置も整列
+          alignItems: "baseline",         // ← ベースラインで整列
           gap: "12px",                  // ← 評価と◎の間隔
           padding: "0 16px",                // 👈 横の余白
           flexWrap: "wrap",             // ← モバイルで折り返し防止
         }}
       >
-        <div style={{ fontWeight: "bold" }}>評価</div>
+        <div style={{ 
+          fontWeight: "bold",
+          fontSize: "16px",
+          lineHeight: "1", // 👈 上下のズレ防止
+          }}
+          >
+            評価
+            </div>
+            
         <div style={{ display: "flex", justifyContent: "center" }}>
           {[1, 2, 3, 4, 5].map((v) => (
             <CircleRating
