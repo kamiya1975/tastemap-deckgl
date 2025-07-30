@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 
 // ✅ 美しい均衡な円の評価コンポーネント
 const CircleRating = ({ value, currentRating, onClick }) => {
-  const baseSize = 24;
-  const ringGap = 2;
+  const baseSize = 12;
+  const ringGap = 4;
 
   const totalSize = baseSize + ringGap * 2 * (value - 1);
 
@@ -12,13 +12,13 @@ const CircleRating = ({ value, currentRating, onClick }) => {
       onClick={() => onClick(value)}
       style={{
         position: "relative",
-        width: `${totalSize}px`,
-        height: `${totalSize}px`,
-        margin: "4px",
+        width: `${baseSize + ringGap * 2 * (value - 1)}px`,
+        height: `${baseSize + ringGap * 2 * (value - 1)}px`,
+        margin: "6px",
+        cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        cursor: "pointer",
       }}
     >
       {[...Array(value)].map((_, i) => {
@@ -145,28 +145,36 @@ export default function ProductPage() {
       </p>
 
       {/* 評価 */}
-      <div style={{ marginTop: "16px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            flexWrap: "wrap",
-          }}
-        >
-          <div style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>評価</div>
-          <div style={{ display: "flex", flexWrap: "nowrap" }}>
-            {[1, 2, 3, 4, 5].map((v) => (
-              <CircleRating
-                key={v}
-                value={v}
-                currentRating={rating}
-                onClick={handleCircleClick}
-              />
-            ))}
-          </div>
+      <div
+        style={{
+          marginTop: "24px",
+          paddingTop: "8px",
+          paddingBottom: "8px",
+          borderTop: "1px solid #ccc",
+          borderBottom: "1px solid #ccc",
+       }}
+     >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "4px",
+        }}
+      >
+        <div style={{ fontWeight: "bold" }}>評価</div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {[1, 2, 3, 4, 5].map((v) => (
+            <CircleRating
+              key={v}
+              value={v}
+              currentRating={rating}
+              onClick={handleCircleClick}
+            />
+          ))}
         </div>
       </div>
+    </div>
 
       {/* 解説文 */}
       <div style={{ marginTop: "20px", fontSize: "14px", lineHeight: "1.6" }}>
