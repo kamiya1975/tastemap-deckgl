@@ -159,7 +159,7 @@ export default function ProductPage() {
           display: "flex",               // ← 横並び
           justifyContent: "space-between",     // ← 左右に分ける
           alignItems: "center",         // ← ベースラインで整列
-          gap: "20px",                  // ← 評価と◎の間隔
+          gap: "12px",                  // ← 評価と◎の間隔
           padding: "16px 0",                // 👈 横の余白
         }}
       >
