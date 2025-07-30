@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 
-// 🔵 重丸評価コンポーネント
+// ✅ 美しい均衡な円の評価コンポーネント
 const CircleRating = ({ value, currentRating, onClick }) => {
-  const sizeBase = 40;
-  const spacing = 2;
+  const baseSize = 36;
+  const ringGap = 4;
 
   return (
     <div
       onClick={() => onClick(value)}
       style={{
         position: "relative",
-        width: `${sizeBase + spacing * (value - 1) * 2}px`,
-        height: `${sizeBase + spacing * (value - 1) * 2}px`,
+        width: `${baseSize + ringGap * 2 * (value - 1)}px`,
+        height: `${baseSize + ringGap * 2 * (value - 1)}px`,
         margin: "4px",
         cursor: "pointer",
       }}
     >
       {[...Array(value)].map((_, i) => {
-        const radius = sizeBase / 2 + spacing * i;
+        const size = baseSize + ringGap * 2 * i;
         return (
           <div
             key={i}
@@ -25,11 +25,11 @@ const CircleRating = ({ value, currentRating, onClick }) => {
               position: "absolute",
               top: "50%",
               left: "50%",
-              width: `${radius * 2}px`,
-              height: `${radius * 2}px`,
-              marginTop: `-${radius}px`,
-              marginLeft: `-${radius}px`,
-              border: `1.5px solid ${value === currentRating ? "#000" : "#999"}`,
+              width: `${size}px`,
+              height: `${size}px`,
+              marginLeft: `-${size / 2}px`,
+              marginTop: `-${size / 2}px`,
+              border: `1.5px solid ${value === currentRating ? "#000" : "#bbb"}`,
               borderRadius: "50%",
               boxSizing: "border-box",
               backgroundColor: "transparent",
@@ -112,7 +112,7 @@ export default function ProductPage() {
       </div>
 
       {/* 商品名・価格 */}
-      <h2 style={{ margin: "8px 0" }}>{product.商品名 || "（名称不明）"}</h2>
+      <h2 style={{ margin: "8px 0", fontWeight: "bold" }}>{product.商品名 || "（名称不明）"}</h2>
       <p style={{ display: "flex", alignItems: "center", margin: "4px 0" }}>
         <span
           style={{
@@ -139,22 +139,25 @@ export default function ProductPage() {
 
       {/* 評価 */}
       <div style={{ marginTop: "16px" }}>
-        <p style={{ fontWeight: "bold", marginBottom: "4px" }}>評価</p>
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
             alignItems: "center",
+            gap: "12px",
+            flexWrap: "wrap",
           }}
         >
-          {[1, 2, 3, 4, 5].map((v) => (
-            <CircleRating
-              key={v}
-              value={v}
-              currentRating={rating}
-              onClick={handleCircleClick}
-            />
-          ))}
+          <div style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>評価</div>
+          <div style={{ display: "flex", flexWrap: "nowrap" }}>
+            {[1, 2, 3, 4, 5].map((v) => (
+              <CircleRating
+                key={v}
+                value={v}
+                currentRating={rating}
+                onClick={handleCircleClick}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
