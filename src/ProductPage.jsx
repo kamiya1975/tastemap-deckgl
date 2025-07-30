@@ -170,6 +170,7 @@ export default function ProductPage() {
           display: "flex",          // ← 縦揃えのため追加
           alignItems: "center",     // ← 高さ中央揃えに！
           height: "48px",           // ← CircleRatingと揃える高さ
+          height: "44px",    // ⬅︎ CircleRatingと同じ高さに
           }}
           >
             評価
