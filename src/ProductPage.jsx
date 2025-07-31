@@ -21,7 +21,7 @@ const CircleRating = ({ value, currentRating, onClick }) => {
         justifyContent: "center",
         borderRadius: "50%",
         boxSizing: "border-box",
-        ...(value === 0 ? { marginLeft: "4px" } : {}),
+        ...(value === 0 ? { marginLeft: "10px" } : {}),
       }}
     >
       {[...Array(ringCount)].map((_, i) => {
