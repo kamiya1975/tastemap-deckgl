@@ -994,53 +994,53 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
   onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
   style={{
     display: "flex",
-    alignItems: "center",
-    padding: "16px 8px 24px",
+    alignItems: "flex-start",
+    marginBottom: "16px",
+    padding: "12px 0",
     borderBottom: "1px solid #eee",
-    cursor: "pointer",
+    position: "relative",
   }}
 >
   {/* 色アイコン（角丸四角） */}
-  <div
+  <div style={{ marginRight: "12px", marginTop: "4px" }}>
+    <div
     style={{
       width: "16px",
       height: "16px",
-      backgroundColor: dotColor,
+      backgroundColor: typeColorMap[item.Type] || "#aaa",
       borderRadius: "4px",
-      marginRight: "8px",
     }}
   />
 
-  {/* 本文部 */}
+  {/* 本文部分 */}
   <div style={{ flex: 1 }}>
-    <div style={{ fontWeight: "bold", fontSize: "15px", color: "#111" }}>
-      {idx + 1}. {item.商品名 || "（名称不明）"}
+    <div style={{ fontWeight: "bold", fontSize: "15px" }}>
+      {index + 1}. {item.商品名 || "（名称不明）"}
     </div>
-    <div style={{ fontSize: "14px", color: "#333" }}>
-      ¥{item.希望小売価格?.toLocaleString() ?? "不明"}
+    <div style={{ fontSize: "14px", marginBottom: "4px" }}>
+      ¥{item.価格?.toLocaleString() || "不明"}
     </div>
     <div style={{ fontSize: "12px", color: "#666" }}>
       Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
     </div>
-  </div>
 
-  {/* 評価表示（◎◎◎◎◎） */}
-  <div style={{ display: "flex", gap: "4px", marginLeft: "2px" }}>
-    {[...Array(5)].map((_, i) => (
-      <span
-        key={i}
-        style={{
-          width: "14px",
-          height: "14px",
-          borderRadius: "50%",
-          border: "1.5px solid #666",
-          backgroundColor: i < (userRatings[item.JAN]?.rating ?? 0) 
-          ? "#666" : "transparent",
-          display: "inline-block",
-        }}
-      />
-    ))}
+    {/* ◎ 評価（少し下に配置） */}
+    <div style={{ marginTop: "8px", display: "flex" }}>
+      {[...Array(5)].map((_, i) => (
+        <span
+          key={i}
+          style={{
+            fontSize: "18px",
+            color: i < item.rating ? "#444" : "#ccc",
+            marginRight: "2px",
+          }}
+        >
+          ◎
+        </span>
+      ))}
+    </div>
   </div>
+</div>
 </li>
 
   );
