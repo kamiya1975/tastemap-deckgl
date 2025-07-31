@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 評価コンポーネント（全て◎で統一）
+// ✅ 評価コンポーネント（全て◎で統一、中心塗りつぶし）
 const CircleRating = ({ value, currentRating, onClick }) => {
   const outerSize = 40;
   const baseSize = 8;
   const ringGap = 3;
-  const ringCount = value + 1; // 「評価なし」→ 1重丸に調整
+  const ringCount = value + 1;
 
   return (
     <div
@@ -37,7 +37,7 @@ const CircleRating = ({ value, currentRating, onClick }) => {
               }`,
               borderRadius: "50%",
               boxSizing: "border-box",
-              backgroundColor: i === 0 ? "#000" : "transparent", // ← 中心だけ塗りつぶし
+              backgroundColor: i === 0 ? "#000" : "transparent",
             }}
           />
         );
@@ -63,19 +63,64 @@ export default function ProductPage() {
     }
   }, [jan]);
 
-  const handleCircleClick = (value) => {
+  const handleCircleClick = async (value) => {
     const newRating = value === rating ? 0 : value;
     setRating(newRating);
 
     const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
+
     if (newRating === 0) {
       delete ratings[jan];
     } else {
+      let weather = {};
+      try {
+        // ① IPinfo で位置情報取得
+        const token = process.env.REACT_APP_IPINFO_TOKEN;
+        const ipRes = await fetch(`https://ipinfo.io/json?token=${token}`);
+        const ipData = await ipRes.json();
+        const [lat, lon] = ipData.loc.split(",");
+
+        // ② 日時情報作成（Asia/Tokyo）
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
+        const HH = String(now.getHours()).padStart(2, "0");
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+        const hourStr = `${HH}:00`;
+        const targetTime = `${dateStr}T${hourStr}`;
+
+        // ③ Open-Meteoで気象データ取得
+        const meteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,apparent_temperature,relative_humidity_2m,surface_pressure,cloudcover,precipitation,wind_speed_10m,weathercode&timezone=Asia%2FTokyo`;
+
+        const weatherRes = await fetch(meteoUrl);
+        const weatherData = await weatherRes.json();
+        const hourly = weatherData.hourly;
+        const idx = hourly.time.indexOf(targetTime);
+
+        if (idx !== -1) {
+          weather = {
+            temperature: hourly.temperature_2m[idx],
+            apparentTemperature: hourly.apparent_temperature[idx],
+            humidity: hourly.relative_humidity_2m[idx],
+            pressure: hourly.surface_pressure[idx],
+            cloudcover: hourly.cloudcover[idx],
+            precipitation: hourly.precipitation[idx],
+            windSpeed: hourly.wind_speed_10m[idx],
+            weatherCode: hourly.weathercode[idx],
+          };
+        }
+      } catch (err) {
+        console.warn("気象情報の取得に失敗しました:", err);
+      }
+
       ratings[jan] = {
         rating: newRating,
         date: new Date().toISOString(),
+        weather,
       };
     }
+
     localStorage.setItem("userRatings", JSON.stringify(ratings));
   };
 
@@ -199,15 +244,6 @@ export default function ProductPage() {
 
       {/* 解説文 */}
       <div style={{ marginTop: "20px", fontSize: "14px", lineHeight: "1.6" }}>
-        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
-        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
-        昨今では、世界標準の飲み物と言えるまでになっています。
-        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
-        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
-        昨今では、世界標準の飲み物と言えるまでになっています。
-        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
-        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
-        昨今では、世界標準の飲み物と言えるまでになっています。
         ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
         また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
         昨今では、世界標準の飲み物と言えるまでになっています。

@@ -5,6 +5,7 @@ import StorePage from "./StorePage";
 import SliderPage from "./SliderPage";
 import MapPage from "./MapPage";
 import ProductPage from "./ProductPage";
+import UserTastePage from "./UserTastePage"; // ✅ 忘れずに！
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/slider" element={<SliderPage />} />
       <Route path="/map" element={<MapPage />} />
       <Route path="/products/:jan" element={<ProductPage />} />
+      <Route path="/taste-log" element={<UserTastePage />} /> {/* ✅ ここに入れる！ */}
     </Routes>
   );
 }
