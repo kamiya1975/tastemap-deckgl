@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 「ー」も含めてすべての評価ボタンを統一した評価コンポーネント
+// ✅ 「ー」も含めて、全ての評価ボタンを<button>で統一
 const CircleRating = ({ value, currentRating, onClick }) => {
   const outerSize = 40;
   const baseSize = 8;
@@ -8,19 +8,18 @@ const CircleRating = ({ value, currentRating, onClick }) => {
   const ringCount = value === 0 ? 5 : value;
 
   return (
-    <div
+    <button
       onClick={() => onClick(value)}
       style={{
+        all: "unset", // デフォルトのbuttonスタイルをリセット
         position: "relative",
         width: `${outerSize}px`,
         height: `${outerSize}px`,
         margin: "2px",
         cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         borderRadius: "50%",
         boxSizing: "border-box",
+        WebkitTapHighlightColor: "rgba(0, 0, 0, 0.1)", // 波紋効果を出す
       }}
     >
       {[...Array(ringCount)].map((_, i) => {
@@ -58,7 +57,7 @@ const CircleRating = ({ value, currentRating, onClick }) => {
           ー
         </span>
       )}
-    </div>
+    </button>
   );
 };
 
@@ -215,12 +214,6 @@ export default function ProductPage() {
 
       {/* 解説文 */}
       <div style={{ marginTop: "20px", fontSize: "14px", lineHeight: "1.6" }}>
-        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
-        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
-        昨今では、世界標準の飲み物と言えるまでになっています。
-        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
-        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
-        昨今では、世界標準の飲み物と言えるまでになっています。
         ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
         また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
         昨今では、世界標準の飲み物と言えるまでになっています。
