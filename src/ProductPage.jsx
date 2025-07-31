@@ -177,7 +177,9 @@ export default function ProductPage() {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
+              justifyContent: "center",  // ← 中央に揃える
+              gap: "8px",                // ← 等間隔
+              //justifyContent: "space-between",
               width: "100%",
               maxWidth: "300px",
             }}
