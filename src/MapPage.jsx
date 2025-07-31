@@ -103,13 +103,14 @@ function App() {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  const typeColorMap = {
-    White: [0, 120, 255],
-    Red: [255, 0, 0],
-    Rose: [255, 102, 204],
-    Sparkling: [255, 255, 0],
-    Other: [150, 150, 150],
-  };
+  const colorMap = {
+  Red: "#8B1A1A",
+  White: "#0078FF",
+  Rose: "#F39C12",
+  Sparkling: "#B8C9F0",
+  Other: "#AAAAAA",
+};
+const dotColor = colorMap[item.Type] || "#888";
 
   const gridInterval = 0.2;
   const cellSize = 0.2;
@@ -995,7 +996,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
   style={{
     display: "flex",
     alignItems: "center",
-    padding: "16px 8px",
+    padding: "16px 8px 24px",
     borderBottom: "1px solid #eee",
     cursor: "pointer",
   }}
@@ -1005,7 +1006,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
     style={{
       width: "16px",
       height: "16px",
-      backgroundColor: "#651E3E",
+      backgroundColor: dotColor,
       borderRadius: "4px",
       marginRight: "8px",
     }}
@@ -1025,16 +1026,18 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
   </div>
 
   {/* 評価表示（◎◎◎◎◎） */}
-  <div style={{ display: "flex", gap: "2px", marginLeft: "4px" }}>
+  <div style={{ display: "flex", gap: "4px", marginLeft: "2px" }}>
     {[...Array(5)].map((_, i) => (
       <span
         key={i}
         style={{
-          width: "12px",
-          height: "12px",
+          width: "14px",
+          height: "14px",
           borderRadius: "50%",
           border: "1.5px solid #666",
-          backgroundColor: i < (userRatings[item.JAN]?.rating ?? 0) ? "#666" : "transparent",
+          backgroundColor: i < (userRatings[item.JAN]?.rating ?? 0) 
+          ? "#666" 
+          : "transparent",
           display: "inline-block",
         }}
       />
