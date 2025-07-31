@@ -43,6 +43,14 @@ function App() {
   const [isRatingListOpen, setIsRatingListOpen] = useState(false);
   const ZOOM_LIMITS = { minZoom: 4.0, maxZoom: 10.0 };
   const nearestPanelRef = useRef(null);
+
+  // ワインタイプごとの色
+const typeColorMap = {
+  赤: "#651E3E",
+  白: "#E8D8BF",
+  ロゼ: "#C37C8C",
+  スパークリング: "#6AB4D6",
+};
   
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
