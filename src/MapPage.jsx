@@ -726,7 +726,7 @@ const ratingCircleLayers = useMemo(() => {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%),
+        background: `linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%)`,
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -759,7 +759,7 @@ const ratingCircleLayers = useMemo(() => {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: linear-gradient(to right, #007bff ${body}%, #ddd ${body}%),
+        background: `linear-gradient(to right, #007bff ${body}%, #ddd ${body}%)`,
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -1087,7 +1087,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
               {displayList.map((item, idx) => (
                 <li
                   key={idx}
-                  onClick={() => window.open(/products/${item.JAN}, "_blank")}
+                  onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
                   style={{
                     padding: "10px 0",
                     borderBottom: "1px solid #eee",
@@ -1116,7 +1116,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                   <small>
                     Type: {item.Type || "不明"} / 価格:{" "}
                     {item.希望小売価格
-                      ? ¥${item.希望小売価格.toLocaleString()}
+                      ? `¥${item.希望小売価格.toLocaleString()}`
                       : "不明"}
                     <br />
                     Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
