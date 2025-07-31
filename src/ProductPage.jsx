@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 評価ボタン（0=ー も同じ構造で表示）
+// ✅ 評価ボタン（0=ー も含めて同じ構造とサイズ）
 const CircleRating = ({ value, currentRating, onClick }) => {
   const outerSize = 40;
   const baseSize = 8;
@@ -18,21 +18,36 @@ const CircleRating = ({ value, currentRating, onClick }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        border: value === 0 ? "1.5px solid #bbb" : "none",
         borderRadius: "50%",
         boxSizing: "border-box",
       }}
     >
       {value === 0 ? (
-        <span
-          style={{
-            fontSize: "14px",
-            fontWeight: "bold",
-            color: currentRating === 0 ? "#000" : "#bbb",
-          }}
-        >
-          ー
-        </span>
+        <>
+          {/* ⭕ ダミーの透明円でハイライトサイズ統一 */}
+          <div
+            style={{
+              position: "absolute",
+              width: `${baseSize}px`,
+              height: `${baseSize}px`,
+              border: `1.5px solid #bbb`,
+              borderRadius: "50%",
+              boxSizing: "border-box",
+              backgroundColor: "transparent",
+            }}
+          />
+          {/* ⭕ 中央の「ー」表示 */}
+          <span
+            style={{
+              fontSize: "14px",
+              fontWeight: "bold",
+              color: currentRating === 0 ? "#000" : "#bbb",
+              zIndex: 1,
+            }}
+          >
+            ー
+          </span>
+        </>
       ) : (
         [...Array(value)].map((_, i) => {
           const size = baseSize + ringGap * 2 * i;
