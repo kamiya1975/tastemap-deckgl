@@ -37,7 +37,7 @@ const CircleRating = ({ value, currentRating, onClick }) => {
               }`,
               borderRadius: "50%",
               boxSizing: "border-box",
-              backgroundColor: "transparent",
+              backgroundColor: i === 0 ? "#000" : "transparent", // ← 中心だけ塗りつぶし
             }}
           />
         );
