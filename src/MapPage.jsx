@@ -104,12 +104,12 @@ function App() {
   }, []);
 
   const typeColorMap = {
-  スパークリング: "#6495ED",
-  ロゼ: "#F08080",
-  白: "#F5DEB3",
-  赤: "#8B0000",
-  オレンジ: "#FFA500",
-};
+    White: [0, 120, 255],
+    Red: [255, 0, 0],
+    Rose: [255, 102, 204],
+    Sparkling: [255, 255, 0],
+    Other: [150, 150, 150],
+  };
 
   const gridInterval = 0.2;
   const cellSize = 0.2;
@@ -151,7 +151,7 @@ function App() {
     data.forEach((d) => {
       const x = Math.floor(d.BodyAxis / cellSize) * cellSize;
       const y = Math.floor((is3D ? d.SweetAxis : -d.SweetAxis) / cellSize) * cellSize;
-      const key = `${x},${y}`;
+      const key = ${x},${y};
       if (!map.has(key)) {
         map.set(key, { position: [x, y], count: 0, hasRating: false });
       }
@@ -166,7 +166,7 @@ function App() {
   const mainLayer = useMemo(() => {
     if (is3D) {
       return new ColumnLayer({
-        id: `columns-${zMetric}`,
+        id: columns-${zMetric},
         data,
         diskResolution: 12,
         radius: 0.05,
@@ -236,7 +236,7 @@ const ratingCircleLayers = useMemo(() => {
       path.push(path[0]); // 閉じる
 
       return new PathLayer({
-        id: `ring-${jan}-${i}`,
+        id: ring-${jan}-${i},
         data: [{ path }],
         getPath: (d) => d.path,
         getLineColor: d => lineColor,
@@ -726,7 +726,7 @@ const ratingCircleLayers = useMemo(() => {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: `linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%)`,
+        background: linear-gradient(to right, #007bff ${sweetness}%, #ddd ${sweetness}%),
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -759,7 +759,7 @@ const ratingCircleLayers = useMemo(() => {
         appearance: "none",
         height: "10px",
         borderRadius: "5px",
-        background: `linear-gradient(to right, #007bff ${body}%, #ddd ${body}%)`,
+        background: linear-gradient(to right, #007bff ${body}%, #ddd ${body}%),
         outline: "none",
         marginTop: "8px",
         WebkitAppearance: "none",
@@ -976,81 +976,34 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
               backgroundColor: "#fff",
             }}
           >
- <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-  {nearestPoints.map((item, index) => {
-    const typeColorMap = {
-      赤: "#8B0000",
-      白: "#F5DEB3",
-      ロゼ: "#F08080",
-      スパークリング: "#6495ED",
-      オレンジ: "#FFA500",
-    };
-    const rating = userRatings[item.JAN]?.rating ?? 0;
-
-    return (
-      <li
-        key={index}
-        onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
-        style={{
-          marginBottom: "16px",
-          padding: "12px",
-          borderBottom: "1px solid #eee",
-          position: "relative",
-        }}
-      >
-        {/* 左上タイプ色アイコン */}
-        <div
-          style={{
-            position: "absolute",
-            top: "8px",
-            left: "8px",
-            width: "16px",
-            height: "16px",
-            backgroundColor: typeColorMap[item.Type] || "#aaa",
-            borderRadius: "4px",
-          }}
-        />
-
-        {/* 本文部分 */}
-        <div style={{ paddingLeft: "24px" }}>
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "15px",
-              marginBottom: "4px",
-            }}
-          >
-            {index + 1}. {item.商品名 || "（名称不明）"}
-          </div>
-          <div style={{ fontSize: "14px", marginBottom: "4px" }}>
-            ¥{item.価格?.toLocaleString() || "不明"}
-          </div>
-          <div style={{ fontSize: "12px", color: "#666" }}>
-            Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
-          </div>
-
-          {/* ◎評価 */}
-          <div style={{ marginTop: "8px", display: "flex" }}>
-            {[...Array(5)].map((_, i) => (
-              <span
-                key={i}
-                style={{
-                  fontSize: "18px",
-                  color: i < rating ? "#444" : "#ccc",
-                  marginRight: "2px",
-                }}
-              >
-                ◎
-              </span>
-            ))}
-          </div>
-        </div>
-      </li>
-    );
-  })}
-</ul>
-
-
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {nearestPoints.map((item, idx) => (
+                <li
+                  key={idx}
+                  onClick={() =>
+                    window.open(/products/${item.JAN}, "_blank")
+                  }
+                  style={{
+                    padding: "10px 0",
+                    borderBottom: "1px solid #eee",
+                    cursor: "pointer",
+                  }}
+                >
+                  <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+                  <br />
+                  <small>
+                    Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)} / 価格:{" "}
+                    {item.希望小売価格
+                      ? ¥${item.希望小売価格.toLocaleString()}
+                      : "不明"}
+                    <br />
+                    Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
+                    {item.SweetAxis?.toFixed(2)} / 星評価:{" "}
+                    {userRatings[item.JAN]?.rating ?? "なし"}
+                  </small>
+                </li>
+              ))}
+            </ul>
           </div>
         </motion.div>
       )}
@@ -1134,7 +1087,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
               {displayList.map((item, idx) => (
                 <li
                   key={idx}
-                  onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
+                  onClick={() => window.open(/products/${item.JAN}, "_blank")}
                   style={{
                     padding: "10px 0",
                     borderBottom: "1px solid #eee",
@@ -1163,7 +1116,7 @@ function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineLis
                   <small>
                     Type: {item.Type || "不明"} / 価格:{" "}
                     {item.希望小売価格
-                      ? `¥${item.希望小売価格.toLocaleString()}`
+                      ? ¥${item.希望小売価格.toLocaleString()}
                       : "不明"}
                     <br />
                     Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
