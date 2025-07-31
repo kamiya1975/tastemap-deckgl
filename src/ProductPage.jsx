@@ -176,9 +176,12 @@ export default function ProductPage() {
         <div
           style={{
             display: "flex",
-            gap: "6px",
-           flexShrink: 0,
-            alignItems: "center",
+            justifyContent: "space-between",  // ✅ 均等に配置
+            width: "100%",                    // ✅ 親コンテナを固定幅に
+            maxWidth: "300px",                // ✅ 必要に応じて調整
+            //gap: "6px",
+            //flexShrink: 0,
+            //alignItems: "center",
          }}
         >
           {[0, 1, 2, 3, 4, 5].map((v) => 
@@ -192,8 +195,12 @@ export default function ProductPage() {
                   color: rating === 0 ? "#000" : "#bbb",
                   cursor: "pointer",
                   width: "10px",        // 適度な幅
-                  textAlign: "center",
-                  lineHeight: "1",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  //textAlign: "center",
+                  //lineHeight: "1",
                 }}
               >
                 ー
