@@ -977,32 +977,64 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
             }}
           >
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {nearestPoints.map((item, idx) => (
-                <li
-                  key={idx}
-                  onClick={() =>
-                    window.open(`/products/${item.JAN}`, "_blank")
-                  }
-                  style={{
-                    padding: "10px 0",
-                    borderBottom: "1px solid #eee",
-                    cursor: "pointer",
-                  }}
-                >
-                  <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-                  <br />
-                  <small>
-                    Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)} / 価格:{" "}
-                    {item.希望小売価格
-                      ? `¥${item.希望小売価格.toLocaleString()}`
-                      : "不明"}
-                    <br />
-                    Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
-                    {item.SweetAxis?.toFixed(2)} / 星評価:{" "}
-                    {userRatings[item.JAN]?.rating ?? "なし"}
-                  </small>
-                </li>
-              ))}
+              {nearestPoints.map((item, idx) => {
+                const colorMap = {
+                  White: "#0078FF",
+                  Red: "#E74C3C",
+                  Rose: "#F39C12",
+                  Sparkling: "#B8C9F0",
+                  Other: "#CCCCCC",
+                };
+                const dotColor = colorMap[item.Type] || "#AAAAAA";
+                const rating = userRatings[item.JAN]?.rating ?? 0;
+
+                return (
+                  <li
+                    key={idx}
+                    onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "12px 8px",
+                      borderBottom: "1px solid #eee",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {/* 色アイコン */}
+                    <div
+                      style={{
+                        width: "12px",
+                        height: "12px",
+                        borderRadius: "50%",
+                        backgroundColor: dotColor,
+                        marginRight: "12px",
+                      }}
+                    />
+
+                    {/* 本文部 */}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: "bold", fontSize: "15px" }}>
+                        {idx + 1}. {item.商品名 || "（名称不明）"}
+                      </div>
+                      <div style={{ fontSize: "14px", color: "#333" }}>
+                        ¥{item.希望小売価格?.toLocaleString() ?? "不明"}
+                      </div>
+                      <div style={{ fontSize: "12px", color: "#666" }}>
+                        Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
+                      </div>
+                    </div>
+
+                    {/* ◎評価 */}
+                    <div style={{ display: "flex", gap: "2px" }}>
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} style={{ fontSize: "16px", color: i < rating ? "#666" : "#ccc" }}>
+                          ◎
+                        </span>
+                      ))}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </motion.div>
@@ -1010,6 +1042,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
     </AnimatePresence>
   );
 }
+
 
 function RatedWinePanel({ isOpen, onClose, userRatings, data, sortedRatedWineList }) {
      const displayList = useMemo(() => {
