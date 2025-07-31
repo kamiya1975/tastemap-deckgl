@@ -194,7 +194,7 @@ export default function ProductPage() {
                   fontWeight: "bold",
                   color: rating === 0 ? "#000" : "#bbb",
                   cursor: "pointer",
-                  width: "10px",        // 適度な幅
+                  width: "32px",        // 他の◎と合わせる
                   height: "32px",
                   display: "flex",
                   alignItems: "center",
