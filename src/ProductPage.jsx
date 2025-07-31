@@ -202,7 +202,7 @@ export default function ProductPage() {
                     border: "1.5px solid #bbb",
                     borderRadius: "50%",
                     boxSizing: "border-box",
-                    marginLeft: "2px",         // ✅ これが視覚バランスをとるカギ
+                    marginLeft: "10px",         // ✅ これが視覚バランスをとるカギ
                   }}
                 >
                   ー
