@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 美しい均衡な円の評価コンポーネント（サイズ固定）
+// ✅ 評価ボタン（0=ー も同じ構造で表示）
 const CircleRating = ({ value, currentRating, onClick }) => {
-  const outerSize = 40;           // 共通サイズ
+  const outerSize = 40;
   const baseSize = 8;
   const ringGap = 3;
 
@@ -18,40 +18,42 @@ const CircleRating = ({ value, currentRating, onClick }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        border: value === 0 ? "1.5px solid #bbb" : "none",  // 👈 「ー」のみ枠線
+        border: value === 0 ? "1.5px solid #bbb" : "none",
         borderRadius: "50%",
         boxSizing: "border-box",
       }}
     >
       {value === 0 ? (
-         <span
-           style={{
-             fontSize: "14px",
-             fontWeight: "bold",
-             color: currentRating === 0 ? "#000" : "#bbb",
-            }}
-             >
-              ー
-             </span>
+        <span
+          style={{
+            fontSize: "14px",
+            fontWeight: "bold",
+            color: currentRating === 0 ? "#000" : "#bbb",
+          }}
+        >
+          ー
+        </span>
       ) : (
-       [...Array(value)].map((_, i) => {
-        const size = baseSize + ringGap * 2 * i;
-        return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              width: `${size}px`,
-              height: `${size}px`,
-              border: `1.5px solid ${value === currentRating ? "#000" : "#bbb"}`,
-              borderRadius: "50%",
-              boxSizing: "border-box",
-              backgroundColor: "transparent",
-            }}
-          />
-        );
-      })
-    )}
+        [...Array(value)].map((_, i) => {
+          const size = baseSize + ringGap * 2 * i;
+          return (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                width: `${size}px`,
+                height: `${size}px`,
+                border: `1.5px solid ${
+                  value === currentRating ? "#000" : "#bbb"
+                }`,
+                borderRadius: "50%",
+                boxSizing: "border-box",
+                backgroundColor: "transparent",
+              }}
+            />
+          );
+        })
+      )}
     </div>
   );
 };
@@ -192,45 +194,19 @@ export default function ProductPage() {
           <div
             style={{
               display: "flex",
-              justifyContent: "center",  // ← 中央に揃える
-              gap: "8px",                // ← 等間隔
-              //justifyContent: "space-between",
+              justifyContent: "center",
+              gap: "8px",
               width: "100%",
               maxWidth: "300px",
             }}
           >
-            {[0, 1, 2, 3, 4, 5].map((v) =>(
-              //v === 0 ? (
-                //<div
-                 // key="none"
-                  //onClick={() => handleCircleClick(0)}
-                  //style={{
-                    //fontSize: "14px",
-                    //fontWeight: "bold",
-                    //color: rating === 0 ? "#000" : "#bbb",
-                    //cursor: "pointer",
-                    //width: "40px",
-                    //height: "40px",
-                    //display: "flex",
-                    //alignItems: "center",
-                    //justifyContent: "center",
-                    //border: "1.5px solid #bbb",
-                    //borderRadius: "50%",
-                    //boxSizing: "border-box",
-                    //marginLeft: "10px",         // ✅ これが視覚バランスをとるカギ
-                  //}}
-                //>
-                  //ー
-               // </div>
-              //) : (
-                <CircleRating
-                  key={v}
-                  value={v}
-                  currentRating={rating}
-                  onClick={handleCircleClick}
-                />
-              //)
-            //)}
+            {[0, 1, 2, 3, 4, 5].map((v) => (
+              <CircleRating
+                key={v}
+                value={v}
+                currentRating={rating}
+                onClick={handleCircleClick}
+              />
             ))}
           </div>
         </div>
@@ -238,9 +214,6 @@ export default function ProductPage() {
 
       {/* 解説文 */}
       <div style={{ marginTop: "20px", fontSize: "14px", lineHeight: "1.6" }}>
-        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
-        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
-        昨今では、世界標準の飲み物と言えるまでになっています。
         ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
         また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
         昨今では、世界標準の飲み物と言えるまでになっています。
