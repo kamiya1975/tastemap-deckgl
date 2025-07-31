@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 評価ボタン：0（ー）も最大サイズのダミー円で◎と完全一致
+// ✅ 「ー」も含めてすべての評価ボタンを統一した評価コンポーネント
 const CircleRating = ({ value, currentRating, onClick }) => {
   const outerSize = 40;
   const baseSize = 8;
   const ringGap = 3;
-  const maxRings = 5; // 最大5重円とする
+  const ringCount = value === 0 ? 5 : value;
 
   return (
     <div
@@ -23,51 +23,40 @@ const CircleRating = ({ value, currentRating, onClick }) => {
         boxSizing: "border-box",
       }}
     >
-      {value === 0 ? (
-        <>
-          {/* ◎と同じサイズのダミー円 */}
+      {[...Array(ringCount)].map((_, i) => {
+        const size = baseSize + ringGap * 2 * i;
+        return (
           <div
+            key={i}
             style={{
               position: "absolute",
-              width: `${baseSize + ringGap * 2 * (maxRings - 1)}px`,
-              height: `${baseSize + ringGap * 2 * (maxRings - 1)}px`,
-              border: `1.5px solid #bbb`,
+              width: `${size}px`,
+              height: `${size}px`,
+              border: `1.5px solid ${
+                value === 0
+                  ? "#bbb"
+                  : value === currentRating
+                  ? "#000"
+                  : "#bbb"
+              }`,
               borderRadius: "50%",
               boxSizing: "border-box",
               backgroundColor: "transparent",
             }}
           />
-          <span
-            style={{
-              fontSize: "14px",
-              fontWeight: "bold",
-              color: currentRating === 0 ? "#000" : "#bbb",
-              zIndex: 1,
-            }}
-          >
-            ー
-          </span>
-        </>
-      ) : (
-        [...Array(value)].map((_, i) => {
-          const size = baseSize + ringGap * 2 * i;
-          return (
-            <div
-              key={i}
-              style={{
-                position: "absolute",
-                width: `${size}px`,
-                height: `${size}px`,
-                border: `1.5px solid ${
-                  value === currentRating ? "#000" : "#bbb"
-                }`,
-                borderRadius: "50%",
-                boxSizing: "border-box",
-                backgroundColor: "transparent",
-              }}
-            />
-          );
-        })
+        );
+      })}
+      {value === 0 && (
+        <span
+          style={{
+            fontSize: "14px",
+            fontWeight: "bold",
+            color: currentRating === 0 ? "#000" : "#bbb",
+            zIndex: 1,
+          }}
+        >
+          ー
+        </span>
       )}
     </div>
   );
