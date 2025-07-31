@@ -981,7 +981,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                 <li
                   key={idx}
                   onClick={() =>
-                    window.open(/products/${item.JAN}, "_blank")
+                    window.open(`/products/${item.JAN}`, "_blank")
                   }
                   style={{
                     padding: "10px 0",
