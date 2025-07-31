@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 評価ボタン（0=ー も含めて同じ構造とサイズ）
+// ✅ 評価ボタン：0（ー）も最大サイズのダミー円で◎と完全一致
 const CircleRating = ({ value, currentRating, onClick }) => {
   const outerSize = 40;
   const baseSize = 8;
   const ringGap = 3;
+  const maxRings = 5; // 最大5重円とする
 
   return (
     <div
@@ -24,19 +25,18 @@ const CircleRating = ({ value, currentRating, onClick }) => {
     >
       {value === 0 ? (
         <>
-          {/* ⭕ ダミーの透明円でハイライトサイズ統一 */}
+          {/* ◎と同じサイズのダミー円 */}
           <div
             style={{
               position: "absolute",
-              width: `${baseSize}px`,
-              height: `${baseSize}px`,
+              width: `${baseSize + ringGap * 2 * (maxRings - 1)}px`,
+              height: `${baseSize + ringGap * 2 * (maxRings - 1)}px`,
               border: `1.5px solid #bbb`,
               borderRadius: "50%",
               boxSizing: "border-box",
               backgroundColor: "transparent",
             }}
           />
-          {/* ⭕ 中央の「ー」表示 */}
           <span
             style={{
               fontSize: "14px",
@@ -116,10 +116,7 @@ export default function ProductPage() {
         margin: "0 auto",
         padding: "16px",
         border: "2px solid #ccc",
-        borderTopLeftRadius: "0px",
-        borderTopRightRadius: "0px",
-        borderBottomLeftRadius: "0px",
-        borderBottomRightRadius: "0px",
+        borderRadius: "0px",
         borderLeft: "none",
         borderRight: "none",
         borderTop: "none",
@@ -229,6 +226,9 @@ export default function ProductPage() {
 
       {/* 解説文 */}
       <div style={{ marginTop: "20px", fontSize: "14px", lineHeight: "1.6" }}>
+        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
+        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
+        昨今では、世界標準の飲み物と言えるまでになっています。
         ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
         また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
         昨今では、世界標準の飲み物と言えるまでになっています。
