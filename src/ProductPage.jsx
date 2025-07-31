@@ -5,7 +5,7 @@ const CircleRating = ({ value, currentRating, onClick }) => {
   const outerSize = 40;
   const baseSize = 8;
   const ringGap = 3;
-  const ringCount = value === 0 ? 1 : value;
+  const ringCount = value + 1; // 「評価なし」→ 1重丸に調整
 
   return (
     <div
