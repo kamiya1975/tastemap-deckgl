@@ -110,7 +110,20 @@ function App() {
   Sparkling: "#B8C9F0",
   Other: "#AAAAAA",
 };
-const dotColor = colorMap[item.Type] || "#888";
+
+nearestPoints.map((item, index) => {
+  const bg = typeColorMap[item.Type] || "#ccc"; // ← mapの中で item を使う
+  return (
+    <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: "12px" }}>
+      <div style={{ marginRight: "8px", width: "18px", height: "18px", backgroundColor: bg, borderRadius: "4px" }} />
+      <div>
+        <strong>{index + 1}. {item.商品名}</strong><br />
+        ¥{item.価格}<br />
+        Body: {item.Body}, Sweet: {item.Sweet}
+      </div>
+    </div>
+  );
+});
 
   const gridInterval = 0.2;
   const cellSize = 0.2;
