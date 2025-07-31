@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 評価コンポーネント（「ー」だけ左に微調整）
+// ✅ 評価コンポーネント（全て◎で統一）
 const CircleRating = ({ value, currentRating, onClick }) => {
   const outerSize = 40;
   const baseSize = 8;
@@ -21,7 +21,6 @@ const CircleRating = ({ value, currentRating, onClick }) => {
         justifyContent: "center",
         borderRadius: "50%",
         boxSizing: "border-box",
-        ...(value === 0 ? { marginLeft: "10px" } : {}),
       }}
     >
       {[...Array(ringCount)].map((_, i) => {
@@ -43,18 +42,6 @@ const CircleRating = ({ value, currentRating, onClick }) => {
           />
         );
       })}
-      {value === 0 && (
-        <span
-          style={{
-            fontSize: "14px",
-            fontWeight: "bold",
-            color: currentRating === 0 ? "#000" : "#bbb",
-            zIndex: 1,
-          }}
-        >
-          ー
-        </span>
-      )}
     </div>
   );
 };
@@ -198,7 +185,7 @@ export default function ProductPage() {
               maxWidth: "300px",
             }}
           >
-            {[0, 1, 2, 3, 4, 5].map((v) => (
+            {[0, 1, 2, 3, 4, 5, 6].map((v) => (
               <CircleRating
                 key={v}
                 value={v}
