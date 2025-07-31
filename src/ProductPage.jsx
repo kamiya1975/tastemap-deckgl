@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 美しい均衡な円の評価コンポーネント
+// ✅ 美しい均衡な円の評価コンポーネント（サイズ固定）
 const CircleRating = ({ value, currentRating, onClick }) => {
-  const baseSize = 10;
+  const outerSize = 40;           // 共通サイズ
+  const baseSize = 8;
   const ringGap = 3;
-
-  const outerSize = baseSize + ringGap * 2 * 4; // 最大サイズを基準に（5重円を想定）
 
   return (
     <div
@@ -85,11 +84,11 @@ export default function ProductPage() {
         margin: "0 auto",
         padding: "16px",
         border: "2px solid #ccc",
-        borderTopLeftRadius: "0px",   // 👈 上側は直線に
+        borderTopLeftRadius: "0px",
         borderTopRightRadius: "0px",
-        borderBottomLeftRadius: "0px", // 👈 下側も直線に
+        borderBottomLeftRadius: "0px",
         borderBottomRightRadius: "0px",
-        borderLeft: "none",            // 👈 必要に応じて線も外せる
+        borderLeft: "none",
         borderRight: "none",
         borderTop: "none",
         borderBottom: "none",
@@ -119,7 +118,9 @@ export default function ProductPage() {
       </div>
 
       {/* 商品名・価格 */}
-      <h2 style={{ margin: "8px 0", fontWeight: "bold" }}>{product.商品名 || "（名称不明）"}</h2>
+      <h2 style={{ margin: "8px 0", fontWeight: "bold" }}>
+        {product.商品名 || "（名称不明）"}
+      </h2>
       <p style={{ display: "flex", alignItems: "center", margin: "4px 0" }}>
         <span
           style={{
@@ -152,77 +153,72 @@ export default function ProductPage() {
           paddingBottom: "8px",
           borderTop: "1px solid #ccc",
           borderBottom: "1px solid #ccc",
-       }}
-     >
-      <div
-        style={{
-          display: "flex",               // ← 横並び
-          justifyContent: "space-between",     // ← 左右に分ける
-          alignItems: "center",         // ← ベースラインで整列
-          gap: "10px",                  // ← 評価と◎の間隔
-          //padding: "16px 0",                // 👈 横の余白
         }}
       >
-        <div style={{ 
-          fontWeight: "bold",
-          fontSize: "16px",
-          minWidth: "48px",      // ✅ 横並びを維持できる幅に調整
-          whiteSpace: "nowrap",  // ✅ 強制的に折り返さない
-          }}
-          >
-            評価
-            </div>
-
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",  // ✅ 均等に配置
-            width: "100%",                    // ✅ 親コンテナを固定幅に
-            maxWidth: "300px",                // ✅ 必要に応じて調整
-            //gap: "6px",
-            //flexShrink: 0,
-            //alignItems: "center",
-         }}
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "10px",
+          }}
         >
-          {[0, 1, 2, 3, 4, 5].map((v) => 
-            v === 0 ? (
-              <div
-                key="none"
-                onClick={() => handleCircleClick(0)}
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  color: rating === 0 ? "#000" : "#bbb",
-                  cursor: "pointer",
-                  width: "32px",        // 他の◎と合わせる
-                  height: "32px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  //textAlign: "center",
-                  //lineHeight: "1",
-                }}
-              >
-                ー
-              </div>
-            ) : (
+          <div
+            style={{
+              fontWeight: "bold",
+              fontSize: "16px",
+              minWidth: "48px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            評価
+          </div>
 
-            <CircleRating
-              key={v}
-              value={v}
-              currentRating={rating}
-              onClick={handleCircleClick}
-            />
-          ))}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              maxWidth: "300px",
+            }}
+          >
+            {[0, 1, 2, 3, 4, 5].map((v) =>
+              v === 0 ? (
+                <div
+                  key="none"
+                  onClick={() => handleCircleClick(0)}
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    color: rating === 0 ? "#000" : "#bbb",
+                    cursor: "pointer",
+                    width: "40px",
+                    height: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1.5px solid #bbb",
+                    borderRadius: "50%",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  ー
+                </div>
+              ) : (
+                <CircleRating
+                  key={v}
+                  value={v}
+                  currentRating={rating}
+                  onClick={handleCircleClick}
+                />
+              )
+            )}
+          </div>
         </div>
       </div>
-    </div>
 
       {/* 解説文 */}
       <div style={{ marginTop: "20px", fontSize: "14px", lineHeight: "1.6" }}>
-        ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
-        また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
-        昨今では、世界標準の飲み物と言えるまでになっています。
         ワインとは、主にブドウから作られたお酒（酒税法上は果実酒に分類）です。
         また、きわめて長い歴史をもつこのお酒は、西洋文明の象徴の一つであると同時に、
         昨今では、世界標準の飲み物と言えるまでになっています。
