@@ -18,9 +18,23 @@ const CircleRating = ({ value, currentRating, onClick }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        border: value === 0 ? "1.5px solid #bbb" : "none",  // 👈 「ー」のみ枠線
+        borderRadius: "50%",
+        boxSizing: "border-box",
       }}
     >
-      {[...Array(value)].map((_, i) => {
+      {value === 0 ? (
+         <span
+           style={{
+             fontSize: "14px",
+             fontWeight: "bold",
+             color: currentRating === 0 ? "#000" : "#bbb",
+            }}
+             >
+              ー
+             </span>
+      ) : (
+       [...Array(value)].map((_, i) => {
         const size = baseSize + ringGap * 2 * i;
         return (
           <div
@@ -36,7 +50,8 @@ const CircleRating = ({ value, currentRating, onClick }) => {
             }}
           />
         );
-      })}
+      })
+    )}
     </div>
   );
 };
@@ -184,38 +199,39 @@ export default function ProductPage() {
               maxWidth: "300px",
             }}
           >
-            {[0, 1, 2, 3, 4, 5].map((v) =>
-              v === 0 ? (
-                <div
-                  key="none"
-                  onClick={() => handleCircleClick(0)}
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    color: rating === 0 ? "#000" : "#bbb",
-                    cursor: "pointer",
-                    width: "40px",
-                    height: "40px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1.5px solid #bbb",
-                    borderRadius: "50%",
-                    boxSizing: "border-box",
-                    marginLeft: "10px",         // ✅ これが視覚バランスをとるカギ
-                  }}
-                >
-                  ー
-                </div>
-              ) : (
+            {[0, 1, 2, 3, 4, 5].map((v) =>(
+              //v === 0 ? (
+                //<div
+                 // key="none"
+                  //onClick={() => handleCircleClick(0)}
+                  //style={{
+                    //fontSize: "14px",
+                    //fontWeight: "bold",
+                    //color: rating === 0 ? "#000" : "#bbb",
+                    //cursor: "pointer",
+                    //width: "40px",
+                    //height: "40px",
+                    //display: "flex",
+                    //alignItems: "center",
+                    //justifyContent: "center",
+                    //border: "1.5px solid #bbb",
+                    //borderRadius: "50%",
+                    //boxSizing: "border-box",
+                    //marginLeft: "10px",         // ✅ これが視覚バランスをとるカギ
+                  //}}
+                //>
+                  //ー
+               // </div>
+              //) : (
                 <CircleRating
                   key={v}
                   value={v}
                   currentRating={rating}
                   onClick={handleCircleClick}
                 />
-              )
-            )}
+              //)
+            //)}
+            ))}
           </div>
         </div>
       </div>
