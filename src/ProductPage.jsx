@@ -185,7 +185,7 @@ export default function ProductPage() {
               maxWidth: "300px",
             }}
           >
-            {[0, 1, 2, 3, 4, 5, 6].map((v) => (
+            {[0, 1, 2, 3, 4, 5].map((v) => (
               <CircleRating
                 key={v}
                 value={v}
