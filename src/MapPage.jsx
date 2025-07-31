@@ -990,58 +990,58 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
 
   return (
     <li
-      key={idx}
-      onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        padding: "12px 8px",
-        borderBottom: "1px solid #eee",
-        cursor: "pointer",
-      }}
-    >
-      {/* カラーアイコン */}
-      <div
+  key={idx}
+  onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    padding: "16px 8px",
+    borderBottom: "1px solid #eee",
+    cursor: "pointer",
+  }}
+>
+  {/* 色アイコン（角丸四角） */}
+  <div
+    style={{
+      width: "16px",
+      height: "16px",
+      backgroundColor: dotColor,
+      borderRadius: "4px",
+      marginRight: "8px",
+    }}
+  />
+
+  {/* 本文部 */}
+  <div style={{ flex: 1 }}>
+    <div style={{ fontWeight: "bold", fontSize: "15px", color: "#111" }}>
+      {idx + 1}. {item.商品名 || "（名称不明）"}
+    </div>
+    <div style={{ fontSize: "14px", color: "#333" }}>
+      ¥{item.希望小売価格?.toLocaleString() ?? "不明"}
+    </div>
+    <div style={{ fontSize: "12px", color: "#666" }}>
+      Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
+    </div>
+  </div>
+
+  {/* 評価表示（◎◎◎◎◎） */}
+  <div style={{ display: "flex", gap: "2px", marginLeft: "4px" }}>
+    {[...Array(5)].map((_, i) => (
+      <span
+        key={i}
         style={{
           width: "12px",
           height: "12px",
           borderRadius: "50%",
-          backgroundColor: dotColor,
-          marginRight: "12px",
-          marginTop: "4px",
+          border: "1.5px solid #666",
+          backgroundColor: i < (userRatings[item.JAN]?.rating ?? 0) ? "#666" : "transparent",
+          display: "inline-block",
         }}
       />
+    ))}
+  </div>
+</li>
 
-      {/* 本文部 */}
-      <div style={{ flex: 1 }}>
-        <div style={{ fontWeight: "bold", fontSize: "15px" }}>
-          {idx + 1}. {item.商品名 || "（名称不明）"}
-        </div>
-        <div style={{ fontSize: "14px", color: "#333" }}>
-          ¥{item.希望小売価格?.toLocaleString() ?? "不明"}
-        </div>
-        <div style={{ fontSize: "12px", color: "#666" }}>
-          Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
-        </div>
-      </div>
-
-      {/* ◎評価（Circle風） */}
-      <div style={{ display: "flex", gap: "2px" }}>
-        {[...Array(5)].map((_, i) => (
-          <span
-            key={i}
-            style={{
-              width: "12px",
-              height: "12px",
-              borderRadius: "50%",
-              border: "1.5px solid #666",
-              backgroundColor: i < rating ? "#666" : "transparent",
-              display: "inline-block",
-            }}
-          />
-        ))}
-      </div>
-    </li>
   );
 })}
             </ul>
