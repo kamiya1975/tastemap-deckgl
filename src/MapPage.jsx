@@ -976,7 +976,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
               backgroundColor: "#fff",
             }}
           >
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+ <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
   {nearestPoints.map((item, index) => {
     const typeColorMap = {
       赤: "#8B0000",
@@ -1029,7 +1029,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
             Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
           </div>
 
-          {/* ◎評価（下に配置） */}
+          {/* ◎評価 */}
           <div style={{ marginTop: "8px", display: "flex" }}>
             {[...Array(5)].map((_, i) => (
               <span
@@ -1049,6 +1049,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
     );
   })}
 </ul>
+
 
           </div>
         </motion.div>
