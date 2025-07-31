@@ -104,12 +104,12 @@ function App() {
   }, []);
 
   const typeColorMap = {
-    White: [0, 120, 255],
-    Red: [255, 0, 0],
-    Rose: [255, 102, 204],
-    Sparkling: [255, 255, 0],
-    Other: [150, 150, 150],
-  };
+  スパークリング: "#6495ED",
+  ロゼ: "#F08080",
+  白: "#F5DEB3",
+  赤: "#8B0000",
+  オレンジ: "#FFA500",
+};
 
   const gridInterval = 0.2;
   const cellSize = 0.2;
@@ -977,75 +977,79 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
             }}
           >
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {nearestPoints.map((item, idx) => {
-  const colorMap = {
-    Red: "#E74C3C",
-    White: "#0078FF",
-    Rose: "#F39C12",
-    Sparkling: "#B8C9F0",
-    Other: "#AAAAAA",
-  };
-  const dotColor = colorMap[item.Type] || "#AAAAAA";
-  const rating = userRatings[item.JAN]?.rating ?? 0;
+  {nearestPoints.map((item, index) => {
+    const typeColorMap = {
+      赤: "#8B0000",
+      白: "#F5DEB3",
+      ロゼ: "#F08080",
+      スパークリング: "#6495ED",
+      オレンジ: "#FFA500",
+    };
+    const rating = userRatings[item.JAN]?.rating ?? 0;
 
-  return (
-    <li
-  key={idx}
-  onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
-  style={{
-    display: "flex",
-    alignItems: "flex-start",
-    marginBottom: "16px",
-    padding: "12px 0",
-    borderBottom: "1px solid #eee",
-    position: "relative",
-  }}
->
-  {/* 色アイコン（角丸四角） */}
-  <div style={{ marginRight: "12px", marginTop: "4px" }}>
-    <div
-    style={{
-      width: "16px",
-      height: "16px",
-      backgroundColor: typeColorMap[item.Type] || "#aaa",
-      borderRadius: "4px",
-    }}
-  />
-
-  {/* 本文部分 */}
-  <div style={{ flex: 1 }}>
-    <div style={{ fontWeight: "bold", fontSize: "15px" }}>
-      {index + 1}. {item.商品名 || "（名称不明）"}
-    </div>
-    <div style={{ fontSize: "14px", marginBottom: "4px" }}>
-      ¥{item.価格?.toLocaleString() || "不明"}
-    </div>
-    <div style={{ fontSize: "12px", color: "#666" }}>
-      Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
-    </div>
-
-    {/* ◎ 評価（少し下に配置） */}
-    <div style={{ marginTop: "8px", display: "flex" }}>
-      {[...Array(5)].map((_, i) => (
-        <span
-          key={i}
+    return (
+      <li
+        key={index}
+        onClick={() => window.open(`/products/${item.JAN}`, "_blank")}
+        style={{
+          marginBottom: "16px",
+          padding: "12px",
+          borderBottom: "1px solid #eee",
+          position: "relative",
+        }}
+      >
+        {/* 左上タイプ色アイコン */}
+        <div
           style={{
-            fontSize: "18px",
-            color: i < item.rating ? "#444" : "#ccc",
-            marginRight: "2px",
+            position: "absolute",
+            top: "8px",
+            left: "8px",
+            width: "16px",
+            height: "16px",
+            backgroundColor: typeColorMap[item.Type] || "#aaa",
+            borderRadius: "4px",
           }}
-        >
-          ◎
-        </span>
-      ))}
-    </div>
-  </div>
-</div>
-</li>
+        />
 
-  );
-})}
-            </ul>
+        {/* 本文部分 */}
+        <div style={{ paddingLeft: "24px" }}>
+          <div
+            style={{
+              fontWeight: "bold",
+              fontSize: "15px",
+              marginBottom: "4px",
+            }}
+          >
+            {index + 1}. {item.商品名 || "（名称不明）"}
+          </div>
+          <div style={{ fontSize: "14px", marginBottom: "4px" }}>
+            ¥{item.価格?.toLocaleString() || "不明"}
+          </div>
+          <div style={{ fontSize: "12px", color: "#666" }}>
+            Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
+          </div>
+
+          {/* ◎評価（下に配置） */}
+          <div style={{ marginTop: "8px", display: "flex" }}>
+            {[...Array(5)].map((_, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: "18px",
+                  color: i < rating ? "#444" : "#ccc",
+                  marginRight: "2px",
+                }}
+              >
+                ◎
+              </span>
+            ))}
+          </div>
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
           </div>
         </motion.div>
       )}
