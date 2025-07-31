@@ -1005,7 +1005,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
     style={{
       width: "16px",
       height: "16px",
-      backgroundColor: dotColor,
+      backgroundColor: "#651E3E",
       borderRadius: "4px",
       marginRight: "8px",
     }}
