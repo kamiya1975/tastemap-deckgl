@@ -43,14 +43,6 @@ function App() {
   const [isRatingListOpen, setIsRatingListOpen] = useState(false);
   const ZOOM_LIMITS = { minZoom: 4.0, maxZoom: 10.0 };
   const nearestPanelRef = useRef(null);
-
-  // ワインタイプごとの色
-const typeColorMap = {
-  赤: "#651E3E",
-  白: "#E8D8BF",
-  ロゼ: "#C37C8C",
-  スパークリング: "#6AB4D6",
-};
   
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -111,27 +103,13 @@ const typeColorMap = {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  const colorMap = {
-  Red: "#8B1A1A",
-  White: "#0078FF",
-  Rose: "#F39C12",
-  Sparkling: "#B8C9F0",
-  Other: "#AAAAAA",
-};
-
-nearestPoints.map((item, index) => {
-  const bg = typeColorMap[item.Type] || "#ccc"; // ← mapの中で item を使う
-  return (
-    <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: "12px" }}>
-      <div style={{ marginRight: "8px", width: "18px", height: "18px", backgroundColor: bg, borderRadius: "4px" }} />
-      <div>
-        <strong>{index + 1}. {item.商品名}</strong><br />
-        ¥{item.価格}<br />
-        Body: {item.Body}, Sweet: {item.Sweet}
-      </div>
-    </div>
-  );
-});
+  const typeColorMap = {
+    White: [0, 120, 255],
+    Red: [255, 0, 0],
+    Rose: [255, 102, 204],
+    Sparkling: [255, 255, 0],
+    Other: [150, 150, 150],
+  };
 
   const gridInterval = 0.2;
   const cellSize = 0.2;
@@ -1057,8 +1035,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
           borderRadius: "50%",
           border: "1.5px solid #666",
           backgroundColor: i < (userRatings[item.JAN]?.rating ?? 0) 
-          ? "#666" 
-          : "transparent",
+          ? "#666" : "transparent",
           display: "inline-block",
         }}
       />
