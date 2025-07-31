@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
 
-// ✅ 「ー」も含めて、全ての評価ボタンを<button>で統一
+// ✅ 評価コンポーネント（「ー」だけ左に微調整）
 const CircleRating = ({ value, currentRating, onClick }) => {
   const outerSize = 40;
   const baseSize = 8;
   const ringGap = 3;
-  const ringCount = value === 0 ? 5 : value;
+  const ringCount = value === 0 ? 1 : value;
 
   return (
-    <button
+    <div
       onClick={() => onClick(value)}
       style={{
-        all: "unset", // デフォルトのbuttonスタイルをリセット
         position: "relative",
         width: `${outerSize}px`,
         height: `${outerSize}px`,
         margin: "2px",
         cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         borderRadius: "50%",
         boxSizing: "border-box",
-        WebkitTapHighlightColor: "rgba(0, 0, 0, 0.1)", // 波紋効果を出す
+        ...(value === 0 ? { marginLeft: "4px" } : {}),
       }}
     >
       {[...Array(ringCount)].map((_, i) => {
@@ -32,11 +34,7 @@ const CircleRating = ({ value, currentRating, onClick }) => {
               width: `${size}px`,
               height: `${size}px`,
               border: `1.5px solid ${
-                value === 0
-                  ? "#bbb"
-                  : value === currentRating
-                  ? "#000"
-                  : "#bbb"
+                value === currentRating ? "#000" : "#bbb"
               }`,
               borderRadius: "50%",
               boxSizing: "border-box",
@@ -57,7 +55,7 @@ const CircleRating = ({ value, currentRating, onClick }) => {
           ー
         </span>
       )}
-    </button>
+    </div>
   );
 };
 
