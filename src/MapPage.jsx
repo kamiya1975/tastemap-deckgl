@@ -994,7 +994,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                   <small>
                     Type: {item.Type || "不明"} / 距離: {item.distance?.toFixed(2)} / 価格:{" "}
                     {item.希望小売価格
-                      ? ¥${item.希望小売価格.toLocaleString()}
+                      ? `¥${item.希望小売価格.toLocaleString()}`
                       : "不明"}
                     <br />
                     Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
