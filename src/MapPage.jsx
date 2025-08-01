@@ -1054,7 +1054,8 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                         flex: "1",
                         paddingLeft: "8px",
                         paddingRight: "8px",
-                        maxWidth: "calc(100% - 100px)",
+                        maxWidth: "calc(100% - 110px)",
+                        boxSizing: "border-box",
                       }}>
                         <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
                         <br />
