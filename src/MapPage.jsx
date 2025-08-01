@@ -67,6 +67,24 @@ function App() {
 }, [isDrawerOpen]);
 
 useEffect(() => {
+  const updateRatings = () => {
+    const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
+    setUserRatings(ratings);
+  };
+
+  window.addEventListener("focus", updateRatings);
+  window.addEventListener("storage", updateRatings); // ← 他タブからの更新に対応
+
+  // 初回実行
+  updateRatings();
+
+  return () => {
+    window.removeEventListener("focus", updateRatings);
+    window.removeEventListener("storage", updateRatings);
+  };
+}, []);
+
+useEffect(() => {
   const handleFocus = () => {
     const stored = JSON.parse(localStorage.getItem("userRatings") || "{}");
     setUserRatings(stored);
