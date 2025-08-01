@@ -44,6 +44,8 @@ function App() {
   const [isRatingListOpen, setIsRatingListOpen] = useState(false);
   const ZOOM_LIMITS = { minZoom: 4.0, maxZoom: 10.0 };
   const nearestPanelRef = useRef(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
