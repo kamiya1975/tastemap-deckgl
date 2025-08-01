@@ -14,6 +14,7 @@ import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { PathLayer } from "@deck.gl/layers";
 import CircleRatingDisplay from "./components/CircleRatingDisplay";
+import { CircleRatingIcon } from "./CircleRatingIcon";
 
 function App() {
   const location = useLocation();
@@ -152,10 +153,53 @@ useEffect(() => {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  // Appの外
-const CircleRatingRowDisplay = ({ value }) => {
-  const currentRating = value ?? -1;
+const CircleRatingIcon = ({ ringLevel, currentRating }) => {
+  const baseSize = 6;
+  const ringGap = 2.2;
+  const ringCount = ringLevel + 1;
 
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: `${baseSize + ringGap * 2 * (ringCount - 1)}px`,
+        height: `${baseSize + ringGap * 2 * (ringCount - 1)}px`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginRight: "4px",
+      }}
+    >
+      {[...Array(ringCount)].map((_, i) => {
+        const size = baseSize + ringGap * 2 * i;
+        const color =
+          i === 0
+            ? currentRating >= 0
+              ? "#000"
+              : "#ccc"
+            : i <= currentRating
+            ? "#000"
+            : "#ccc";
+        return (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              width: `${size}px`,
+              height: `${size}px`,
+              border: `1.2px solid ${color}`,
+              borderRadius: "50%",
+              backgroundColor: i === 0 ? color : "transparent",
+              boxSizing: "border-box",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+const CircleRatingRowDisplay = ({ currentRating = -1 }) => {
   return (
     <div
       style={{
@@ -175,6 +219,7 @@ const CircleRatingRowDisplay = ({ value }) => {
     </div>
   );
 };
+
 
   const typeColorMap = {
     White: [0, 120, 255],
