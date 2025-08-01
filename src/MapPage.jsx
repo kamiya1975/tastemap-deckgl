@@ -1054,8 +1054,9 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                         flex: "1",
                         paddingLeft: "8px",
                         paddingRight: "8px",
-                        maxWidth: "calc(100% - 110px)",
-                        boxSizing: "border-box",
+                        maxWidth: "100%",
+                        overflowWrap: "break-word",
+                        whiteSpace: "normal",
                       }}>
                         <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
                         <br />
@@ -1070,12 +1071,11 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
 
                        {/* 右：◎評価 */}
                        <div style={{ 
-                        flex: "0 0 auto",
+                        flex: "0 0 96px", 
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "flex-end",
-                        minHeight: "54px",
-                        marginTop: "4px",
+                        boxSizing: "border-box",
                        }}
                       >
                           <CircleRatingDisplay value={userRatings[String(item.JAN)]?.rating ?? 0} />
