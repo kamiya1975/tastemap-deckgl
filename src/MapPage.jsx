@@ -1022,7 +1022,14 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     {/* 左：色アイコン */}
-                    <div style={{ flex: "0 0 24px", display: "flex", justifyContent: "center" }}>
+                    <div style={{ 
+                      flex: "0 0 24px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignSelf: "flex-start",
+                      marginTop: "2px",
+                      marginLeft: "-4px",
+                    }}>
                       <div
                         style={{
                           width: "16px",
