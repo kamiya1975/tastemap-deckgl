@@ -1073,7 +1073,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                     </div>
 
                     {/* 右：◎評価 */}
-                    <CircleRatingDisplay value={userRatings[item.JAN]?.rating ?? 0} />
+                    <CircleRatingDisplay value={userRatings[String(item.JAN)]?.rating ?? 0} />
                    </div>
                  </li>
               ))}
