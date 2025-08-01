@@ -66,6 +66,22 @@ function App() {
   }
 }, [isDrawerOpen]);
 
+useEffect(() => {
+  const handleFocus = () => {
+    const stored = JSON.parse(localStorage.getItem("userRatings") || "{}");
+    setUserRatings(stored);
+  };
+
+  window.addEventListener("focus", handleFocus);
+
+  // 初回も実行
+  handleFocus();
+
+  return () => {
+    window.removeEventListener("focus", handleFocus);
+  };
+}, []);
+
   // PCA + UMAPをマージして読み込み
   useEffect(() => {
     Promise.all([
