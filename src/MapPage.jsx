@@ -1050,7 +1050,12 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                     </div>
 
                      {/* 中央：商品情報 */}
-                      <div style={{ flex: "1", paddingLeft: "8px", paddingRight: "8px" }}>
+                      <div style={{ 
+                        flex: "1",
+                        paddingLeft: "8px",
+                        paddingRight: "8px",
+                        maxWidth: "calc(100% - 100px)",
+                      }}>
                         <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
                         <br />
                         <span style={{ fontSize: "14px" }}>
