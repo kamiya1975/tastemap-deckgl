@@ -1,10 +1,10 @@
 import React from "react";
 
-// 1個ずつのサークル表示（中心黒＋外n重）
-const CircleRatingIcon = ({ value }) => {
-  const baseSize = 8;
-  const ringGap = 3;
-  const ringCount = value + 1; // 中心黒を含めて合計何重か
+// 各◎を表示（評価0〜5に応じて黒/グレー）
+const CircleRatingIcon = ({ ringLevel, currentRating }) => {
+  const baseSize = 6; // ← 元より70%小さい
+  const ringGap = 2.2;
+  const ringCount = ringLevel + 1;
 
   return (
     <div
@@ -15,11 +15,14 @@ const CircleRatingIcon = ({ value }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        marginRight: "6px",
+        marginRight: "4px",
       }}
     >
       {[...Array(ringCount)].map((_, i) => {
         const size = baseSize + ringGap * 2 * i;
+        const color = i === 0
+          ? currentRating >= 0 ? "#000" : "#ccc"
+          : i <= currentRating ? "#000" : "#ccc";
         return (
           <div
             key={i}
@@ -27,9 +30,9 @@ const CircleRatingIcon = ({ value }) => {
               position: "absolute",
               width: `${size}px`,
               height: `${size}px`,
-              border: `1.5px solid #333`,
+              border: `1.2px solid ${color}`,
               borderRadius: "50%",
-              backgroundColor: i === 0 ? "#333" : "transparent",
+              backgroundColor: i === 0 ? color : "transparent",
               boxSizing: "border-box",
             }}
           />
@@ -39,16 +42,26 @@ const CircleRatingIcon = ({ value }) => {
   );
 };
 
-// 横並びに6段階の表示
-const CircleRatingRowDisplay = ({ currentRating }) => {
+// 横並びで6段階すべて表示（小さめに中心揃え）
+const CircleRatingRowDisplay = ({ currentRating = -1 }) => {
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center", // 垂直中心
+        height: "38px", // 高さを一定に
+      }}
+    >
       {[0, 1, 2, 3, 4, 5].map((val) => (
-        <CircleRatingIcon key={val} value={val} />
+        <CircleRatingIcon
+          key={val}
+          ringLevel={val}
+          currentRating={currentRating}
+        />
       ))}
     </div>
   );
 };
 
 export default CircleRatingRowDisplay;
-
