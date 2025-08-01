@@ -39,3 +39,4 @@ const CircleRatingDisplay = ({ value = 0 }) => {
   );
 };
 
+export default CircleRatingDisplay;
