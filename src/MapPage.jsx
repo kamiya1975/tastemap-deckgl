@@ -46,7 +46,6 @@ function App() {
   const nearestPanelRef = useRef(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
       setIsSliderOpen(true);
@@ -152,6 +151,30 @@ useEffect(() => {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
+
+  // Appの外
+const CircleRatingRowDisplay = ({ value }) => {
+  const currentRating = value ?? -1;
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        height: "38px",
+      }}
+    >
+      {[0, 1, 2, 3, 4, 5].map((val) => (
+        <CircleRatingIcon
+          key={val}
+          ringLevel={val}
+          currentRating={currentRating}
+        />
+      ))}
+    </div>
+  );
+};
 
   const typeColorMap = {
     White: [0, 120, 255],
