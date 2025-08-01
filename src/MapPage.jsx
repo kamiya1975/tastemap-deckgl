@@ -14,7 +14,6 @@ import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { PathLayer } from "@deck.gl/layers";
 import CircleRatingDisplay from "./components/CircleRatingDisplay";
-import { CircleRatingIcon } from "./CircleRatingIcon";
 
 function App() {
   const location = useLocation();
