@@ -1021,43 +1021,45 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    {/* 左：商品情報 */}
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      {/* タイプ色の四角 */}
+                    {/* 左：色アイコン */}
+                    <div style={{ flex: "0 0 24px", display: "flex", justifyContent: "center" }}>
                       <div
                         style={{
-                         width: "16px",
-                         height: "16px",
-                         backgroundColor: item.Type === "Red"
-                           ? "#651E3E"
-                           : item.Type === "White"
-                           ? "#D4B499"
-                           : item.Type === "Rose"
-                           ? "#D88CA4"
-                           : item.Type === "Sparkling"
-                           ? "#CCC25E"
-                           : "#aaa",
-                         borderRadius: "4px",
-                         marginRight: "8px",
-                       }}
-                     />
-                     {/* タイトル */}
-                     <div>
-                       <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
-                       <br />
-                       <span style={{ fontSize: "14px" }}>
-                         ¥{item.希望小売価格?.toLocaleString() ?? "不明"}
-                       </span>
-                       <br />
-                       <span style={{ fontSize: "13px", color: "#555" }}>
-                         Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
-                       </span>
-                      </div>
+                          width: "16px",
+                          height: "16px",
+                          backgroundColor:
+                            item.Type === "Red"
+                              ? "#651E3E"
+                              : item.Type === "White"
+                              ? "#D4B499"
+                              : item.Type === "Rose"
+                              ? "#D88CA4"
+                              : item.Type === "Sparkling"
+                              ? "#CCC25E"
+                              : "#aaa",
+                          borderRadius: "4px",
+                        }}
+                      />
                     </div>
 
-                    {/* 右：◎評価 */}
-                    <CircleRatingDisplay value={userRatings[String(item.JAN)]?.rating ?? 0} />
-                   </div>
+                     {/* 中央：商品情報 */}
+                      <div style={{ flex: "1", paddingLeft: "8px", paddingRight: "8px" }}>
+                        <strong>{idx + 1}.</strong> {item.商品名 || "（名称不明）"}
+                        <br />
+                        <span style={{ fontSize: "14px" }}>
+                           ¥{item.希望小売価格?.toLocaleString() ?? "不明"}
+                        </span>
+                        <br />
+                        <span style={{ fontSize: "13px", color: "#555" }}>
+                          Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
+                        </span>
+                      </div>
+
+                       {/* 右：◎評価 */}
+                       <div style={{ flex: "0 0 auto" }}>
+                          <CircleRatingDisplay value={userRatings[String(item.JAN)]?.rating ?? 0} />
+                       </div>
+                    </div>
                  </li>
               ))}
             </ul>
