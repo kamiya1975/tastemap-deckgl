@@ -51,6 +51,19 @@ function App() {
     }
   }, [location.state]);
 
+  useEffect(() => {
+  if (drawerOpen) {
+    const savedRatings = localStorage.getItem("userRatings");
+    if (savedRatings) {
+      try {
+        setUserRatings(JSON.parse(savedRatings));
+      } catch (e) {
+        console.error("Failed to parse userRatings:", e);
+      }
+    }
+  }
+}, [drawerOpen]);
+
   // PCA + UMAPをマージして読み込み
   useEffect(() => {
     Promise.all([
