@@ -13,6 +13,7 @@ import Drawer from "@mui/material/Drawer";
 import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { PathLayer } from "@deck.gl/layers";
+import CircleRatingDisplay from "./components/CircleRatingDisplay";
 
 function App() {
   const location = useLocation();
@@ -997,10 +998,11 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                       ? `¥${item.希望小売価格.toLocaleString()}`
                       : "不明"}
                     <br />
-                    Body: {item.BodyAxis?.toFixed(2)}, Sweet:{" "}
-                    {item.SweetAxis?.toFixed(2)} / 星評価:{" "}
-                    {userRatings[item.JAN]?.rating ?? "なし"}
-                  </small>
+                    Body: {item.BodyAxis?.toFixed(2)}, Sweet: {item.SweetAxis?.toFixed(2)}
+                    </small>
+                    <div style={{ marginTop: "4px" }}>
+                      <CircleRatingDisplay value={userRatings[item.JAN]?.rating ?? 0} />
+                      </div>
                 </li>
               ))}
             </ul>
