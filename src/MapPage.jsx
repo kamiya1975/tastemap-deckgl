@@ -54,7 +54,7 @@ function App() {
   }, [location.state]);
 
   useEffect(() => {
-  if (drawerOpen) {
+  if (isDrawerOpen) {
     const savedRatings = localStorage.getItem("userRatings");
     if (savedRatings) {
       try {
@@ -64,7 +64,7 @@ function App() {
       }
     }
   }
-}, [drawerOpen]);
+}, [isDrawerOpen]);
 
   // PCA + UMAPをマージして読み込み
   useEffect(() => {
