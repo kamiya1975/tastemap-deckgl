@@ -1066,8 +1066,10 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                        <div style={{ 
                         flex: "0 0 auto",
                         display: "flex",
-                        alignItems: "flex-start",
-                        minHeight: "48px",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        minHeight: "54px",
+                        marginTop: "4px",
                        }}
                       >
                           <CircleRatingDisplay value={userRatings[String(item.JAN)]?.rating ?? 0} />
