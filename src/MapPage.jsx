@@ -1028,7 +1028,7 @@ function NearestWinePanel({ isOpen, onClose, nearestPoints, userRatings, scrollR
                       justifyContent: "center",
                       alignSelf: "flex-start",
                       marginTop: "2px",
-                      marginLeft: "-4px",
+                      marginLeft: "-8px",
                     }}>
                       <div
                         style={{
