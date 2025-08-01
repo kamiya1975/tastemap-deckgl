@@ -50,7 +50,10 @@ const CircleRatingRowDisplay = ({ currentRating = -1 }) => {
         display: "flex",
         flexDirection: "row",
         alignItems: "center", // 垂直中心
-        height: "38px", // 高さを一定に
+        justifyContent: "flex-start",
+        height: "34px",     // 商品名との高さを合わせる
+        marginTop: "-4px",  // 上に寄せる
+        marginLeft: "-8px", // 左に寄せる
       }}
     >
       {[0, 1, 2, 3, 4, 5].map((val) => (
