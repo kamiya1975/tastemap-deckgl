@@ -44,7 +44,6 @@ function App() {
   const [isRatingListOpen, setIsRatingListOpen] = useState(false);
   const ZOOM_LIMITS = { minZoom: 4.0, maxZoom: 10.0 };
   const nearestPanelRef = useRef(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (location.state?.autoOpenSlider) {
@@ -66,36 +65,28 @@ function App() {
 }, [isDrawerOpen]);
 
 useEffect(() => {
-  const updateRatings = () => {
-    const ratings = JSON.parse(localStorage.getItem("userRatings") || "{}");
-    setUserRatings(ratings);
+  const syncUserRatings = () => {
+    const stored = localStorage.getItem("userRatings");
+    if (stored) {
+      try {
+        setUserRatings(JSON.parse(stored));
+      } catch (e) {
+        console.error("Failed to parse userRatings:", e);
+      }
+    }
   };
-
-  window.addEventListener("focus", updateRatings);
-  window.addEventListener("storage", updateRatings); // ← 他タブからの更新に対応
 
   // 初回実行
-  updateRatings();
+  syncUserRatings();
 
+  // イベント登録
+  window.addEventListener("focus", syncUserRatings);
+  window.addEventListener("storage", syncUserRatings);
+
+  // クリーンアップ
   return () => {
-    window.removeEventListener("focus", updateRatings);
-    window.removeEventListener("storage", updateRatings);
-  };
-}, []);
-
-useEffect(() => {
-  const handleFocus = () => {
-    const stored = JSON.parse(localStorage.getItem("userRatings") || "{}");
-    setUserRatings(stored);
-  };
-
-  window.addEventListener("focus", handleFocus);
-
-  // 初回も実行
-  handleFocus();
-
-  return () => {
-    window.removeEventListener("focus", handleFocus);
+    window.removeEventListener("focus", syncUserRatings);
+    window.removeEventListener("storage", syncUserRatings);
   };
 }, []);
 
@@ -122,13 +113,6 @@ useEffect(() => {
     .catch((error) => {
       console.error("データ取得エラー:", error);
     });
-  }, []);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("userRatings");
-    if (stored) {
-      setUserRatings(JSON.parse(stored));
-    }
   }, []);
 
   useEffect(() => {
